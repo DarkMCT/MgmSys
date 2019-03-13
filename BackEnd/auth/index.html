@@ -1,0 +1,26 @@
+
+<html>
+<head>
+    <title>post</title>
+</head>
+<body>
+    <button onclick="sendPost()">Send POST</button>
+    <script>
+        function sendPost(){
+            const header = new Headers();
+            header.append('Content-Type', 'application/json');
+            header.append('Accept', 'application/json');
+            fetch("http://localhost:3000/auth", {
+                method:"POST",
+                headers: header,
+                credentials: 'include',
+                body: JSON.stringify({})
+            }).then((res)=>{
+                console.log(res.body);
+            }).catch((err)=>{
+
+            });
+        }
+    </script>
+</body>
+</html>

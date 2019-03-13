@@ -1,0 +1,11 @@
+{"user_id":0,"name":"svhsmfillh","siape":"JHFXP","email":"gdheyurefn@sxijd.com","password":"ubbfumki","type":1}
+,{"user_id":1,"name":"glqjsfsglb","siape":"BBQEE","email":"sbwfnshscn@irvjn.com","password":"aeberqng","type":0}
+,{"user_id":2,"name":"virjejefdo","siape":"PFUJQ","email":"yxfhpwjhna@niplo.com","password":"xfdthqwg","type":1}
+,{"user_id":3,"name":"gbnyahbjmx","siape":"OFGYQ","email":"ibcpoijuws@gkaqb.com","password":"migqkfbb","type":1}
+,{"user_id":4,"name":"tphylnumqf","siape":"CEMTL","email":"unmbuorckm@breuq.com","password":"vixitwjb","type":1}
+,{"user_id":5,"name":"wvbutmmtgf","siape":"HSACQ","email":"nidvesapjr@pnlfd.com","password":"genehlxo","type":1}
+,{"user_id":6,"name":"pvpblcuqwa","siape":"FFKXA","email":"cwmubkqrlc@xqyby.com","password":"iqmqrlat","type":1}
+,{"user_id":7,"name":"kaikdfhqej","siape":"XNABW","email":"bifceoeawx@txmru.com","password":"rxultdkc","type":0}
+,{"user_id":8,"name":"gdymmcnlup","siape":"GTMVP","email":"xsvwguilgk@sbpbn.com","password":"vfqtginq","type":0}
+,{"user_id":9,"name":"qbtaafvbue","siape":"XBSME","email":"sdagcnepkg@kgedb.com","password":"rreaguvg","type":0}
+,{"user_id":10,"name":"Matheus Cândido Teixeira","siape":"ABCDE","email":"matheuscandido2009@gmail.com","password":"abcde123","type":"0"}
