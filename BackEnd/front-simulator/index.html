@@ -41,8 +41,12 @@
                 <td><input type="email" name="register-email" id="register-email"></td>
             </tr>
             <tr>
-                <td><label for="password">Senha:</label></td>
+                <td><label for="register-password">Senha:</label></td>
                 <td><input type="password" name="register-password" id="register-password"></td>
+            </tr>
+            <tr>
+                <td><label for="register-password-2">Confirme a senha:</label></td>
+                <td><input type="password" name="register-password-2" id="register-password-2"></td>
             </tr>
             <tr>
                 <td><label for="register-type">Tipo:</label></td>
@@ -104,8 +108,14 @@
         const name     = document.getElementById('register-name').value;
         const siape    = document.getElementById('register-siape').value;
         const email    = document.getElementById('register-email').value;
-        const password = document.getElementById('register-password').value;
         const type     = document.getElementById('register-type').value;
+        const password = document.getElementById('register-password').value;
+        const password_conf = document.getElementById('register-password-2').value;
+
+        if (password !== password_conf){
+            console.log('The password must be equal');
+            return;
+        }
 
         console.log('called');
         const header = new Headers();
@@ -125,7 +135,14 @@
                 type: type
             }),
         }).then((res)=>{
-            console.log(res);
+            if (res.status == 200){
+                ['register-name', 'register-siape',
+                 'register-email', 'register-type',
+                 'register-password', 'register-password-2'
+                ].map( id => document.getElementById(id))
+                .map( element => element.value = '' );
+                 
+            }
         }).catch((err)=>{
             console.log(err);
         });
