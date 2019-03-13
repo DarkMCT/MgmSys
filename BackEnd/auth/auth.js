@@ -1,31 +1,20 @@
+// Imports
+
+// ---- Core imports
+const crypto = require('crypto');
+
+// ---- Third party imports
 const express = require('express');
 const session = require('express-session');
-const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const pg = require('pg');
 
-const MemoryStore = session.MemoryStore;
-
-
+// ---- User imports
 const User = require('../system/user');
 const DB = require('./test_database');
+// ------- Instantiations -------
 
-/**
- * Find if there is an user with this credentials
- * @param {string} username - user name
- * @param {string} password - password
- * @returns {boolean} Success of operation
- */
-const login = (siape, password) => {
-    for (let user of DB.users){
-        if (user.siape === siape && user.password === password){
-            return user.user_id;
-        }
-    }
-
-    return null;
-}
+const memoryStore = session.MemoryStore;
 
 const route = express.Router();
 
@@ -37,7 +26,6 @@ route.use(cors({
 }));
 
 
-
 route.use(session({
     cookie: {
         maxAge: 1000 * 60 * 60 * 8,
@@ -47,15 +35,31 @@ route.use(session({
     saveUninitialized: false,
     resave: false,
     secret: 'MGMSYSmgmsysMGMSYS',
-    store: new MemoryStore(),
+    store: new memoryStore(),
 }));
+
 
 route.use(bodyParser.json({
     type: 'application/json'
 }));
 
+
+route.use((req, res, next) => {
+    const password = req.body.password;
+
+    if ( password ){
+        const hmac = crypto.createHmac('sha512', 'MGMmgmMGMmgmMGMmgm');
+        hmac.update(password);
+        req.body.password = hmac.digest('hex');
+
+        console.log(req.body.password);
+    }
+    next('route');
+});
+
 /**
- * Authenticate the user and initializes a session
+ * Authenticate the user and initializes a session 
+ * 
  */
 route.route('/auth')
 .post((req, res, next) => {
@@ -74,7 +78,7 @@ route.route('/auth')
         if ( !siape || !password ) res.sendStatus(401);
         else {
             // credential authentication
-            const user_id = login(siape, password);
+            const user_id = DB.authUser(siape, password);
             if ( user_id ){
                 req.session.user_id = user_id;
                 res.sendStatus(200);
@@ -94,8 +98,6 @@ route.route('/auth')
         return;
     }
 
-    console.log('registring');
-    // validation
     const { name, siape, password, email, type } = req.body;
     if ( !name || !siape || !password || !email || !type ) {
         res.sendStatus(401);
@@ -145,5 +147,7 @@ route.route('/auth')
 
     next();
 });
+
+
 
 module.exports = route;

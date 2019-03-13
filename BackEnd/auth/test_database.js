@@ -1,4 +1,5 @@
 const fs = require('fs');
+const crypto = require('crypto');
 
 const stringGenerator = function(sz){
     const numbers = [];
@@ -10,12 +11,14 @@ const stringGenerator = function(sz){
 const userGenerator = function(sz){
     const users = [];
     for (let i=0; i<sz; ++i) {
+        const hmac = crypto.createHmac('sha512', 'MGMmgmMGMmgmMGMmgm');
+        hmac.update(stringGenerator(8));
         users.push({
             user_id: i,  
             name: stringGenerator(10), 
             siape: stringGenerator(5).toUpperCase(),
             email: stringGenerator(10) + '@' + stringGenerator(5) + '.com',
-            password: stringGenerator(8),
+            password: hmac.digest('hex'),
             type: Math.random() > 0.5 ? 1 : 0,
         });
     }
@@ -24,9 +27,28 @@ const userGenerator = function(sz){
 }
 
 
+
 let users = [
     ...userGenerator(10)
 ];
+
+
+/**
+ * Find if there is an user with this credentials
+ * @param {string} username - user name
+ * @param {string} password - password
+ * @returns {boolean} Success of operation
+ */
+const authUser = (siape, password) => {
+    for (let user of users){
+        if (user.siape === siape && user.password === password){
+            return user.user_id;
+        }
+    }
+
+    return null;
+}
+
 
 const addUser = (user) => {
     const user_id = users.length;
@@ -68,7 +90,7 @@ const saveFile = () => fs.writeFile(
 
 saveFile();
 
-module.exports = { users, addUser };
+module.exports = { users, addUser, authUser };
 
 
 
