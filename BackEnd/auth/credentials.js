@@ -1,5 +1,8 @@
 const fs = require('fs');
 const crypto = require('crypto');
+const bcrypt = require('bcrypt');
+
+const saltRounds = 11; // This protect against brutalforce attack
 
 const stringGenerator = function(sz){
     const numbers = [];
@@ -18,7 +21,7 @@ const userGenerator = function(sz){
             name: stringGenerator(10), 
             siape: stringGenerator(5).toUpperCase(),
             email: stringGenerator(10) + '@' + stringGenerator(5) + '.com',
-            password: hmac.digest('hex'),
+            password: bcrypt.hashSync(hmac.digest('hex'), saltRounds),
             type: Math.random() > 0.5 ? 1 : 0,
         });
     }
@@ -41,7 +44,8 @@ let users = [
  */
 const authUser = (siape, password) => {
     for (let user of users){
-        if (user.siape === siape && user.password === password){
+        const is_password_equal = bcrypt.compareSync(password, user.password);
+        if (user.siape === siape &&  is_password_equal) {
             return user.user_id;
         }
     }
@@ -66,16 +70,26 @@ const addUser = (user) => {
         return null;
     } 
 
-    users.push({
-        user_id: user_id,  
-        name: user.name, 
-        siape: user.siape,
-        email: user.email,
-        password: user.password,
-        type: user.type,
-    });
+    // console.log(user.password);
+    bcrypt.hash(user.password, saltRounds)
+        .then(hash => {
+            users.push({
+                user_id: user_id,  
+                name: user.name, 
+                siape: user.siape,
+                email: user.email,
+                password: hash,
+                type: user.type,                
+            });
+            saveFile();
+        })
+        .catch(err => {
+            throw new Error('Invalid user password')
+        });
+    
+    
 
-    saveFile();
+    
     return user_id;
 };
 
@@ -90,7 +104,7 @@ const saveFile = () => fs.writeFile(
 
 saveFile();
 
-module.exports = { users, addUser, authUser };
+module.exports = { addUser, authUser };
 
 
 

@@ -11,7 +11,7 @@ const cors = require('cors');
 
 // ---- User imports
 const User = require('../system/user');
-const DB = require('./test_database');
+const DB = require('./credentials');
 // ------- Instantiations -------
 
 const memoryStore = session.MemoryStore;
@@ -52,7 +52,7 @@ route.use((req, res, next) => {
         hmac.update(password);
         req.body.password = hmac.digest('hex');
 
-        console.log(req.body.password);
+        // console.log(req.body.password);
     }
     next('route');
 });
@@ -72,6 +72,7 @@ route.route('/auth')
     console.log(req.body);
     if (req.session.user_id){
         console.log(req.session.user_id + ' logged.');
+        res.sendStatus(401);
     } else {
         // validation
         const { siape, password } = req.body;

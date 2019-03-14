@@ -1,11 +1,11 @@
-{"user_id":0,"name":"rmqidkwrkj","siape":"XSGWY","email":"ifhpqtuxcj@owoig.com","password":"064886c98167134fe75f199cc210f1574c330a72427462f65b4a9435d5ce14272e73742c4267054db9b29eb0b1d59efa9bcf1ca6b11ecba94ca1acc8bf3c99a5","type":0}
-,{"user_id":1,"name":"atnwbquiws","siape":"GQFAD","email":"attkwwytox@oqqbe.com","password":"c1025c43a088c0fbd0ca249e1c762e461641fd33d78ce7dd78df7f01f159be26db640ee38f2ec52f00374d55a6c005ef9f0c83a20085d296dad9f7575e50fe43","type":1}
-,{"user_id":2,"name":"jlfwjmiqnx","siape":"ESCUH","email":"wcxfdxhoul@qjetx.com","password":"c0c6dd7e8e7855f22b73e38ef2f9a8d450140adc645a8462f21f95a3636bf59804b82eaee2a0d814f56bdf2011caeb0357dc3d94c15598161d51cf6daad4b8c4","type":1}
-,{"user_id":3,"name":"ntdcmgptnm","siape":"XPXXM","email":"oqoryydepm@mdled.com","password":"3efdeb8835a1ef794d1d3f5249061550beb9c68e57886c5ae407045023c3a4eca87314b4ac6e996896d839311553f2a7108b7fd0937c7ecaa66075bbb9502ddb","type":1}
-,{"user_id":4,"name":"qdypdhrisf","siape":"TJNGX","email":"gqajxfjlrm@qjymp.com","password":"d1ee137e4ba4f6b803224edcb58c77424875e6dec8ddee9e19400aaa3b850ec8c95995671cf0cbb79462a194ac9f556c2621cc558477bd3898768a7329c48a25","type":0}
-,{"user_id":5,"name":"rfmiuibpuk","siape":"JIBNN","email":"gsffhndrcp@qgstr.com","password":"902f96f9f1c251d22578dfff2c5d546474e4b13cfc844a330dadf2a052ce6f5de1d983c99a8f35910acc1c6c3e184a3dc59a2442cab7f596f8e57ffcea086e39","type":1}
-,{"user_id":6,"name":"yigjjktmcj","siape":"XCBPP","email":"uvieijtvlb@obweq.com","password":"ea103c1c8adf42603371a86e2d7dbd8cf54e7ab525d37f598e965a3d3ce5d1ef18b2dafdd6cfd8d94609e856fab7cbdc3091c88838e170d7a6fe3aca9f56321f","type":1}
-,{"user_id":7,"name":"qefpfvmoyo","siape":"QXIMW","email":"lemgliwjws@agsfe.com","password":"68dd73b9c255f918b16cbd807851e12538ba38128f18d2fafb023ee79aba6bbed6e1912bcf75d5cf9996534f73e0e51eab7ff9307f4ac78c69dcea71daa98400","type":1}
-,{"user_id":8,"name":"yxqurgdjwj","siape":"CXEUV","email":"vmrrknlprq@wxndn.com","password":"3bb05f8d5d3a789c0a80ad47f61f970140f7a36186c73173061f8d88fe40187fbd1028a3c5070d9fd6ec9323b60801ce58e2ef2cc3a42b622bbf4756b929df30","type":0}
-,{"user_id":9,"name":"acaqosfhcu","siape":"ETGLR","email":"caiafrbqcu@chevl.com","password":"b1885d76c72305a8e392214be35f3c13a27cd8ddd8c6d689482fd34930004af070f0c2bd825709724967fe631b0757f50cde7e49b4ac48f9e1b063471fcca023","type":1}
-,{"user_id":10,"name":"Matheus Cândido Teixeira","siape":"ABCDE","email":"matheuscandido2009@gmail.com","password":"f488a430df94f7df181371a0f0010de5c2888366a1892b3e2905d8cd5946d822e67171051a4ceb3d8eb96124ebffbe01d42dbe4bc349bdc0aa7be73f8521d18e","type":"0"}
+{"user_id":0,"name":"tleiyqxnbx","siape":"JIQFC","email":"xmqlecxato@ovgtg.com","password":"$2b$11$NdAsaSnBzgQn5w6ECkrbBuaI9nuT2rW7j8HXHPEJnleMNA2IlLrwq","type":0}
+,{"user_id":1,"name":"drurrleekk","siape":"PQSBJ","email":"ggueiwcced@xctpd.com","password":"$2b$11$xyPvDXbaooSDL37gRzfu2.wAaCUOiiWKnu0AaJ7yHdj212y4KyCZi","type":1}
+,{"user_id":2,"name":"loyumhnvdj","siape":"WEPHJ","email":"usffgplgqj@jgcvf.com","password":"$2b$11$ZJdM0Ckmv1.SH7yVBBtD3uBUfBIVJrcS40QziW.RFKHerwYBDaapK","type":1}
+,{"user_id":3,"name":"cywudukchc","siape":"LRVHF","email":"nwhsrprnav@hcipy.com","password":"$2b$11$AlI7OmId3KhlsKqcmPHp4e8tiWRbFLt9oNL6Ynx.8WTnZVxB533Li","type":0}
+,{"user_id":4,"name":"gnnkiagrhf","siape":"QYSCA","email":"rxjtxlapsj@cidhk.com","password":"$2b$11$vkRUf2T40G96hd5pHotUieGTFoEXcvKebmy0z6ZUtzxd9JPKlAs7G","type":0}
+,{"user_id":5,"name":"gcpmkpnhrb","siape":"NEBPO","email":"rrgggolcft@cbrpu.com","password":"$2b$11$FyMKiCpRj.nV8k7a0NEgR.dEe8JGk0Hib5JgtRaYMdepymf3UZCPG","type":1}
+,{"user_id":6,"name":"wedtvhovrj","siape":"GWJUQ","email":"fbmkqjaxtk@xhjny.com","password":"$2b$11$pFJGeEZVGztNXnEHC1xWI.3nw1I3hpq35zg7eDw16Z3494b26Twg2","type":0}
+,{"user_id":7,"name":"yhrbxoxbxg","siape":"FMWXE","email":"nkldgtatiq@wodxf.com","password":"$2b$11$RfXbaZw5dnx2YsIj7iwRLeUkfZoOp5dH3AkgLOiqGiA2nyAppq2aO","type":0}
+,{"user_id":8,"name":"eyktiyvdua","siape":"FQJXV","email":"plctjmqubg@hbxra.com","password":"$2b$11$O91euBl76jE9wB4/.q720uEUUeSwHk3O7JFBLfh9GDqsVBrZS6T5C","type":0}
+,{"user_id":9,"name":"odvmppsmdn","siape":"TSPFN","email":"nvsdrspiou@lvcbr.com","password":"$2b$11$58bg4b.YBmhvzfMjKLjWbeTdsJVFD76XMPMIO2WBYKsfxIYwAM.Ry","type":1}
+,{"user_id":10,"name":"Matheus Cândido Teixeira","siape":"ABCDE","email":"matheuscandido2009@gmail.com","password":"$2b$11$/7zyuxoP.jYdkO.SG52y3.HliUSF3w6EKZTFTGEZ0VUz6lvGWRV2S","type":"1"}
