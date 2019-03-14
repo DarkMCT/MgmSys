@@ -1,207 +1,258 @@
 <html>
+
 <head>
     <title>Auth system</title>
 </head>
+
 <body>
-    <h1>Login</h1>
-    <form id='login'>
-        <table>
-            <tr>
-                <td><label for="login-siape">SIAPE:</label></td>
-                <td><input type="text" name="login-siape" id="login-siape"></td>
-            </tr>
-            <tr>
-                <td><label for="login-password">password:</label></td>
-                <td><input type="password" name="login-password" id="login-password"></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>
-                    <input type="submit" style="width: 100%" value="Login">
-                </td>
-            </tr>
-        </table>
-    </form>
+    <table>
+        <tr>
+            <td>
+                <h1>Login</h1>
+                <form id='login'>
+                    <table>
+                        <tr>
+                            <td><label for="login-siape">SIAPE:</label></td>
+                            <td><input type="text" name="login-siape" id="login-siape"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="login-password">password:</label></td>
+                            <td><input type="password" name="login-password" id="login-password"></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <input type="submit" style="width: 100%" value="Login">
+                            </td>
+                        </tr>
+                    </table>
+                </form>
 
-    <br/>
+                <br />
 
-    <h1>Register</h1>
-    <form id="register">
-        <table>
-            <tr>
-                <td><label for="register-name">Nome:</label></td>
-                <td><input type="text" name="register-name" id="register-name"></td>
-            </tr>
-            <tr>
-                <td><label for="register-siape">SIAPE:</label></td>
-                <td><input type="text" name="register-siape" id="register-siape"></td>
-            </tr>
-            <tr>
-                <td><label for="register-email">E-mail:</label></td>
-                <td><input type="email" name="register-email" id="register-email"></td>
-            </tr>
-            <tr>
-                <td><label for="register-password">Senha:</label></td>
-                <td><input type="password" name="register-password" id="register-password"></td>
-            </tr>
-            <tr>
-                <td><label for="register-password-2">Confirme a senha:</label></td>
-                <td><input type="password" name="register-password-2" id="register-password-2"></td>
-            </tr>
-            <tr>
-                <td><label for="register-type">Tipo:</label></td>
-                <td>
-                    <select style="width: 100%;" id="register-type">
-                        <option value="0">Gerente</option>
-                        <option value="1">Agente</option>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>
-                    <input type="submit" style="width: 100%" value="Login">
-                </td>
-            </tr>
-        </table>
-    </form>
-    <br/>
+                <h1>Register</h1>
+                <form id="register">
+                    <table>
+                        <tr>
+                            <td><label for="register-name">Nome:</label></td>
+                            <td><input type="text" name="register-name" id="register-name"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="register-siape">SIAPE:</label></td>
+                            <td><input type="text" name="register-siape" id="register-siape"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="register-email">E-mail:</label></td>
+                            <td><input type="email" name="register-email" id="register-email"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="register-password">Senha:</label></td>
+                            <td><input type="password" name="register-password" id="register-password"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="register-password-2">Confirme a senha:</label></td>
+                            <td><input type="password" name="register-password-2" id="register-password-2"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="register-type">Tipo:</label></td>
+                            <td>
+                                <select style="width: 100%;" id="register-type">
+                                    <option value="0">Gerente</option>
+                                    <option value="1">Agente</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <input type="submit" style="width: 100%" value="Login">
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+                <br />
 
-    <h1>Logout</h1>    
-    <button onclick="logout()">Logout</button>
-    <br/>
+                <h1>Logout</h1>
+                <button onclick="logout()">Logout</button>
+                <br />
 
-    <h1>Status</h1>
-    <label id="status">Not logged</label>
-    <button onclick="isLogged()">Test</button>
+                <h1>Status</h1>
+                <label id="status">Not logged</label>
+                <button onclick="isLogged()">Test</button>
+            </td>
+            <td> 
+                <table>
+                    <tr>
+                        <td>
+                            <input type="text" name="input_url" id="input_url">
+                        </td>
+                    <tr>
+                        <td><button onclick="fetch_data()">Fetch data</button></td>
+                    </tr>
+                    <tr>
+                        <td><textarea name="output" id="input_url"></textarea></td>
+
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+
+
     <script>
-    
-    
-    
-    const loginHandler = function (event){
-        event.preventDefault();
-        const siape = document.getElementById('login-siape').value;
-        const password = document.getElementById('login-password').value;        
-        const header = new Headers();
-        header.append('Content-Type', 'application/json');
-        header.append('Accept', 'application/json');
-        fetch('http://localhost:3000/auth', {
-            method: 'POST',
-            mode: "cors",
-            headers: header,
-            credentials: 'include',
-            body: JSON.stringify({
-                operation: 'login',
-                siape: siape, 
-                password: password
-            }),
-        }).then((res)=>{
-            console.log(res);
-        }).catch((err)=>{
-            console.log(err);
-        });
-    };
 
 
-    const registerHandler = function (event){
-        event.preventDefault();
-        const name     = document.getElementById('register-name').value;
-        const siape    = document.getElementById('register-siape').value;
-        const email    = document.getElementById('register-email').value;
-        const type     = document.getElementById('register-type').value;
-        const password = document.getElementById('register-password').value;
-        const password_conf = document.getElementById('register-password-2').value;
 
-        if (password !== password_conf){
-            console.log('The password must be equal');
-            return;
+        const loginHandler = function (event) {
+            event.preventDefault();
+            const siape = document.getElementById('login-siape').value;
+            const password = document.getElementById('login-password').value;
+            const header = new Headers();
+            header.append('Content-Type', 'application/json');
+            header.append('Accept', 'application/json');
+            fetch('http://localhost:3000/auth', {
+                method: 'POST',
+                mode: "cors",
+                headers: header,
+                credentials: 'include',
+                body: JSON.stringify({
+                    operation: 'login',
+                    siape: siape,
+                    password: password
+                }),
+            }).then((res) => {
+                console.log(res);
+            }).catch((err) => {
+                console.log(err);
+            });
+        };
+
+
+        const registerHandler = function (event) {
+            event.preventDefault();
+            const name = document.getElementById('register-name').value;
+            const siape = document.getElementById('register-siape').value;
+            const email = document.getElementById('register-email').value;
+            const type = document.getElementById('register-type').value;
+            const password = document.getElementById('register-password').value;
+            const password_conf = document.getElementById('register-password-2').value;
+
+            if (password !== password_conf) {
+                console.log('The password must be equal');
+                return;
+            }
+
+            console.log('called');
+            const header = new Headers();
+            header.append('Content-Type', 'application/json');
+            header.append('Accept', 'application/json');
+            fetch('http://localhost:3000/auth', {
+                method: 'POST',
+                mode: "cors",
+                headers: header,
+                credentials: 'include',
+                body: JSON.stringify({
+                    operation: 'register',
+                    name: name,
+                    siape: siape,
+                    email: email,
+                    password: password,
+                    type: type
+                }),
+            }).then((res) => {
+                if (res.status == 200) {
+                    ['register-name', 'register-siape',
+                        'register-email', 'register-type',
+                        'register-password', 'register-password-2'
+                    ].map(id => document.getElementById(id))
+                        .map(element => element.value = '');
+
+                }
+            }).catch((err) => {
+                console.log(err);
+            });
+        };
+
+        const isLogged = () => {
+            const header = new Headers();
+            header.append('Content-Type', 'application/json');
+            header.append('Accept', 'application/json');
+            header.append('Access-Control-Allow-Credentials', 'include');
+            fetch('http://localhost:3000/auth', {
+                method: 'POST',
+                mode: 'cors',
+                headers: header,
+                credentials: 'include',
+                body: JSON.stringify({
+                    operation: 'authentication',
+                })
+            })
+                .then((res) => {
+                    if (res.status == 200) {
+                        document.getElementById('status').innerHTML = 'Logged';
+                    } else {
+                        document.getElementById('status').innerHTML = 'Not logged';
+                    }
+                })
+                .catch((err) => {
+                    document.getElementById('status').innerHTML = 'Not logged';
+                })
+        };
+
+
+        const logout = () => {
+            const header = new Headers();
+            header.append('Content-Type', 'application/json');
+            header.append('Accept', 'application/json');
+            fetch('http://localhost:3000/auth', {
+                method: 'POST',
+                mode: "cors",
+                headers: header,
+                credentials: 'include',
+                body: JSON.stringify({
+                    operation: 'logout',
+                }),
+            }).then(res => {
+                if (res.status == 200) {
+                    console.log(`Logout successfully...`);
+                } else {
+                    console.log(`Logout fail...`);
+                }
+            }).catch(err => {
+                console.log(err);
+            })
+
         }
 
-        console.log('called');
-        const header = new Headers();
-        header.append('Content-Type', 'application/json');
-        header.append('Accept', 'application/json');
-        fetch('http://localhost:3000/auth', {
-            method: 'POST',
-            mode: "cors",
-            headers: header,
-            credentials: 'include',
-            body: JSON.stringify({
-                operation: 'register',
-                name: name, 
-                siape: siape,
-                email: email,
-                password: password,
-                type: type
-            }),
-        }).then((res)=>{
-            if (res.status == 200){
-                ['register-name', 'register-siape',
-                 'register-email', 'register-type',
-                 'register-password', 'register-password-2'
-                ].map( id => document.getElementById(id))
-                .map( element => element.value = '' );
-                 
-            }
-        }).catch((err)=>{
-            console.log(err);
-        });
-    };
-  
-    const isLogged = () => {
-        const header = new Headers();
-        header.append('Content-Type', 'application/json');
-        header.append('Accept', 'application/json');
-        header.append('Access-Control-Allow-Credentials', 'include');
-        fetch('http://localhost:3000/auth', {
-            method: 'POST',
-            mode: 'cors',
-            headers: header,
-            credentials: 'include',
-            body: JSON.stringify( {
-                operation: 'authentication',
-            })
-        })
-        .then((res)=>{
-            if (res.status == 200) {
-                document.getElementById('status').innerHTML = 'Logged';
-            } else {
-                document.getElementById('status').innerHTML = 'Not logged';
-            }
-        })
-        .catch((err) => {
-            document.getElementById('status').innerHTML = 'Not logged';
-        })
-    };
+        const fetch_data = () => {
+            const input_url = document.getElementById('input_url').value;
+            const output = document.getElementById('output');
 
+            const header = new Headers();
+            header.append('Content-Type', 'application/*');
+            header.append('Accept', 'application/*');
+            fetch("http://localhost:3000/" + input_url, {
+                method: 'GET',
+                credentials: 'include',
+                mode: 'cors',
+                headers: header,
+            }).then( res =>{
+                console.log(res);
+                if ( res.status === 200 )
+                    res.text()
+                        .then( txt => output.value = txt )
+                        .catch( err => output.value = err );
+                else 
+                    output.value = 'something gone wrong..';
+            }).catch( err => output.value = err );
 
-    const logout = ()=>{
-        const header = new Headers();
-        header.append('Content-Type', 'application/json');
-        header.append('Accept', 'application/json');
-        fetch('http://localhost:3000/auth', {            
-            method: 'POST',
-            mode: "cors",
-            headers: header,
-            credentials: 'include',
-            body: JSON.stringify({
-                operation: 'logout',
-            }),
-        }).then( res => {
-            if ( res.status == 200 ) {
-                console.log(`Logout successfully...`);
-            } else {
-                console.log(`Logout fail...`);
-            }
-        }).catch( err => {
-            console.log(err);
-        } )
+        };
 
-    }
-
-    document.getElementById('login').addEventListener('submit', loginHandler);
-    document.getElementById('register').addEventListener('submit', registerHandler);
+        document.getElementById('login').addEventListener('submit', loginHandler);
+        document.getElementById('register').addEventListener('submit', registerHandler);
 
     </script>
 </body>
+
 </html>

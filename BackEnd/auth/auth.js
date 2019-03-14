@@ -15,15 +15,24 @@ const DB = require('./credentials');
 // ------- Instantiations -------
 
 const memoryStore = session.MemoryStore;
+const BadAuthenticationCode = 401;
+const BadOperationOnServerCode = 500;
+const SuccessAuthenticationCode = 200;
+const SuccessOperationCode = 200;
+
+
 
 const route = express.Router();
 
-// enable CORS
-route.use(cors({
-    methods: ['GET', 'POST'],
-    credentials: true,
-    origin: true,
-}));
+// // enable CORS
+// route.use(cors({
+//     methods: ['GET', 'POST'],
+//     credentials: true,
+//     origin: true,
+// }));
+
+
+
 
 // setup sessions (responsable for user authentication after login)
 route.use(session({
@@ -38,10 +47,19 @@ route.use(session({
     store: new memoryStore(),
 }));
 
+
+
+
+
 // body-parser
 route.use(bodyParser.json({
     type: 'application/json'
 }));
+
+
+
+
+
 
 // There is no need to use or manipulate the real password
 // so transform the password in a hash using sha512
@@ -57,6 +75,18 @@ route.use((req, res, next) => {
     }
     next('route');
 });
+
+
+const is_authenticated = (req)=>{
+    return (req.session && req.session.user_id && req.session.user_id !== null);
+}
+
+
+const user_credentials_authentication = (user) => {
+    return user;
+}
+
+
 
 // Processes login
 //           registration
@@ -78,37 +108,32 @@ route.route('/auth')
         const user_id = DB.authUser(siape, password);
         if ( user_id ){
             req.session.user_id = user_id;
-            res.sendStatus(200);       
+            res.sendStatus( SuccessAuthenticationCode );       
         }
     }    
     
     if ( !res.headersSent )
-        res.sendStatus(401);
-        
+        res.sendStatus( BadAuthenticationCode );
+
     next();    
 })
 .post((req, res, next) => {
-    // verifing the operation
     if ( req.body.operation !== 'register' ) {
         next();
         return;
     }
 
-    const { name, siape, password, email, type } = req.body;
-    if ( !name || !siape || !password || !email || !type ) {
-        res.sendStatus(401);
-        return;
+    const user_credentials_authenticated = user_credentials_authentication( req.body );
+
+    if ( user_credentials_authenticated ) {
+        const user_id = DB.addUser( user_credentials_authenticated );
+        if ( user_id ) {        
+            res.sendStatus( SuccessAuthenticationCode );
+        }
     }
 
-    // registration
-    const user_id = DB.addUser( req.body );
-    if ( user_id ) {
-        console.log(`User added ${ user_id }`);
-        res.sendStatus(200);
-    } else {
-        console.log('Invalid credentials');
-        res.sendStatus(401);
-    }
+    if ( !res.headersSent )
+        res.sendStatus( BadAuthenticationCode );
 
     next();
 })
@@ -118,13 +143,10 @@ route.route('/auth')
         return;
     }
 
-    console.log(req.session);
-    if (req.session.user_id) {
-        res.sendStatus(200);
-    }
-    else {
-        res.sendStatus(401);
-    }
+    if (is_authenticated( req ))
+        res.sendStatus( SuccessAuthenticationCode );
+    else
+        res.sendStatus( BadAuthenticationCode );
 
     next();
 })
@@ -134,16 +156,18 @@ route.route('/auth')
         return;
     }
 
+    // try to destroy
+    // if not possible, just set to null
+  
     if ( req.session.user_id ){
         req.session.user_id = null;
-        res.sendStatus(200);
-    } else {
-        res.sendStatus(401);
-    }
+    } 
+
+    res.sendStatus( SuccessAuthenticationCode );
 
     next();
 });
 
 
 
-module.exports = route;
+module.exports = { auth_route: route, is_authenticated };
