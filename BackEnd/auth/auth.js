@@ -18,14 +18,14 @@ const memoryStore = session.MemoryStore;
 
 const route = express.Router();
 
-
+// enable CORS
 route.use(cors({
     methods: ['GET', 'POST'],
     credentials: true,
     origin: true,
 }));
 
-
+// setup sessions (responsable for user authentication after login)
 route.use(session({
     cookie: {
         maxAge: 1000 * 60 * 60 * 8,
@@ -38,12 +38,13 @@ route.use(session({
     store: new memoryStore(),
 }));
 
-
+// body-parser
 route.use(bodyParser.json({
     type: 'application/json'
 }));
 
-
+// There is no need to use or manipulate the real password
+// so transform the password in a hash using sha512
 route.use((req, res, next) => {
     const password = req.body.password;
 
@@ -57,39 +58,33 @@ route.use((req, res, next) => {
     next('route');
 });
 
-/**
- * Authenticate the user and initializes a session 
- * 
- */
+// Processes login
+//           registration
+//           logout
+//           authentication (test if the user is actually logged)
 route.route('/auth')
 .post((req, res, next) => {
-    // verifing the operation
+    // verify if the operation is 'login'
+    // else pass to the next middleware
     if ( req.body.operation !== 'login' ) {
         next();
         return;
     }
-
-    console.log(req.body);
-    if (req.session.user_id){
-        console.log(req.session.user_id + ' logged.');
-        res.sendStatus(401);
-    } else {
-        // validation
-        const { siape, password } = req.body;
-        if ( !siape || !password ) res.sendStatus(401);
-        else {
-            // credential authentication
-            const user_id = DB.authUser(siape, password);
-            if ( user_id ){
-                req.session.user_id = user_id;
-                res.sendStatus(200);
-            }
-            else {
-                res.sendStatus(401);
-            }
-        }
-    }
     
+    const { siape, password } = req.body;
+
+    if ( siape || password ) {
+        // credential authentication
+        const user_id = DB.authUser(siape, password);
+        if ( user_id ){
+            req.session.user_id = user_id;
+            res.sendStatus(200);       
+        }
+    }    
+    
+    if ( !res.headersSent )
+        res.sendStatus(401);
+        
     next();    
 })
 .post((req, res, next) => {
