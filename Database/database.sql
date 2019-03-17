@@ -34,7 +34,7 @@ CREATE TABLE "usuario" (
   "nome"                varchar(120) NOT NULL,
   "SIAPE"               varchar(120) NOT NULL,
   "email"               varchar(120) NOT NULL,
-  "senha"               char(64)     NOT NULL,
+  "senha"               char(60)     NOT NULL,
   "status_autenticacao" char(1),
   "tipo"                char(1),
   "fk_id_departamento"  int          REFERENCES departamento(id_departamento),
