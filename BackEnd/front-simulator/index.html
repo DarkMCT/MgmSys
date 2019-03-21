@@ -241,8 +241,8 @@
                 console.log(res);
                 if ( res.status === 200 )
                     res.text()
-                        .then( txt => output.value = txt )
-                        .catch( err => output.value = err );
+                        .then( txt => output.innerHTML = txt )
+                        .catch( err => output.innerHTML = err );
                 else 
                     output.value = 'something gone wrong..';
             }).catch( err => output.value = err );

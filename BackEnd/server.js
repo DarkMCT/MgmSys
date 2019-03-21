@@ -5,6 +5,7 @@ const app = express();
 
 
 const { auth_route, is_authenticated } = require('./auth/auth');
+const { departamento_route } = require('./endpoints/departamento');
 
 
 app.use(cors({
@@ -23,11 +24,7 @@ app.use((req, res, next) => {
         res.sendStatus(403);
 });
 
-app.get('/:requested_url', (req, res, next)=> {
-    const text = req.params.requested_url;
-    res.end(text);
-    next();    
-});
+app.use(departamento_route);
 
 
 app.listen(3000, ()=>{
