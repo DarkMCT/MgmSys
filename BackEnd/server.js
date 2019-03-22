@@ -14,7 +14,7 @@ app.use(cors({
     origin: true,
 }));
 
-app.use(auth_route);
+/* app.use(auth_route);
 
 // validate if the user is logged
 app.use((req, res, next) => {
@@ -23,10 +23,10 @@ app.use((req, res, next) => {
     else if ( !res.headersSent )
         res.sendStatus(403);
 });
-
+ */
 app.use(departamento_route);
 
 
-app.listen(3000, ()=>{
-    console.log('Server listening at port 3000');
+app.listen(3001, ()=>{
+    console.log('Server listening at port 3001');
 });

@@ -31,7 +31,6 @@ departamento_route.route("/departamento")
             console.error(err);
             res.send( "Something wrong happend" );
         })
-    next("route");
 })
 .post((req, res, next) => {
     const knex = db_instance();
@@ -89,8 +88,6 @@ departamento_route.route("departamento/:id_departament")
     }).catch( err => {
         res.status( 400 ).send(" Something wrong happend...");
     });
-
-    next();
 })
 .patch((req, res, next) => {
     const knex = db_instance();
@@ -112,8 +109,6 @@ departamento_route.route("departamento/:id_departament")
             console.error(err);
             res.status(400).send("Something wrong happend");
         });
-
-    next();
 });
 
 module.exports = { departamento_route };

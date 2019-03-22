@@ -1,9 +1,34 @@
+// 
+//  This file is responsible to connect the authentication with the database
+//  and in this way, create a isolation between them.
+// 
+//  This handle the cryptography too.
+// 
+//  Written by Matheus Cândido Teixeira
+//  Date: 22.03.2019
+// 
+
+
+//---------------- imports ----------------//
+
+// ---- core imports
 const fs = require('fs');
 const crypto = require('crypto');
+
+// ---- third party imports
 const bcrypt = require('bcrypt');
 
-const saltRounds = 11; // This protect against brutalforce attack
 
+
+// ------- constants definitions ------- //
+const saltRounds = 8; // This protect against brutalforce attack
+
+
+
+// Just for test purposes
+// 
+//  This function generate a random string with size specified
+//  by the parameter "sz"
 const stringGenerator = function(sz){
     const numbers = [];
     while (sz--) numbers.push(parseInt( Math.random() * 25 + 97 ))
@@ -11,6 +36,10 @@ const stringGenerator = function(sz){
 };
 
 
+//  Just for test purposes
+// 
+//  This function populates the system with random user credentials
+//  The number of generated users is specified by the parameter "sz"
 const userGenerator = function(sz){
     const users = [];
     for (let i=0; i<sz; ++i) {
@@ -30,7 +59,11 @@ const userGenerator = function(sz){
 }
 
 
-
+//  Just for test purposes
+// 
+// I know "Never/Avoid create global variables" ...
+// This was only to accelerate the development process
+//   Forgive me about this...
 let users = [
     ...userGenerator(10)
 ];
@@ -53,7 +86,9 @@ const authUser = (siape, password) => {
     return null;
 }
 
-
+// Just for test purposes
+// 
+// This function register some users specified by the parameter "user"
 const addUser = (user) => {
     const user_id = users.length;
 
@@ -93,6 +128,10 @@ const addUser = (user) => {
     return user_id;
 };
 
+
+// Just for test purposes
+// 
+// This function just save the users in a file
 const saveFile = () => fs.writeFile(
     './users.txt',
      users.map((user)=>JSON.stringify(user)+'\n'),

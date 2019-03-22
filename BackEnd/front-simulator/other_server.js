@@ -4,6 +4,6 @@ const app = express();
 
 app.use(express.static("./"));
 
-app.listen(3001, ()=>{
-    console.log('running at 3001');
+app.listen(3002, ()=>{
+    console.log('running at 3002');
 })

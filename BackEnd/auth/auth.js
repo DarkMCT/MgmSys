@@ -1,18 +1,52 @@
-// Imports
+// 
+// Propouse:
+//      This file is responsible for all authentication mechanism of the system
+//      from users registor to user login.
+// 
+//      After some user made login is genereted a session and sent to user to keep 
+//      him or her logged.
+// 
+//      On success is sent the http status code 200 (OK) and On error is sent the http
+//      status code 401 (Unauthorized)
+// 
+//  Written by Matheus Cândido Teixeira
+//  Date: 22.03.2019
 
-// ---- Core imports
+
+
+// ToDo List:
+//   # Data validation >> ../database/data_validation because should be shared between 
+//     back-end and front-end
+// 
+// 
+// 
+// 
+
+
+
+
+//---------------- imports ----------------//
+
+// ---- core imports
 const crypto = require('crypto');
 
-// ---- Third party imports
+// ---- third party imports
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-// ---- User imports
+// ---- user imports
 const User = require('../system/user');
 const DB = require('./credentials');
-// ------- Instantiations -------
+
+
+
+
+
+
+
+// ------- constants definitions ------- //
 
 const memoryStore = session.MemoryStore;
 const BadAuthenticationCode = 401;
@@ -92,6 +126,12 @@ const user_credentials_authentication = (user) => {
 //           registration
 //           logout
 //           authentication (test if the user is actually logged)
+// 
+// The operation that you want to do should be specified through
+// in the member "operation" of your request.
+// 
+// All authentication request should be sent in a HTTP Post method
+// 
 route.route('/auth')
 .post((req, res, next) => {
     // verify if the operation is 'login'
