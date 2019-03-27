@@ -6,6 +6,7 @@ const app = express();
 
 const { auth_route, is_authenticated } = require('./auth/auth');
 const { departamento_route } = require('./endpoints/departamento');
+// const { usuario_route } = require("./endpoints/usuario");
 
 
 app.use(cors({
@@ -25,6 +26,7 @@ app.use((req, res, next) => {
 });
  */
 app.use(departamento_route);
+// app.use(usuario_route);
 
 
 app.listen(3001, ()=>{

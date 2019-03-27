@@ -1,12 +1,12 @@
-// 
+//
 //  This file is responsible to connect the authentication with the database
 //  and in this way, create a isolation between them.
-// 
+//
 //  This handle the cryptography too.
-// 
+//
 //  Written by Matheus Cândido Teixeira
 //  Date: 22.03.2019
-// 
+//
 
 
 //---------------- imports ----------------//
@@ -18,15 +18,19 @@ const crypto = require('crypto');
 // ---- third party imports
 const bcrypt = require('bcrypt');
 
+// ---- user imports
+const db_instance = require("../database/connection");
+
 
 
 // ------- constants definitions ------- //
-const saltRounds = 8; // This protect against brutalforce attack
+const saltRounds = 8; // This protect against brutalforce
+const MAX_TIMEOUT = 100; //ms
 
 
 
 // Just for test purposes
-// 
+//
 //  This function generate a random string with size specified
 //  by the parameter "sz"
 const stringGenerator = function(sz){
@@ -37,7 +41,7 @@ const stringGenerator = function(sz){
 
 
 //  Just for test purposes
-// 
+//
 //  This function populates the system with random user credentials
 //  The number of generated users is specified by the parameter "sz"
 const userGenerator = function(sz){
@@ -46,8 +50,8 @@ const userGenerator = function(sz){
         const hmac = crypto.createHmac('sha512', 'MGMmgmMGMmgmMGMmgm');
         hmac.update(stringGenerator(8));
         users.push({
-            user_id: i,  
-            name: stringGenerator(10), 
+            user_id: i,
+            name: stringGenerator(10),
             siape: stringGenerator(5).toUpperCase(),
             email: stringGenerator(10) + '@' + stringGenerator(5) + '.com',
             password: bcrypt.hashSync(hmac.digest('hex'), saltRounds),
@@ -60,7 +64,7 @@ const userGenerator = function(sz){
 
 
 //  Just for test purposes
-// 
+//
 // I know "Never/Avoid create global variables" ...
 // This was only to accelerate the development process
 //   Forgive me about this...
@@ -78,7 +82,7 @@ let users = [
 const authUser = (siape, password) => {
     for (let user of users){
         const is_password_equal = bcrypt.compareSync(password, user.password);
-        if (user.siape === siape &&  is_password_equal) {
+        if (user.siape === siape && is_password_equal) {
             return user.user_id;
         }
     }
@@ -86,10 +90,24 @@ const authUser = (siape, password) => {
     return null;
 }
 
-// Just for test purposes
-// 
-// This function register some users specified by the parameter "user"
 const addUser = (user) => {
+    const knex = db_instance();
+    bcrypt.hash(user.password, saltRounds)
+        .then(hash => {
+            return knex("usuario").insert(user).timeout(MAX_TIMEOUT);
+        })
+        .then( user_id => {
+            return user_id;
+        })
+        .catch(err => {
+            throw new Error('Invalid user password')
+        });
+};
+
+// Just for test purposes
+//
+// This function register some users specified by the parameter "user"
+const __addUser = (user) => {
     const user_id = users.length;
 
     let fail = false;
@@ -97,46 +115,48 @@ const addUser = (user) => {
     users.forEach( _user => {
         if ( _user.siape === user.siape ||
              _user.email === user.email )
-            
+
              fail = true;
     });
-    
+
     if (fail) {
         return null;
-    } 
+    }
 
     // console.log(user.password);
     bcrypt.hash(user.password, saltRounds)
         .then(hash => {
             users.push({
-                user_id: user_id,  
-                name: user.name, 
+                user_id: user_id,
+                name: user.name,
                 siape: user.siape,
                 email: user.email,
                 password: hash,
-                type: user.type,                
+                type: user.type,
             });
             saveFile();
         })
         .catch(err => {
             throw new Error('Invalid user password')
         });
-    
-    
 
-    
+
+
+
     return user_id;
 };
 
 
+
+
 // Just for test purposes
-// 
+//
 // This function just save the users in a file
 const saveFile = () => fs.writeFile(
     './users.txt',
      users.map((user)=>JSON.stringify(user)+'\n'),
      (err)=> {
-         if (err) 
+         if (err)
             console.log("Don't was possible write the data..." + String(err))
      }
 );

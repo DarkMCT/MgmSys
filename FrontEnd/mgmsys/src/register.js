@@ -1,7 +1,7 @@
 
 import React, { Component } from "react";
 
-/* 
+/*
 
   "id_usuario" serial,
   "fk_id_departamento" int REFERENCES departamento(id_departamento),
@@ -61,15 +61,13 @@ export class Register extends Component {
     };
 
     sendCredentials = () => {
-        const callback = (v) => {
-            return v == null;
-        };
-        if (Object.values(this.state.credentials).find(callback) === undefined) {
-            this.setState({ warning: "Sent." });
-        } else {
-            this.setState({ warning: "Alguns campos não foram preenchidos corretamente." });
-        }
+        fetch(this.props.backendAddr + "/departamento", {
 
+        }).then( res => {
+
+        }).catch( err => {
+
+        });
     }
 
     render = () => {

@@ -74,11 +74,10 @@ export class Login extends Component {
                 </div>
                 <label className="text-danger text-small">{ this.state.message }</label>
 
-                
                 <button type="button" className="btn btn-outline-secondary w-50" onClick={ () => this.props.onRegister() }>
                     Registrar
                 </button>
-                
+
                 <button type="button" className="btn btn-outline-primary w-50" onClick={this.authenticate}>
                     Login
                 </button>
