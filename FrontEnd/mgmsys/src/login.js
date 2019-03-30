@@ -7,7 +7,7 @@ export class Login extends Component {
         super(props);
         this.state = {
             siape: "",
-            password: "",
+            senha: "",
             message: "",
             logged: false,
         };
@@ -27,18 +27,23 @@ export class Login extends Component {
             body: JSON.stringify({
                 operation: 'login',
                 siape: this.state.siape,
-                password: this.state.password,
+                senha: this.state.senha,
             }),
         }).then((res) => {
-            if (res.status !== 200){
+            if (res.status !== 200) {
                 this.setState({
                     message: "Usuário não encontrado",
                     logged: false,
                 });
                 this.props.onFail();
-            } else {
-                this.props.onSuccess();
-                this.setState( { logged: true } );
+            } else if (res.status === 200) {
+                res.json()
+                    .then( ()=> {
+                        this.props.onSuccess();
+                    })
+                    .catch(err => {
+                        this.setState({ message: "Tipo de usuário não identificado." });
+                    });
             }
         }).catch((err) => {
             this.setState({
@@ -67,14 +72,14 @@ export class Login extends Component {
                     <input type="password" name="password" id="password" className="form-control"
                         onChange={event => {
                             this.setState({
-                                password: event.target.value
+                                senha: event.target.value
                             })
                         }}>
                     </input>
                 </div>
-                <label className="text-danger text-small">{ this.state.message }</label>
+                <label className="text-danger text-small">{this.state.message}</label>
 
-                <button type="button" className="btn btn-outline-secondary w-50" onClick={ () => this.props.onRegister() }>
+                <button type="button" className="btn btn-outline-secondary w-50" onClick={() => this.props.onRegister()}>
                     Registrar
                 </button>
 

@@ -3,8 +3,7 @@
 const table_field = {
     departamento: [ "sigla", "nome", "ativado"],
 
-    usuario: [ "fk_id_departamento", "nome", "siape", "email", "senha",
-               "status_autenticacao", "tipo", "ativado"],
+    usuario: [ "fk_id_departamento", "nome", "siape", "email", "senha", "tipo" ],
     aluno: [ "nome", "telefone", "email", "dt_nasc", "rg", "cpf", "endereco",
              "matricula", "curso", "semestre", "ativado"],
 
@@ -114,9 +113,6 @@ const valid_departamento = ( departament ) => {
 const valid_usuario = user => {
     if ( !__valid_keys(user, "usuario") ) return false;
     if ( user.senha < 7 ) return false;
-    if ( ["S", "N"].findIndex(d => d === user.status_autenticacao.toUpperCase()) === -1) return false;
-    if ( ["A", "G"].findIndex(d => d === user.tipo.toUpperCase()) === -1) return false;
-    if ( ["S", "N"].findIndex(d => d === user.ativado.toUpperCase()) === -1) return false;
 
     return __valid_insertation( user );
 };
@@ -171,24 +167,3 @@ module.exports = {
     valid_visitante,
 };
 
-// ===== test section
-
-
-console.log(valid_departamento({
-    sigla: "DAI",
-    nome: "Departamento da Computaçéo"
-}));
-
-
-const __user = {
-    fk_id_departamento: 10,
-    nome: "Matheus Cândido Teixeira",
-    siape: "ABCDE",
-    email: "matheuscandido2009@gmail.com",
-    senha: "abcde123",
-    tipo: "A",
-    status_autenticacao: "S",
-    ativado: "N",
-};
-
-console.log(valid_usuario(__user));

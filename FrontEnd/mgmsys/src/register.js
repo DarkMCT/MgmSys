@@ -20,12 +20,15 @@ export class Register extends Component {
         this.state = {
             departamentos: [],
             warning: null,
+
             credentials: {
+                operation: "register",
                 fk_id_departamento: null,
                 nome: null,
                 siape: null,
                 email: null,
                 senha: null,
+                tipo: null,
             }
         };
     }
@@ -35,7 +38,11 @@ export class Register extends Component {
     }
 
     fetchDepartaments = () => {
+        const header = new Headers();
+        header.append('Content-Type', 'application/json');
+        header.append('Accept', 'application/json');
         fetch(this.props.backendAddr + "/departamento", {
+            headers: header,
             mode: "cors",
             credentials: "include",
             method: "GET",
@@ -60,13 +67,31 @@ export class Register extends Component {
         );
     };
 
+    getUserTypes = () => {
+        // 0 -> agente and 1 -> manager
+        return (
+            ["Agente", "Gerente"].map( (tipo, i) => <option key={i} value={i}>{ tipo }</option>)
+        );
+    }
+
     sendCredentials = () => {
-        fetch(this.props.backendAddr + "/departamento", {
-
-        }).then( res => {
-
+        const header = new Headers();
+        header.append('Content-Type', 'application/json');
+        header.append('Accept', 'application/json');
+        fetch(this.props.backendAddr + "/auth", {
+            method: "POST",
+            credentials: "include",
+            mode: "cors",
+            headers: header,
+            body:  JSON.stringify(this.state.credentials),
+        })
+        .then( res => {
+            if (res.status === 200)
+                this.props.onBack();
+            else
+                this.setState({warning: "Dados inválidos"});
         }).catch( err => {
-
+            this.setState({warning: "Dados inválidos"});
         });
     }
 
@@ -133,14 +158,32 @@ export class Register extends Component {
                         name="senha"
                         id="senha"
                         className="form-control"
+                        ref={this.senha}
+                        onChange={
+                            e => {
+                                this.setState({
+                                    credentials: {
+                                        ...this.state.credentials, senha: e.target.value
+                                    }
+                                });
+                            }
+                        }></input>
+
+                </div>
+
+                <div className="form-group">
+                    <label htmlFor="tipo">Tipo Usuário:</label>
+                    <select className="custom-select"
                         onChange={
                             e => this.setState({
                                 credentials: {
-                                    ...this.state.credentials, senha: e.target.value
+                                    ...this.state.credentials, tipo: e.target.value
                                 }
                             })
                         }>
-                    </input>
+                        <option defaultValue>Selecione o tipo de usuário</option>
+                        {this.getUserTypes()}
+                    </select>
                 </div>
 
                 <div className="form-group">
@@ -162,6 +205,7 @@ export class Register extends Component {
                 <br />
                 <button className="btn btn-outline-secondary" onClick={() => this.props.onBack()}>Voltar</button>
                 <button className="btn btn-outline-primary" onClick={() => { console.log(this.state.credentials); this.sendCredentials() }}>Cadastrar</button>
+                <div className="container pt-5"></div>
             </div>
         );
     };

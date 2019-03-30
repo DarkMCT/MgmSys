@@ -2,6 +2,7 @@
 
 --  TEST DATA
 
+
 INSERT INTO departamento(sigla, nome) VALUES
 	('GAB'  , 'Gabinete da Direção Geral')                        ,
 	('DAP'  , 'Diretoria de Administração e Planejamento')        ,

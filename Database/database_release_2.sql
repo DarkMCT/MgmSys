@@ -16,7 +16,7 @@ CREATE TABLE "usuario" (
   "nome" varchar(120) NOT NULL,
   "siape" varchar(120) NOT NULL UNIQUE,
   "email" varchar(120) NOT NULL,
-  "senha" char(60) NOT NULL,
+  "senha" char(100) NOT NULL,
   "status_autenticacao" int DEFAULT 0,
   "tipo" int NOT NULL,
   "ativado" int DEFAULT 1,
