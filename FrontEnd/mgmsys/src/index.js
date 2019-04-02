@@ -16,6 +16,8 @@ class Main extends Component {
     }
 
     componentDidMount = () => {
+        this.setState({ app_state: "agent_dashboard"});
+        return;
         fetch(this.state.backend_addr + "/user_info", {
             method: "GET",
             credentials: "include",
