@@ -94,7 +94,7 @@ CREATE TABLE "visita_servidor" (
   "data" date,
   "frequencia" varchar(120),
   "duracao" int,
-  "pernoite" char(1),
+  "pernoite" boolean,
   "horario_inicio" time,
   "horario_fim" time,
   "status_de_aprovacao" int DEFAULT 0,
@@ -141,7 +141,7 @@ CREATE TABLE "veiculo_visitante" (
 --  status_de_aprovacao -> 0 indica aguardando, 1 indica aprovado e 2 indica negado
 -- ativado -> 1 indica ativado e 0 indica desativado
 CREATE TABLE "visita_visitante" (
-  "id_visita_servidor" serial,
+  "id_visita_visitante" serial,
   "fk_id_usuario" int REFERENCES usuario(id_usuario) NOT NULL,
   "fk_id_veiculo_visitante" int REFERENCES veiculo_visitante(id_veiculo_visitante) NOT NULL,
   "fk_id_visitante" int REFERENCES visitante(id_visitante) NOT NULL,
@@ -149,7 +149,7 @@ CREATE TABLE "visita_visitante" (
   "data" date,
   "frequencia" varchar(120),
   "duracao" int,
-  "pernoite" char(1),
+  "pernoite" boolean,
   "horario_inicio" time,
   "horario_fim" time,
   "status_de_aprovacao" int DEFAULT 0,

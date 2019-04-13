@@ -67,7 +67,8 @@ class Main extends Component {
             return (
             <AgentDashboard
                 userInfo={this.state.user_info}
-                onLogout={()=>this.setState({app_state: "login_screen"})}>
+                onLogout={()=>this.setState({app_state: "login_screen"})}
+                backendAddr={this.state.backend_addr}>
             </AgentDashboard>
             );
         }
@@ -76,7 +77,8 @@ class Main extends Component {
             return (
             <ManagerDashboard
                 userInfo={this.state.user_info}
-                onLogout={()=>this.setState({app_state: "login_screen"})}>
+                onLogout={()=>this.setState({app_state: "login_screen"})}
+                backendAddr={this.state.backend_addr}>
             </ManagerDashboard>
             );
         }

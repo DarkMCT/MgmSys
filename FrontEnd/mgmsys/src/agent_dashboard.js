@@ -26,13 +26,21 @@ export class AgentDashboard extends Component{
     body =  (current_action) => {
         switch ( current_action ){
             case "waiting":
-                return(<AgentWaitingRequest></AgentWaitingRequest>);
+                return(<AgentWaitingRequest
+                    backendAddr={this.props.backendAddr}
+                ></AgentWaitingRequest>);
             case "processed":
-                return(<AgentProcessedRequest></AgentProcessedRequest>);
+                return(<AgentProcessedRequest
+                    backendAddr={this.props.backendAddr}
+                ></AgentProcessedRequest>);
             case "register":
-                return(<AgentRegisterRequest></AgentRegisterRequest>);
+                return(<AgentRegisterRequest
+                    backendAddr={this.props.backendAddr}
+                ></AgentRegisterRequest>);
             default:
-                return(<AgentWaitingRequest></AgentWaitingRequest>);
+                return(<AgentWaitingRequest
+                    backendAddr={this.props.backendAddr}
+                ></AgentWaitingRequest>);
         }
     }
 

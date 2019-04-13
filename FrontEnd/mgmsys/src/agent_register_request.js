@@ -16,13 +16,21 @@ export class AgentRegisterRequest extends Component{
 
         switch (this.state.current_action){
             case "student":
-                return <AgentRegisterStudent></AgentRegisterStudent>;
+                return <AgentRegisterStudent
+                    backendAddr={this.props.backendAddr}
+                ></AgentRegisterStudent>;
             case "employee":
-                return <AgentRegisterEmployee></AgentRegisterEmployee>;
+                return <AgentRegisterEmployee
+                    backendAddr={this.props.backendAddr}
+                ></AgentRegisterEmployee>;
             case "visitor":
-                return <AgentRegisterVisitor></AgentRegisterVisitor>;
+                return <AgentRegisterVisitor
+                    backendAddr={this.props.backendAddr}
+                ></AgentRegisterVisitor>;
             default:
-                return <AgentRegisterStudent></AgentRegisterStudent>;
+                return <AgentRegisterStudent
+                    backendAddr={this.props.backendAddr}
+                ></AgentRegisterStudent>;
         }
 
 

@@ -9,6 +9,8 @@ const memoryStore = session.MemoryStore;
 const { auth_route, is_authenticated } = require("./auth/auth");
 const { departamento_route } = require("./endpoints/departamento");
 const { user_info_route } = require("./endpoints/user_info");
+const { visita_visitante_route } = require("./endpoints/visita_visitante");
+const { visita_aluno_route } = require("./endpoints/visita_aluno");
 
 
 app.use(cors({
@@ -34,7 +36,7 @@ app.use(session({
 
 app.use(departamento_route);
 
-app.use(auth_route);
+/* app.use(auth_route);
 
 // validate if the user is logged
 app.use((req, res, next) => {
@@ -42,9 +44,13 @@ app.use((req, res, next) => {
     next("route");
     else if ( !res.headersSent )
     res.sendStatus(403);
-});
+}); */
 
 app.use(user_info_route);
+
+app.use(visita_visitante_route);
+
+app.use(visita_aluno_route);
 
 
 app.listen(3001, ()=>{

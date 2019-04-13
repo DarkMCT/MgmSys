@@ -11,7 +11,7 @@ export class AgentRegisterActions extends Component{
     render = ()=>{
         return(
             <div
-                className="btn-group"
+                className="btn-group btn-group-sm"
                 role="group"
                 aria-label="agent actions"
             >
