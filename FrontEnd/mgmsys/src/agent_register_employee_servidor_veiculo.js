@@ -1,13 +1,5 @@
 import React, { Component } from "react";
 
-/*
-
-  "modelo" varchar(120),
-  "cor" varchar(120),
-  "placa" varchar(10) NOT NULL UNIQUE,
-
-*/
-
 export class AgentRegisterEmployeeServidorVeiculo extends Component{
     constructor(props){
         super(props);
@@ -15,6 +7,8 @@ export class AgentRegisterEmployeeServidorVeiculo extends Component{
             modelo: "",
             cor: "",
             placa: "",
+
+            readonly: true,
         };
 
         this.veiculo_modelo = React.createRef();
@@ -36,10 +30,36 @@ export class AgentRegisterEmployeeServidorVeiculo extends Component{
             cor: this.state.cor,
             placa: this.state.placa,
         }
-        // this.setState({...veiculo_visitante});
 
         this.props.onSave(veiculo);
     };
+
+    search = ()=>{
+        let placa = this.state.placa.replace(/(\.|-)/g, "");
+
+        if (placa.length === 7){
+            const header = new Headers();
+            header.set("content-type", "application/json");
+
+            fetch(this.props.backendAddr + "/visita_servidor/search", {
+                headers: header,
+                credentials: "include",
+                method: "POST",
+                mode: "cors",
+                body: JSON.stringify({placa: placa, what: "PLACA"}),
+            }).then( res =>{
+                return res.json();
+            }).then( data => {
+                this.setState({...data, readonly: true});
+            })
+            .catch( err => {
+                this.setState({readonly: false});
+            });
+
+        } else {
+            this.setState({readonly: false});
+        }
+    }
 
     render = () => {
         return (
@@ -52,8 +72,8 @@ export class AgentRegisterEmployeeServidorVeiculo extends Component{
                 <div className="form-group col-6">
                     <label htmlFor="veiculo_placa">Placa</label>
                     <input
-                        type="date" id="veiculo_placa" ref={ this.veiculo_placa } className="form-control" placeholder="Digite a placa do veículo..."
-                        value={this.state.placa} onChange={e=>this.setState({placa: e.target.value})}>
+                        type="text" id="veiculo_placa" ref={ this.veiculo_placa } className="form-control" placeholder="Digite a placa do veículo..."
+                        value={this.state.placa} onBlur={this.search} onChange={e=>this.setState({placa: e.target.value})}>
                     </input>
                     <small className="form-text text-muted">Ex: AAA0000, AAA-0000</small>
                 </div>
@@ -63,8 +83,8 @@ export class AgentRegisterEmployeeServidorVeiculo extends Component{
                 <div className="form-group col-6">
                     <label htmlFor="veiculo_cor">Cor</label>
                     <input
-                        type="time" id="veiculo_cor" ref={this.veiculo_cor} className="form-control" placeholder="Digite a cor do veículo..."
-                        value={this.state.cor} onChange={e=>this.setState({cor: e.target.value})}>
+                        type="text" id="veiculo_cor" ref={this.veiculo_cor} className="form-control" placeholder="Digite a cor do veículo..."
+                        value={this.state.cor} readOnly={this.state.readonly} onChange={e=>this.setState({cor: e.target.value})}>
                     </input>
                     <small className="form-text text-muted">Ex: Branco, Preto</small>
                 </div>
@@ -72,8 +92,8 @@ export class AgentRegisterEmployeeServidorVeiculo extends Component{
                 <div className="form-group col-6">
                     <label htmlFor="veiculo_modelo">Modelo</label>
                     <input
-                        type="time" id="veiculo_modelo" ref={this.veiculo_modelo} className="form-control" placeholder="Digite o modelo do veículo..."
-                        value={this.state.modelo} onChange={e=>this.setState({modelo: e.target.value})}>
+                        type="text" id="veiculo_modelo" ref={this.veiculo_modelo} className="form-control" placeholder="Digite o modelo do veículo..."
+                        value={this.state.modelo} readOnly={this.state.readonly} onChange={e=>this.setState({modelo: e.target.value})}>
                     </input>
                     <small className="form-text text-muted">Ex: Sedan, Hatch</small>
                 </div>
@@ -84,7 +104,7 @@ export class AgentRegisterEmployeeServidorVeiculo extends Component{
                     <button className="btn btn-secondary float-left" onClick={()=>{ this.save_data(); this.props.onBack(); }}>Voltar</button>
                 </div>
                 <div className="col-6">
-                    <button className="btn btn-success float-right" onClick={()=>{ this.save_data(); this.props.onNext(); }}>Finalizar</button>
+                    <button className="btn btn-success float-right" onClick={()=>{ this.save_data(); this.props.onNext(); }}>Avançar</button>
                 </div>
             </div>
 

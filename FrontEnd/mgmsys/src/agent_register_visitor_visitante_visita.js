@@ -18,20 +18,10 @@ export class AgentRegisterVisitorVisitanteVisita extends Component{
             data: "",
             frequencia: "",
             duracao: "",
-            pernoite: "",
+            pernoite: false,
             horario_inicio: "",
             horario_fim: "",
         };
-
-        this.a = "aaa";
-
-        this.objetivo = React.createRef();
-        this.data = React.createRef();
-        this.frequencia = React.createRef();
-        this.duracao = React.createRef();
-        this.pernoite = React.createRef();
-        this.horario_inicio = React.createRef();
-        this.horario_fim = React.createRef();
 
         this.initial_data = {};
     }
@@ -147,7 +137,7 @@ export class AgentRegisterVisitorVisitanteVisita extends Component{
                         <button className="btn btn-secondary float-left" onClick={()=>{ this.save_data(); this.props.onBack(); }}>Voltar</button>
                     </div>
                     <div className="col-6">
-                        <button className="btn btn-success float-right" onClick={()=>{ this.save_data(); this.props.onNext(); }}>Avançar</button>
+                        <button className="btn btn-success float-right" onClick={()=>{ this.save_data(); this.props.onNext(); }}>Finalizar</button>
                     </div>
                 </div>
 

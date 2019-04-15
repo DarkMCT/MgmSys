@@ -20,7 +20,7 @@ export class AgentRegisterEmployeeServidorVisita extends Component{
             data: "",
             frequencia: "",
             duracao: "",
-            pernoite: "",
+            pernoite: false,
             horario_inicio: "",
             horario_fim: "",
         };
@@ -39,7 +39,6 @@ export class AgentRegisterEmployeeServidorVisita extends Component{
         if (initial_data != null)
             this.setState({...initial_data});
 
-        console.log(initial_data);
     }
 
     save_data = () => {
@@ -142,7 +141,7 @@ export class AgentRegisterEmployeeServidorVisita extends Component{
                     <button className="btn btn-secondary float-left" onClick={()=>{ this.save_data(); this.props.onBack(); }}>Voltar</button>
                 </div>
                 <div className="col-6">
-                    <button className="btn btn-success float-right" onClick={()=>{ this.save_data(); this.props.onNext(); }}>Avançar</button>
+                    <button className="btn btn-success float-right" onClick={()=>{ this.save_data(); this.props.onNext(); }}>Finalizar</button>
                 </div>
             </div>
 

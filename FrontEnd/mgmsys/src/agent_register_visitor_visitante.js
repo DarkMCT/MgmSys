@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import { isNumber } from "util";
 
-//  TODO:
-//      follow this model
-//      fix warnings
+import {date_parse} from "./utility";
+
 
 export class AgentRegisterVisitorVisitante extends Component{
     constructor(props){
@@ -47,8 +46,6 @@ export class AgentRegisterVisitorVisitante extends Component{
         this.props.onSave(visitante);
     };
 
-    // TODO
-    //  get the server response
     search = ()=>{
         let rg = this.state.rg.replace(/(\.|-)/g, "");
         let cpf = this.state.cpf.replace(/(\.|-)/g, "");
@@ -70,7 +67,7 @@ export class AgentRegisterVisitorVisitante extends Component{
                 return res.json();
             }).then( data => {
                 if (Object.keys(data).length > 0)
-                    this.setState({...data, readonly: true});
+                    this.setState({...data, dt_nasc: date_parse(data.dt_nasc), readonly: true});
             })
             .catch( err => {
                 this.setState({readonly: false});

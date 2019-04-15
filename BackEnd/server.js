@@ -11,6 +11,7 @@ const { departamento_route } = require("./endpoints/departamento");
 const { user_info_route } = require("./endpoints/user_info");
 const { visita_visitante_route } = require("./endpoints/visita_visitante");
 const { visita_aluno_route } = require("./endpoints/visita_aluno");
+const { visita_servidor_route } = require("./endpoints/visita_servidor");
 
 
 app.use(cors({
@@ -51,6 +52,8 @@ app.use(user_info_route);
 app.use(visita_visitante_route);
 
 app.use(visita_aluno_route);
+
+app.use(visita_servidor_route);
 
 
 app.listen(3001, ()=>{

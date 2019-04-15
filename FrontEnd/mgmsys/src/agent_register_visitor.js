@@ -98,16 +98,6 @@ export class AgentRegisterVisitor extends Component {
                 </AgentRegisterVisitorVisitanteVeiculo>);
         case 3:
             return (
-                <AgentRegisterVisitorVisitanteVisita
-                    onSave={ data => this.setState({visita_visitante: data}) }
-                    onInitialValues={ () => this.state.visita_visitante }
-                    backendAddr={this.props.backendAddr}
-                    onBack={ this.dec_progress }
-                    onNext={ this.inc_progress }>
-                </AgentRegisterVisitorVisitanteVisita>
-            );
-        case 4:
-            return (
                 <AgentRegisterVisitorEmpresa
                     onSave={ data => this.setState({empresa: data}) }
                     onInitialValues={ () => this.state.empresa }
@@ -115,6 +105,17 @@ export class AgentRegisterVisitor extends Component {
                     onBack={ this.dec_progress }
                     onNext={ this.inc_progress }>
                 </AgentRegisterVisitorEmpresa>
+            );
+        case 4:
+
+            return (
+                <AgentRegisterVisitorVisitanteVisita
+                    onSave={ data => this.setState({visita_visitante: data}) }
+                    onInitialValues={ () => this.state.visita_visitante }
+                    backendAddr={this.props.backendAddr}
+                    onBack={ this.dec_progress }
+                    onNext={ this.inc_progress }>
+                </AgentRegisterVisitorVisitanteVisita>
             );
         case 5:
                 {this.send_to_server()}

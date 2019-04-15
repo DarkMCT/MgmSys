@@ -9,7 +9,7 @@ export class AgentRegisterVisitorEmpresa extends Component{
             cnpj: "",
             telefone: "",
 
-            readyonly: true,
+            readonly: true,
         };
 
         this.empresa_nome = React.createRef();
@@ -88,7 +88,7 @@ export class AgentRegisterVisitorEmpresa extends Component{
                     <div className="form-group col-6">
                         <label htmlFor="empresa_nome">Nome da Empresa</label>
                         <input type="text" id="empresa_nome" ref={this.empresa_nome} className="form-control" placeholder="Digite o nome da empresa..."
-                            value={this.state.nome} readOnly={this.state.readyonly} onChange={e=>this.setState({nome: e.target.value})}>
+                            value={this.state.nome} readOnly={this.state.readonly} onChange={e=>this.setState({nome: e.target.value})}>
                         </input>
                         <small className="form-text text-muted">Ex: Foo Bar SA</small>
                     </div>
@@ -96,7 +96,7 @@ export class AgentRegisterVisitorEmpresa extends Component{
                     <div className="form-group col-3">
                         <label htmlFor="cep">CEP</label>
                         <input type="text" id="cep" ref={this.empresa_cep} className="form-control" placeholder="Digite o CEP da empresa..."
-                            value={this.state.cep} readOnly={this.state.readyonly} onChange={e=>this.setState({cep: e.target.value})}>
+                            value={this.state.cep} readOnly={this.state.readonly} onChange={e=>this.setState({cep: e.target.value})}>
                         </input>
                         <small className="form-text text-muted">Ex: 78000-000</small>
                     </div>
@@ -104,7 +104,7 @@ export class AgentRegisterVisitorEmpresa extends Component{
                     <div className="form-group col-3">
                         <label htmlFor="telefone">Telefone</label>
                         <input type="text" id="telefone" ref={this.empresa_telefone} className="form-control" placeholder="Digite o telefone da empresa..."
-                            value={this.state.telefone} readOnly={this.state.readyonly} onChange={e=>this.setState({telefone: e.target.value})}>
+                            value={this.state.telefone} readOnly={this.state.readonly} onChange={e=>this.setState({telefone: e.target.value})}>
                         </input>
                         <small className="form-text text-muted">Ex: (00) 0000-0000</small>
                     </div>
@@ -115,7 +115,7 @@ export class AgentRegisterVisitorEmpresa extends Component{
                         <button className="btn btn-secondary float-left" onClick={()=>{ this.save_data(); this.props.onBack(); }}>Voltar</button>
                     </div>
                     <div className="col-6">
-                        <button className="btn btn-success float-right" onClick={()=>{ this.save_data(); this.props.onNext(); }}>Finalizar</button>
+                        <button className="btn btn-success float-right" onClick={()=>{ this.save_data(); this.props.onNext(); }}>Avançar</button>
                     </div>
                 </div>
 

@@ -9,65 +9,12 @@ const bodyParse = require("body-parser");
 
 // User imports
 const db_instance = require("../database/connection");
+const { insert_data, get_id, data_exists, remove_mark_signs, send_error, log_error } = require("./utility");
 
 // Constants definitions
 const MAX_TIMEOUT = 100;//ms
 const visita_visitante_route = express.Router();
 
-// ---- Utility functions ----
-
-const log_error = (route, when, err, suggestion) => {
-    console.error("-".repeat(10) + " ERROR OCURRED " + "-".repeat(10));
-    console.error("Route: ", route);
-    console.error("When: ", when);
-
-    if (sugestion != undefined)
-        console.error("Suggestion: ", suggestion);
-
-    console.error("-".repeat(35));
-}
-
-const send_error = (res, why)=>{
-    if (!res.headersSent)
-        res.status(400).send(why);
-};
-
-const remove_mark_signs = (str) => {
-    return str.replace(/\.|\-|\//g, "");
-}
-
-const data_exists = (table_name, column_name, data)=>{
-    const knex = db_instance();
-
-    return new Promise((resolve, reject)=>{
-        knex(table_name).count(`id_${table_name}`)
-        .where(knex.raw(`${column_name} = ?`, [data]))
-        .timeout(MAX_TIMEOUT)
-        .then(res => {
-            if (res.length === 1){
-                resolve(+res[0].count === 1);
-            }
-        })
-        .catch( err =>{
-            reject(err);
-        });
-    });
-}
-
-const insert_data_if_not_exist = (table_name, column_name, data)=>{
-    const knex = db_instance();
-
-    return data_exists(table_name, column_name, data[column_name])
-        .then( exist => {
-            if (!exist)
-                return knex(table_name).insert(data).returning(`id_${table_name}`);
-            else
-                return knex(table_name).select(`id_${table_name}`).where(knex.raw(`${column_name} = ?`,[data[column_name]]));
-        })
-        .catch( err => {
-           throw err;
-        })
-}
 
 // ------------------------------------------------------------------------
 
@@ -97,59 +44,81 @@ visita_visitante_route.route("/visita_visitante")
             send_error(res, "Não foi possível buscar as visitas de visitantes cadastrados.");
         });
 })
-.post((req, res, next)=>{
+.post( async (req, res, next)=>{
     // extract data from body
     const data = req.body;
+    console.log(data);
+
     // split between visitante, veiculo_visitante, empresa, visita_visitante
     let {visitante, veiculo_visitante, empresa, visita_visitante} = data;
+
+    // foreign keys
+    let fk_id_visitante = null;
+    let fk_id_empresa = null;
+    let fk_id_veiculo_visitante = null;
 
     empresa.cnpj = remove_mark_signs(empresa.cnpj);
     veiculo_visitante.placa = remove_mark_signs(veiculo_visitante.placa);
     visitante.rg = remove_mark_signs(visitante.rg);
     visitante.cpf = remove_mark_signs(visitante.cpf);
 
-    // get a connection of the database
-    const knex = db_instance();
+    // add vehicle
+    try {
+        if (veiculo_visitante != null) {
+            if (await data_exists("veiculo_visitante", "placa", veiculo_visitante)) {
+                fk_id_veiculo_visitante = await get_id("veiculo_visitante", "placa", veiculo_visitante);
+            } else {
+                fk_id_veiculo_visitante = await insert_data("veiculo_visitante", veiculo_visitante);
+            }
+        }
+    } catch(err) {
+        log_error("/visita_visitante", "Trying add vehicle", err, req, "Verify the body of request.");
+        send_error(res, "Não foi possível cadastrar este veículo. Verifique os dados, por favor.");
+        return;
+    }
 
-    // TODO: refactor this code. The vehicle is not ever possible
+    // add company
+    try {
+        if (await data_exists("empresa", "cnpj", empresa)){
+            fk_id_empresa = await get_id("empresa", "cnpj", empresa);
+        } else {
+            fk_id_empresa = await insert_data("empresa", empresa);
+        }
+    } catch(err) {
+        log_error("/visita_visitante", "Trying add company", err, req, "Verify the body of request.");
+        send_error(res, "Não foi possível cadastrar esta empresa. Verifique os dados, por favor.");
+        return;
+    }
 
-    // insert the company first to get id_company
-    insert_data_if_not_exist("empresa", "cnpj", empresa).then( id => {
-        const fk_id_empresa = id[0].id_empresa;
+    // add visitant
+    try{
+        if (fk_id_empresa == null) throw new Error("Company is null");
 
-        // insert the vehicle data to get id_vehicle
-        insert_data_if_not_exist("veiculo_visitante", "placa", veiculo_visitante).then( id => {
-            const fk_id_veiculo_visitante = id[0].id_veiculo_visitante;
+        visitante = {...visitante, fk_id_empresa};
 
-            // remove the fk_id_empresa from visitante object
-            visitante = {...visitante, fk_id_empresa};
+        if (await data_exists("visitante", "rg", visitante)){
+            fk_id_visitante = await get_id("visitante", "rg", visitante);
+        } else {
+            fk_id_visitante = await insert_data("visitante", visitante);
+        }
+    } catch(err) {
+        log_error("/visita_visitante", "Trying add visitant", err, req, "Verify the body of request.");
+        send_error(res, "Não foi possível cadastrar este visitante. Verifique os dados, por favor.");
+        return;
+    }
 
-            // insert the visitant to get the id_visitant
-            insert_data_if_not_exist("visitante", "rg", visitante).then( id => {
-                const fk_id_visitante = id[0].id_visitante;
+    let fk_id_usuario = 5;
 
-                // the fk_id_usuario must be obtained from req (he is stored in a session)
-                const fk_id_usuario = 5;// req.session.user_id <-- JUST TEST
+    visita_visitante = {...visita_visitante, fk_id_usuario, fk_id_visitante, fk_id_veiculo_visitante};
 
-                visita_visitante = {...visita_visitante, fk_id_usuario, fk_id_veiculo_visitante, fk_id_visitante};
-
-                knex("visita_visitante").insert(visita_visitante).then(e => {
-                    res.status(200).send("Success to register this visitante");
-                }).catch(err=>{
-                    log_error("/visita_visitante method=POST", "Adding visita_visitante.", err);
-                    send_error(res, "Não foi possível cadastrar os dados desta visita. Verifique se os dados estão corretos.");
-                })
-            }).catch(err=>{
-                log_error("/visita_visitante method=POST", "Adding visitante.", err);
-                send_error(res, "Não foi possível cadastrar os dados deste visitante. Verifique se os dados estão corretos.");
-            })
-        }).catch(err=>{
-            log_error("/visita_visitante method=POST", "Adding veiculo_visitante.", err);
-            send_error(res, "Não foi possível cadastrar os dados deste veículo. Verifique se os dados estão corretos.");
-        })
-    }).catch(err=>{
-        log_error("/visita_visitante method=POST", "Adding empresa.", err);
-        send_error(res, "Não foi possível cadastrar os dados desta empresa. Verifique se os dados estão corretos.");
+    // add visit
+    insert_data("visita_visitante", visita_visitante)
+    .then( id => {
+        res.status(200).send("Success to register this visitante");
+    })
+    .catch( err => {
+        log_error("/visita_visitante", "Trying add visit", err, req, "Verify the body of request.");
+        send_error(res, "Não foi possível cadastrar esta visita. Verifique os dados, por favor.");
     });
 });
 
@@ -249,7 +218,7 @@ visita_visitante_route.route("/visita_visitante/search")
     let { placa } = req.body;
 
     if (placa == null) {
-        failure_message();
+        send_error(res, "Placa não específicada.");
         return;
     }
 
@@ -267,11 +236,11 @@ visita_visitante_route.route("/visita_visitante/search")
             res.status(200).json(_result);
         }
         else {
-            failure_message();
+            send_error(res, "Não possível verificar a existências desses dados.");
         }
     })
     .catch( err => {
-        log_error("/visita_visitante/search method=POST", "Searching by already added RG or CPF.", err);
+        log_error("/visita_visitante/search method=POST", "Searching by already added PLACA", err);
         send_error(res, "Não possível verificar a existências desses dados.");
     })
 })

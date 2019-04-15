@@ -15,8 +15,12 @@ export class AgentRegisterStudent extends Component {
             communication_status: ""
         };
 
-    }
+        this.reset_state = {
+            aluno: null,
 
+            visita_aluno: null,
+        };
+    }
 
     send_to_server = () => {
         const {menu_progress, communication_status, ...data} = this.state;
@@ -69,6 +73,7 @@ export class AgentRegisterStudent extends Component {
                 <AgentRegisterStudentAluno
                     onSave={ data => this.setState({aluno: data}) }
                     onInitialValues={ () => this.state.aluno }
+                    backendAddr={this.props.backendAddr}
                     onNext={ this.inc_progress }>
                 </AgentRegisterStudentAluno>);
         case 2:
@@ -76,6 +81,7 @@ export class AgentRegisterStudent extends Component {
                 <AgentRegisterStudentAlunoVisita
                     onSave={ data => this.setState({visita_aluno: data}) }
                     onInitialValues={ () => this.state.visita_aluno }
+                    backendAddr={this.props.backendAddr}
                     onBack={ this.dec_progress }
                     onNext={ this.inc_progress }>
                 </AgentRegisterStudentAlunoVisita>);
