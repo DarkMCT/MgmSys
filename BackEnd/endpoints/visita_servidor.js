@@ -95,7 +95,7 @@ visita_servidor_route.route("/visita_servidor")
 
     insert_data("visita_servidor", visita_servidor)
     .then(id => {
-        res.status(200).send("Success to register this visitante");
+        res.status(200).send("Success to register this visit");
     })
     .catch(err=>{
         log_error("/visita_servidor method=POST", "Adding visit.", err, req);

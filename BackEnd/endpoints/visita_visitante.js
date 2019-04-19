@@ -114,7 +114,7 @@ visita_visitante_route.route("/visita_visitante")
     // add visit
     insert_data("visita_visitante", visita_visitante)
     .then( id => {
-        res.status(200).send("Success to register this visitante");
+        res.status(200).send("Success to register this visit");
     })
     .catch( err => {
         log_error("/visita_visitante", "Trying add visit", err, req, "Verify the body of request.");

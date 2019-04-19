@@ -28,8 +28,11 @@ export class AgentRegisterVisitorVisitanteVeiculo extends Component{
             }).then( res =>{
                 return res.json();
             }).then( data => {
-                if (Object.keys(data).length > 0)
+                if (Object.keys(data).length > 0) {
                     this.setState({...data, readonly: true});
+                } else {
+                    this.setState({ readonly: false });
+                }
             })
             .catch( err => {
                 this.setState({ readonly: false});

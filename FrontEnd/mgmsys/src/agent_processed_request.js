@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { make_request } from "./request";
 
 // TODO
 //      Criar as páginas de edição
@@ -13,18 +14,28 @@ export class AgentProcessedRequest extends Component {
         this.state = {
             current_action: "list",
             request_id: null,
+            data: null,
         };
+    }
 
-        this.data = {
-            1: { id: 1, nome: "Matheus", tipo_requisicao: "SERVIDOR", data: "22/11/2019" },
-            2: { id: 2, nome: "Matheus", tipo_requisicao: "VISITANTE", data: "22/11/2019" },
-            3: { id: 3, nome: "Matheus", tipo_requisicao: "SERVIDOR", data: "22/11/2019" },
-            4: { id: 4, nome: "Matheus", tipo_requisicao: "VISITANTE", data: "22/11/2019" },
-            5: { id: 5, nome: "Matheus", tipo_requisicao: "ALUNO", data: "22/11/2019" },
-            6: { id: 6, nome: "Matheus", tipo_requisicao: "SERVIDOR", data: "22/11/2019" },
-            7: { id: 7, nome: "Matheus", tipo_requisicao: "ALUNO", data: "22/11/2019" },
-            8: { id: 8, nome: "Matheus", tipo_requisicao: "ALUNO", data: "22/11/2019" },
-        };
+    search = ()=>{
+        make_request("/visita", "POST", JSON.stringify({
+            what: "STATUS_PROCESSADO",
+        }))
+        .then(res=>res.json())
+        .then(result => {
+            let data = {};
+            result.map( (row, ind) => data[ind] = row);
+
+            this.setState({data: data});
+        })
+        .catch(err => {
+            console.log("error");
+        });
+    }
+
+    componentDidMount = ()=>{
+        this.search();
     }
 
     __onPDF = (request_id) => {
@@ -39,8 +50,10 @@ export class AgentProcessedRequest extends Component {
     }
 
     format_data = () => {
+        if (this.state.data == null)
+            return;
 
-        const table = Object.values(this.data).map((row, i) => {
+        const table = Object.values(this.state.data).map((row, i) => {
             return (
                 <tr key={i}>
                     <td>{i + 1}</td>

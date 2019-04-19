@@ -56,10 +56,14 @@ export class AgentRegisterEmployeeServidor extends Component{
             }).then( res =>{
                 return res.json();
             }).then( data => {
-                if ("dt_nasc" in data)
-                    data.dt_nasc = date_parse(data.dt_nasc)
+                if (Object.keys(data).length > 0) {
+                    if ("dt_nasc" in data)
+                        data.dt_nasc = date_parse(data.dt_nasc)
 
-                this.setState({...data, readonly: true});
+                    this.setState({...data, readonly: true});
+                } else {
+                    this.setState({ readonly: false });
+                }
             })
             .catch( err => {
                 this.setState({readonly: false});

@@ -61,15 +61,14 @@ const insert_data = (table_name, data)=>{
             else
                 reject("Don't was possible to add this data.");
         })
-        .catch(err=>{
-            throw err;
+        .catch((err) => {
+            reject("Don't was possible to add this data.");
         })
-    })
+    });
 }
 
 const get_id =  (table_name, column_name, data)=>{
     const knex = db_instance();
-
     return new Promise((resolve, reject)=> {
         knex(table_name).select(`id_${table_name}`)
         .where(knex.raw(`${column_name} = ?`,[data[column_name]]))
@@ -81,7 +80,7 @@ const get_id =  (table_name, column_name, data)=>{
                 reject("Don't was possible to get this data.");
         })
         .catch(err=>{
-            reject("Don't was possible to get this data.");
+           throw err;
         });
     });
 }

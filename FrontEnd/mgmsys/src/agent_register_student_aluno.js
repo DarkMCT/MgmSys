@@ -68,6 +68,8 @@ export class AgentRegisterStudentAluno extends Component{
                 if (Object.keys(data).length > 0){
                     const nw_data = {...data, dt_nasc: date_parse(data["dt_nasc"])};
                     this.setState({...nw_data, readonly: true});
+                } else {
+                    this.setState({readonly: false});
                 }
             })
             .catch( err => {

@@ -9,76 +9,11 @@ const bodyParse = require("body-parser");
 
 // User imports
 const db_instance = require("../database/connection");
+const { insert_data, get_id, data_exists, remove_mark_signs, send_error, log_error } = require("./utility");
 
 // Constants definitions
 const MAX_TIMEOUT = 100;//ms
 const visita_aluno_route = express.Router();
-
-// ---- Utility functions ----
-
-const log_error = (route, when, err, req, suggestion) => {
-    console.error("-".repeat(10) + " ERROR OCURRED " + "-".repeat(10));
-    console.error("Route: ", route);
-    console.error("When: ", when);
-
-    if (suggestion != undefined)
-        console.error("Suggestion: ", suggestion);
-
-    if (req != undefined)
-        console.error("Request: ", req);
-
-    console.error("Error: ", err);
-
-    console.error("-".repeat(35));
-}
-
-const send_error = (res, why)=>{
-    if (!res.headersSent)
-        res.status(400).send(why);
-};
-
-const remove_mark_signs = (str) => {
-    return str.replace(/\.|\-|\//g, "");
-}
-
-const data_exists = (table_name, column_name, data)=>{
-    const knex = db_instance();
-
-    return new Promise((resolve, reject)=>{
-        knex(table_name).count(`id_${table_name}`)
-        .where(knex.raw(`${column_name} = ?`, [data]))
-        .timeout(MAX_TIMEOUT)
-        .then(res => {
-            if (res.length === 1){
-                resolve(+res[0].count === 1);
-            } else {
-                resolve(false);
-            }
-        })
-        .catch( err =>{
-            reject(false);
-        });
-    });
-}
-
-const insert_data_if_not_exist = (table_name, column_name, data)=>{
-    const knex = db_instance();
-
-    return data_exists(table_name, column_name, data[column_name])
-        .then( exist => {
-            if (!exist)
-                return knex(table_name).insert(data)
-                    .returning(`id_${table_name}`);
-            else
-                return knex(table_name).select(`id_${table_name}`)
-                    .where(knex.raw(`${column_name} = ?`,[data[column_name]]));
-        })
-        .catch( err => {
-           throw err;
-        })
-}
-
-// ------------------------------------------------------------------------
 
 // Route name: /visita_aluno
 //
@@ -106,39 +41,40 @@ visita_aluno_route.route("/visita_aluno")
                 send_error(res, "Não foi possível listar todas as visitas de alunos.");
             });
     })
-    .post((req, res, next) => {
+    .post(async (req, res, next) => {
         // extract data from body
         const data = req.body;
 
         // split between student and visit student
         let { aluno, visita_aluno } = data;
 
-        // get a connection of the database
-        const knex = db_instance();
+        // Add student
+        let fk_id_aluno = null;
+        try {
+            if (await data_exists("aluno", "matricula", aluno)){
+                fk_id_aluno = await get_id("aluno", "matricula", aluno);
+            } else {
+                fk_id_aluno = await insert_data("aluno", aluno);
+            }
+        } catch(err) {
+            log_error("/visita_aluno", "Trying add student", err, req, "Verify the body of request.");
+            send_error(res, "Não foi possível cadastrar este aluno. Verifique os dados, por favor.");
+        };
 
-        // insert the student first, because we need of her id
-        insert_data_if_not_exist("aluno", "matricula", aluno).then(id => {
-            const fk_id_aluno = id[0].id_aluno;
+        const fk_id_usuario = 5; // req.session.user_id
 
-            // the fk_id_usuario must be obtained from req (he is stored in a session)
-            const fk_id_usuario = 5;// req.session.user_id
+        // Add visit
+        visita_aluno = {...visita_aluno, fk_id_usuario, fk_id_aluno};
 
-            visita_aluno = { ...visita_aluno, fk_id_usuario, fk_id_aluno };
-
-            knex("visita_aluno").insert(visita_aluno).then(e => {
-                res.status(200).send("Success to register this visit");
-            }).catch(err => {
-                log_error("/visita_aluno method=POST", "Adding visita_aluno", err, req,
-                    "Verify if all data is correct or if there is null values");
-                send_error(res, "Não foi possível adicionar está visita. Verifique se os dados estão corretos.");
-            });
-        }).catch(err => {
-            log_error("/visita_aluno method=POST", "Adding aluno", err, req,
-                "Verify if all data is correct or if there is null values");
-
-            send_error(res, "Não foi possível adicionar este aluno. Verifique se os dados estão corretos.");
+        insert_data("visita_aluno", visita_aluno)
+        .then( id => {
+            res.status(200).send("Success to register this visit");
+        })
+        .catch(err=>{
+            log_error("/visita_aluno", "Trying add visit", err, req, "Verify the body of request.");
+            send_error(res, "Não foi possível cadastrar esta visita. Verifique os dados, por favor.");
         });
-    });
+});
 
 // Route name: /visita_visitante/:id
 //
@@ -194,9 +130,13 @@ visita_aluno_route.route("/visita_aluno/search")
 
         stmt.timeout(MAX_TIMEOUT)
             .then(result => {
-                const { id_aluno, ativado, ..._result } = result[0];
+                if (result.length === 1) {
+                    const { id_aluno, ativado, ..._result } = result[0];
+                    res.status(200).json(_result);
+                }
+                else
+                    res.status(200).json({});
 
-                res.status(200).json(_result);
             })
             .catch(err => {
                 log_error("/visita_aluno/search method=POST", "Searching for already added matricula", err, req,
