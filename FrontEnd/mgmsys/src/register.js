@@ -1,19 +1,6 @@
 
 import React, { Component } from "react";
 
-/*
-
-  "id_usuario" serial,
-  "fk_id_departamento" int REFERENCES departamento(id_departamento),
-  "nome" varchar(120),
-  "SIAPE" varchar(120),
-  "email" varchar(120),
-  "senha" char(60),
-  "status_autenticacao" char(1),
-  "tipo" char(1),
-  "ativado" char(1),
-*/
-
 export class Register extends Component {
     constructor(props) {
         super(props);

@@ -56,8 +56,10 @@ visita_servidor_route.route("/visita_servidor")
     servidor.rg = remove_mark_signs(servidor.rg);
     veiculo_servidor.placa = remove_mark_signs(veiculo_servidor.placa);
 
+    console.log("I'm here");
+
+    let fk_id_veiculo_servidor = null;
     try {
-        let fk_id_veiculo_servidor = null;
         if (veiculo_servidor != null){
             if (await data_exists("veiculo_servidor", "placa", veiculo_servidor) === true){
                 fk_id_veiculo_servidor = await get_id("veiculo_servidor", "placa", veiculo_servidor);
@@ -71,8 +73,8 @@ visita_servidor_route.route("/visita_servidor")
         return;
     }
 
+    let fk_id_servidor = null;
     try {
-        let fk_id_servidor = null;
         if (servidor == null) {
             send_error(res, "Não foi possível cadastrar os dados desta visita. Verifique se os dados estão corretos.");
             return;
@@ -89,7 +91,7 @@ visita_servidor_route.route("/visita_servidor")
         return;
     }
 
-    const fk_id_usuario = 5; //req.session.user_id;
+    const fk_id_usuario = req.session.user_info.id_usuario; //req.session.user_id;
 
     visita_servidor = {...visita_servidor, fk_id_usuario, fk_id_veiculo_servidor, fk_id_servidor};
 

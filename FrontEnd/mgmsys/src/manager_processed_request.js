@@ -8,7 +8,7 @@ import { make_request } from "./request";
 // OBS
 //      Os dados devem ser retornados do DB com o id do evento
 
-export class AgentProcessedRequest extends Component {
+export class ManagerProcessedRequest extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -71,7 +71,7 @@ export class AgentProcessedRequest extends Component {
 
     list = () => {
         return (
-            <div className="row justify-content-center">
+            <div className="row justify-content-center pt-5">
                 <table className="table table-hover">
                     <thead>
                         <tr>

@@ -1,6 +1,10 @@
-import React, { Component } from "react";
+import React, { Component } from "react"        ;
 
-import { make_request } from "./request";
+import { RequestEdit }   from "./request_edit"  ;
+import { RequestRemove } from "./request_remove";
+import { RequestDetail } from "./request_detail";
+
+import { make_request }  from "./request"       ;
 
 export class AgentWaitingRequest extends Component {
     constructor(props) {
@@ -12,10 +16,15 @@ export class AgentWaitingRequest extends Component {
         };
     }
 
+    componentDidMount = ()=>{
+        this.search();
+    }
+
     search = ()=>{
+        this.setState({data: null});
+
         make_request("/visita", "POST", JSON.stringify({
             what: "STATUS_AGUARDANDO",
-
         }))
         .then(res=>res.json())
         .then(result => {
@@ -29,30 +38,20 @@ export class AgentWaitingRequest extends Component {
         });
     }
 
-    componentDidMount = ()=>{
-        this.search();
+    __onRemove = (row) => {
+        this.setState({current_action: "remove", selected_row: row});
     }
 
-    __onRemove = (request_id) => {
-        this.setState({current_action: "remove"});
-        console.log("Remove:");
-        console.log(this.state.data[request_id]);
+    __onEdit = (row) => {
+        this.setState({current_action: "edit", selected_row: row});
     }
 
-    __onEdit = (request_id) => {
-        this.setState({current_action: "edit"});
-        console.log("Edit:");
-        console.log(this.state.data[request_id]);
-    }
-
-    __onDetail = (request_id) => {
-        this.setState({current_action: "detail"});
-        console.log("Detail:");
-        console.log(this.state.data[request_id]);
+    __onDetail = (row) => {
+        this.setState({current_action: "detail", selected_row: row});
     }
 
     format_data = () => {
-        console.log("Here");
+        // console.log("Here");
         if (this.state.data == null)
             return;
 
@@ -63,9 +62,9 @@ export class AgentWaitingRequest extends Component {
                 <td>{row.tipo_requisicao}</td>
                 <td>{row.nome}</td>
                 <td>{row.data}</td>
-                <td><button className="btn btn-warning" onClick={()=>{this.__onEdit(row.id)}}>Editar</button><span className="pr-1"></span>
-                    <button className="btn btn-danger"  onClick={()=>{this.__onRemove(row.id)}}>Remover</button><span className="pr-1"></span>
-                    <button className="btn btn-primary" onClick={()=>{this.__onDetail(row.id)}}>Detalhes</button></td>
+                <td><button className="btn btn-warning" onClick={()=>{this.__onEdit(row)}}>Editar</button><span className="pr-1"></span>
+                    <button className="btn btn-danger"  onClick={()=>{this.__onRemove(row)}}>Remover</button><span className="pr-1"></span>
+                    <button className="btn btn-primary" onClick={()=>{this.__onDetail(row)}}>Detalhes</button></td>
             </tr>
         )});
 
@@ -94,15 +93,25 @@ export class AgentWaitingRequest extends Component {
     }
 
     action_handler = () => {
+        const backAction = ()=> { this.setState({current_action: "list"}); this.search() };
         switch (this.state.current_action){
             case "list":
                 return this.list();
             case "edit":
-                return <div>Editing</div>;
+                return  <RequestEdit
+                            backAction={backAction}
+                            data={this.state.selected_row}>
+                        </RequestEdit>;
             case "remove":
-                return <div>Remove</div>;
+                return  <RequestRemove
+                            backAction={backAction}
+                            data={this.state.selected_row}>
+                        </RequestRemove>;
             case "detail":
-                return <div>Detail</div>;
+                return  <RequestDetail
+                            backAction={backAction}
+                            data={this.state.selected_row}>
+                        </RequestDetail>;
             default:
                 return <div>Error</div>
         }

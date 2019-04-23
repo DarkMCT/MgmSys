@@ -1,14 +1,8 @@
 import React, { Component } from "react";
+
 import { make_request } from "./request";
 
-// TODO
-//      Criar as páginas de edição
-//                          remoção
-//                          detalhes
-// OBS
-//      Os dados devem ser retornados do DB com o id do evento
-
-export class AgentProcessedRequest extends Component {
+export class ManagerWaitingRequest extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -20,7 +14,8 @@ export class AgentProcessedRequest extends Component {
 
     search = ()=>{
         make_request("/visita", "POST", JSON.stringify({
-            what: "STATUS_PROCESSADO",
+            what: "STATUS_AGUARDANDO",
+
         }))
         .then(res=>res.json())
         .then(result => {
@@ -38,33 +33,42 @@ export class AgentProcessedRequest extends Component {
         this.search();
     }
 
-    __onPDF = (request_id) => {
-        console.log("PDF");
-        console.log(this.data[request_id]);
+    __onReject = (request_id) => {
+        this.setState({current_action: "remove"});
+        console.log("Remove:");
+        console.log(this.state.data[request_id]);
     }
 
-    __onDetail = (request_id) => {
-        this.setState({current_action: "edit"})
-        console.log("Detail");
-        console.log(this.data[request_id]);
+    __onApprove = (request_id) => {
+        this.setState({current_action: "detail"});
+        console.log("Detail:");
+        console.log(this.state.data[request_id]);
+    }
+
+    __onDatail = (request_id) => {
+        this.setState({current_action: "detail"});
+        console.log("Detail:");
+        console.log(this.state.data[request_id]);
     }
 
     format_data = () => {
+        // console.log("Here");
         if (this.state.data == null)
             return;
 
         const table = Object.values(this.state.data).map((row, i) => {
             return (
-                <tr key={i}>
-                    <td>{i + 1}</td>
-                    <td>{row.tipo_requisicao}</td>
-                    <td>{row.nome}</td>
-                    <td>{row.data}</td>
-                    <td><button className="btn btn-outline-primary" onClick={() => { this.__onPDF(row.id) }}>Gerar PDF</button><span className="pr-1"></span>
-                        <button className="btn btn-primary" onClick={() => { this.__onDetail(row.id) }}>Detalhes</button><span className="pr-1"></span></td>
-                </tr>
-            )
-        });
+            <tr key={i}>
+                <td>{i + 1}</td>
+                <td>{row.tipo_requisicao}</td>
+                <td>{row.nome}</td>
+                <td>{row.data}</td>
+                <td>
+                    <button className="btn btn-info"    onClick={()=>{this.__onDatail(row.id)}}>Detalhes</button><span className="pr-1"></span>
+                    <button className="btn btn-danger"  onClick={()=>{this.__onReject(row.id)}}>Rejeitar</button><span className="pr-1"></span>
+                    <button className="btn btn-success" onClick={()=>{this.__onApprove(row.id)}}>Aprovar</button></td>
+            </tr>
+        )});
 
         return table;
     }
@@ -95,7 +99,11 @@ export class AgentProcessedRequest extends Component {
             case "list":
                 return this.list();
             case "edit":
-                return <div>Edit</div>;
+                return <div>Editing</div>;
+            case "remove":
+                return <div>Remove</div>;
+            case "detail":
+                return <div>Detail</div>;
             default:
                 return <div>Error</div>
         }
@@ -106,7 +114,7 @@ export class AgentProcessedRequest extends Component {
             <div className="container">
             <div className="pb-5"></div>
                 { this.action_handler() }
-                <div className="footer"></div>
+            <div className="footer"></div>
             </div>
         );
     }

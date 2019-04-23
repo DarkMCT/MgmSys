@@ -7,15 +7,37 @@
 import React, { Component } from  "react";
 import { DashboardNavbar } from "./dashboard_navbar";
 
+
 // ---- user imports
+import { ManagerActions } from "./manager_actions";
+import { ManagerWaitingRequest } from "./manager_waiting_request";
+import { ManagerProcessedRequest } from "./manager_processed_request";
 
 
 export class ManagerDashboard extends Component{
     constructor(props){
         super(props);
         this.state = {
-
+            user_info: this.props.userInfo,
+            current_action: "waiting",
         };
+    }
+
+    body =  (current_action) => {
+        switch ( current_action ){
+            case "waiting":
+                return(<ManagerWaitingRequest
+                    backendAddr={this.props.backendAddr}
+                ></ManagerWaitingRequest>);
+            case "processed":
+                return(<ManagerProcessedRequest
+                    backendAddr={this.props.backendAddr}
+                ></ManagerProcessedRequest>);
+            default:
+                return(<ManagerWaitingRequest
+                    backendAddr={this.props.backendAddr}
+                ></ManagerWaitingRequest>);
+        }
     }
 
     render = () => {
@@ -24,6 +46,18 @@ export class ManagerDashboard extends Component{
                 <DashboardNavbar
                     onLogout={this.props.onLogout}>
                 </DashboardNavbar>
+
+                <div className="container pt-3 pb-3">
+                    <div className="row justify-content-md-center">
+                        <ManagerActions
+                            waiting={()=>this.setState({current_action: "waiting"})}
+                            processed={()=>this.setState({current_action: "processed"})}
+                        ></ManagerActions>
+                    </div>
+                </div>
+                <div className="container">
+                    { this.body(this.state.current_action) }
+                </div>
             </div>
         );
 

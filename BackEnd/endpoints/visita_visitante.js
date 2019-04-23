@@ -107,7 +107,7 @@ visita_visitante_route.route("/visita_visitante")
         return;
     }
 
-    let fk_id_usuario = 5;
+    let fk_id_usuario = req.session.user_info.id_usuario;
 
     visita_visitante = {...visita_visitante, fk_id_usuario, fk_id_visitante, fk_id_veiculo_visitante};
 

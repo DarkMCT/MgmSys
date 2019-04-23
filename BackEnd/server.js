@@ -38,15 +38,21 @@ app.use(session({
 
 app.use(departamento_route);
 
-/* app.use(auth_route);
+app.use(auth_route);
 
 // validate if the user is logged
 app.use((req, res, next) => {
+
     if ( is_authenticated(req) )
-    next("route");
+        next("route");
     else if ( !res.headersSent )
-    res.sendStatus(403);
-}); */
+        res.sendStatus(403);
+});
+
+app.use((req, res, next)=>{
+    console.log(req.session);
+    next("route");
+});
 
 app.use(user_info_route);
 

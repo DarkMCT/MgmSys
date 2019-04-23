@@ -61,7 +61,7 @@ visita_aluno_route.route("/visita_aluno")
             send_error(res, "Não foi possível cadastrar este aluno. Verifique os dados, por favor.");
         };
 
-        const fk_id_usuario = 5; // req.session.user_id
+        const fk_id_usuario = req.session.user_info.id_usuario; // req.session.user_id
 
         // Add visit
         visita_aluno = {...visita_aluno, fk_id_usuario, fk_id_aluno};
