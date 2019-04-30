@@ -8,6 +8,7 @@ export class AgentRegisterVisitorVisitanteVeiculo extends Component{
             cor: "",
             placa: "",
 
+            visita_com_veiculo: false,
             readonly: true,
         };
     }
@@ -45,12 +46,16 @@ export class AgentRegisterVisitorVisitanteVeiculo extends Component{
 
     componentDidMount = () => {
         const initial_data = this.props.onInitialValues();
-        if (initial_data != null){
-            this.setState({...initial_data});
-        }
-        this.initial_data = initial_data;
 
-        console.log(initial_data);
+        if (initial_data != null) {
+            const with_vehicle = initial_data.placa != null &&
+                initial_data.placa.length > 0;
+
+            this.setState({
+                ...initial_data,
+                visita_com_veiculo: with_vehicle,
+            });
+        }
     }
 
     remove_mark_sings = (str) => {
@@ -58,14 +63,20 @@ export class AgentRegisterVisitorVisitanteVeiculo extends Component{
     }
 
     save_data = () => {
-        const veiculo_visitante = {
+        const veiculo_visitante = this.state.visita_com_veiculo ? {
             modelo: this.state.modelo,
             cor: this.state.cor,
-            placa: this.remove_mark_sings(this.state.placa),
-        }
+            placa: this.state.placa,
+        } : null;
 
         this.props.onSave(veiculo_visitante);
     };
+
+    change_state_vehicle_state = (value) => {
+        const ro = !value ? true: this.state.readonly;
+        this.setState({ visita_com_veiculo: value, readonly: ro });
+    }
+
 
     render = () => {
         return (
@@ -75,10 +86,23 @@ export class AgentRegisterVisitorVisitanteVeiculo extends Component{
                 </div>
 
                 <div className="row justify-content-center">
+                    <div className="form-check form-check-inline">
+                        <input type="radio" className="form-check-input" name="visita-veiculo"
+                            checked={!this.state.visita_com_veiculo} onChange={ ()=>this.change_state_vehicle_state(false)}/>
+                        <label className="form-check-label">Sem veículo</label>
+                    </div>
+                    <div className="form-check form-check-inline">
+                        <input type="radio" className="form-check-input" name="visita-veiculo"
+                            checked={this.state.visita_com_veiculo} onChange={ ()=>this.change_state_vehicle_state(true)}/>
+                        <label className="form-check-label">Com veículo</label>
+                    </div>
+                </div>
+
+                <div className="row justify-content-center">
                     <div className="form-group col-6">
                         <label htmlFor="veiculo_placa">Placa</label>
                         <input type="text" id="veiculo_placa" ref={ this.veiculo_placa } className="form-control" placeholder="Digite a placa do veículo..."
-                            value={this.state.placa} onBlur={this.search} onChange={e=>this.setState({placa: e.target.value})}>
+                            value={this.state.placa} readOnly={!this.state.visita_com_veiculo} onBlur={this.search} onChange={e=>this.setState({placa: e.target.value})}>
                         </input>
                         <small className="form-text text-muted">Ex: AAA-0000, AAA0000</small>
                     </div>

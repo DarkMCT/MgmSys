@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 
-import { date_parse } from "./utility";
+import { date_parse, check_changed_fields, deep_copy } from "./utility";
+import { make_request } from "./request";
 
 
 export class RequestEditAluno extends Component {
@@ -9,13 +10,15 @@ export class RequestEditAluno extends Component {
         this.state = {
 
         };
+
+        this.original_data = null;
     }
 
     componentDidMount = ()=> {
         if (this.props.data != null)  {
             const visita_aluno = this.props.data;
-            this.setState({...visita_aluno})
-            console.log({...visita_aluno});
+            this.setState({...visita_aluno});
+            this.original_data = deep_copy(visita_aluno);
         }
     }
 
@@ -34,8 +37,45 @@ export class RequestEditAluno extends Component {
         </input>;
     }
 
+    send_to_server = () => {
+        let visita_aluno = check_changed_fields(this.original_data, this.state);
+
+        if ("visita_aluno" in visita_aluno)
+            visita_aluno["visita_aluno"]["id_visita_aluno"] = this.original_data["visita_aluno"]["id_visita_aluno"];
+        if ("aluno" in visita_aluno)
+            visita_aluno["aluno"]["id_aluno"] = this.original_data["aluno"]["id_aluno"];
+
+        make_request("/visita_aluno", "PATCH", JSON.stringify(visita_aluno))
+        .then(res => {
+            if (res.status === 200){
+                this.setState({message: "Dados alterados com sucesso!"});
+            } else {
+                this.setState({message: "Não foi possível alterar os dados. Verifique se os campos estão preenchidos corretamente."});
+            }
+        })
+        .catch(err => {
+            this.setState({message: "Um erro ocorreu! Tente novamente."})
+        });
+    }
+
     render = ()=>{
-        if (!this.state.visita_aluno) return (<div></div>);
+        if (!this.state.visita_aluno) return <div></div>;
+
+        if ("message" in this.state) {
+            return (
+                <div className="container">
+                    <h3>{ this.state.message }</h3>
+                    <div className="row pt-3">
+                        <div className="col-6">
+                            <button className="btn btn-secondary float-left" onClick={ this.props.onBack }>Voltar</button>
+                        </div>
+                        <div className="col-6">
+                            {/* <button className="btn btn-success float-right" onClick={ this.send_to_server }>Salvar alterações</button> */}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
 
         return (
             <div className="container">
@@ -127,6 +167,15 @@ export class RequestEditAluno extends Component {
                         </tr>
                     </tbody>
                 </table>
+
+                <div className="row pt-3">
+                <div className="col-6">
+                        <button className="btn btn-secondary float-left" onClick={ this.props.onBack }>Voltar</button>
+                    </div>
+                    <div className="col-6">
+                        <button className="btn btn-success float-right" onClick={ this.send_to_server }>Salvar alterações</button>
+                    </div>
+                </div>
             </div>
         );
     }

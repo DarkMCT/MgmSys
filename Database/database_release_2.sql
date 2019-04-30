@@ -3,7 +3,7 @@ CREATE TABLE "departamento" (
   "id_departamento" serial,
   "sigla" varchar(30),
   "nome" varchar(120) NOT NULL UNIQUE,
-  "ativado" int DEFAULT 1,
+  "ativado" BOOLEAN DEFAULT TRUE,
   PRIMARY KEY ("id_departamento")
 );
 
@@ -17,9 +17,9 @@ CREATE TABLE "usuario" (
   "siape" varchar(120) NOT NULL UNIQUE,
   "email" varchar(120) NOT NULL,
   "senha" char(100) NOT NULL,
-  "status_autenticacao" int DEFAULT 0,
+  "status_autenticacao" BOOLEAN DEFAULT FALSE,
   "tipo" int NOT NULL,
-  "ativado" int DEFAULT 1,
+  "ativado" BOOLEAN DEFAULT TRUE,
   PRIMARY KEY ("id_usuario")
 );
 
@@ -37,7 +37,7 @@ CREATE TABLE "aluno" (
   "matricula" varchar(13) NOT NULL UNIQUE,
   "curso" varchar(120),
   "semestre" int,
-  "ativado" int DEFAULT 1,
+  "ativado" BOOLEAN DEFAULT TRUE,
   PRIMARY KEY ("id_aluno")
 );
 
@@ -54,7 +54,7 @@ CREATE TABLE "visita_aluno" (
   "horario_inicio" time,
   "horario_fim" time,
   "status_de_aprovacao" int DEFAULT 0,
-  "ativado" int DEFAULT 1,
+  "ativado" BOOLEAN DEFAULT TRUE,
   PRIMARY KEY ("id_visita_aluno")
 );
 
@@ -64,11 +64,11 @@ CREATE TABLE "servidor" (
   "siape" varchar(30) NOT NULL UNIQUE,
   "nome" varchar(120),
   "telefone" varchar(60),
-  "email" varchar(120),
-  "dt_nasc" date,
+  "email" varchar(120) NOT NULL,
+  "dt_nasc" date, --descartar
   "rg" varchar(30) UNIQUE,
   "cpf" varchar(30) UNIQUE,
-  "endereco" varchar(240),
+  "endereco" varchar(240), --descartar
   "ativado" int DEFAULT 1,
   PRIMARY KEY ("id_servidor")
 );
@@ -98,7 +98,7 @@ CREATE TABLE "visita_servidor" (
   "horario_inicio" time,
   "horario_fim" time,
   "status_de_aprovacao" int DEFAULT 0,
-  "ativado" int DEFAULT 1,
+  "ativado" BOOLEAN DEFAULT TRUE,
   PRIMARY KEY ("id_visita_servidor")
 );
 
@@ -109,7 +109,7 @@ CREATE TABLE "empresa" (
   "cep" varchar(120),
   "cnpj" varchar(120) NOT NULL UNIQUE,
   "telefone" varchar(120),
-  "ativado" int DEFAULT 1,
+  "ativado" BOOLEAN DEFAULT TRUE,
   PRIMARY KEY ("id_empresa")
 );
 
@@ -124,7 +124,7 @@ CREATE TABLE "visitante" (
   "rg" varchar(120) NOT NULL UNIQUE,
   "cpf" varchar(120) UNIQUE,
   "endereco" varchar(240),
-  "ativado" int DEFAULT 1,
+  "ativado" BOOLEAN DEFAULT TRUE,
   PRIMARY KEY ("id_visitante")
 );
 
@@ -134,7 +134,7 @@ CREATE TABLE "veiculo_visitante" (
   "modelo" varchar(120),
   "cor" varchar(120),
   "placa" varchar(10) NOT NULL UNIQUE,
-  "ativado" int DEFAULT 1,
+  "ativado" BOOLEAN DEFAULT TRUE,
   PRIMARY KEY ("id_veiculo_visitante")
 );
 
@@ -149,10 +149,10 @@ CREATE TABLE "visita_visitante" (
   "data" date,
   "frequencia" varchar(120),
   "duracao" int,
-  "pernoite" boolean,
+  "pernoite" BOOLEAN,
   "horario_inicio" time,
   "horario_fim" time,
   "status_de_aprovacao" int DEFAULT 0,
-  "ativado" int DEFAULT 1,
+  "ativado" BOOLEAN DEFAULT TRUE,
   PRIMARY KEY ("id_visita_servidor")
 );

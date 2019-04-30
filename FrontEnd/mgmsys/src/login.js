@@ -57,6 +57,11 @@ export class Login extends Component {
     render = () => {
         return (
             <div className="container w-25 pt-5">
+                <div className="container">
+                    <div className="row justify-content-center">
+                        <h1 style={{fontFamily: 'Lobster'}}>MgmSys</h1>
+                    </div>
+                </div>
                 <div className="form-group">
                     <label htmlFor="siape">Siape:</label>
                     <input type="text" name="siape" id="siape" className="form-control"

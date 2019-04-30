@@ -1,6 +1,8 @@
 import React, {Component} from "react";
 
 import { RequestEditAluno } from "./request_edit_aluno";
+import { RequestEditServidor } from "./request_edit_servidor";
+import { RequestEditVisitante } from "./request_edit_visitante";
 import { make_request } from "./request";
 
 export class RequestEdit extends Component{
@@ -9,11 +11,14 @@ export class RequestEdit extends Component{
         this.state = {
 
         };
+
+        this.original_data = null;
     }
 
     componentDidMount = ()=>{
         this.query();
     }
+
 
     query = ()=>{
         const requisicao = this.props.data;
@@ -27,6 +32,7 @@ export class RequestEdit extends Component{
         })
         .then(data=>{
             this.setState({tipo_requisicao: requisicao.tipo_requisicao, data: data});
+            this.original_data = {};
         })
         .catch(err=>{
             console.log(err);
@@ -35,20 +41,17 @@ export class RequestEdit extends Component{
 
     edit_request = ()=>{
         if (this.state.tipo_requisicao === "aluno")
-            return <RequestEditAluno data={this.state.data}></RequestEditAluno>;
+            return <RequestEditAluno data={this.state.data} onBack={this.props.backAction}></RequestEditAluno>;
         else if (this.state.tipo_requisicao === "servidor")
-            return <div></div>;
+            return <RequestEditServidor data={this.state.data} onBack={this.props.backAction}></RequestEditServidor>;
         else if (this.state.tipo_requisicao === "visitante")
-            return <div></div>;
+            return <RequestEditVisitante data={this.state.data} onBack={this.props.backAction}></RequestEditVisitante>;
     }
 
     render = ()=>{
         return (
-            <div>
+            <div className="containers">
                 { this.edit_request() }
-                <div className="form-group">
-                    <button className="btn btn-primary" onClick={this.props.backAction}>Voltar</button>
-                </div>
             </div>
         );
     };

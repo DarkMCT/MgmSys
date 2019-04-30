@@ -9,7 +9,7 @@ const bodyParse = require("body-parser");
 
 // User imports
 const db_instance = require("../database/connection");
-const { insert_data, get_id, data_exists, remove_mark_signs, send_error, log_error } = require("./utility");
+const { insert_data, update_data, get_id, data_exists, remove_mark_signs, send_error, log_error } = require("./utility");
 
 // Constants definitions
 const MAX_TIMEOUT = 100;//ms
@@ -54,11 +54,13 @@ visita_servidor_route.route("/visita_servidor")
 
     servidor.cpf = remove_mark_signs(servidor.cpf);
     servidor.rg = remove_mark_signs(servidor.rg);
-    veiculo_servidor.placa = remove_mark_signs(veiculo_servidor.placa);
 
-    console.log("I'm here");
+    if (veiculo_servidor)
+        veiculo_servidor.placa = remove_mark_signs(veiculo_servidor.placa);
 
     let fk_id_veiculo_servidor = null;
+    let fk_id_servidor = null;
+
     try {
         if (veiculo_servidor != null){
             if (await data_exists("veiculo_servidor", "placa", veiculo_servidor) === true){
@@ -73,7 +75,6 @@ visita_servidor_route.route("/visita_servidor")
         return;
     }
 
-    let fk_id_servidor = null;
     try {
         if (servidor == null) {
             send_error(res, "Não foi possível cadastrar os dados desta visita. Verifique se os dados estão corretos.");
@@ -103,6 +104,45 @@ visita_servidor_route.route("/visita_servidor")
         log_error("/visita_servidor method=POST", "Adding visit.", err, req);
         send_error(res, "Não foi possível cadastrar os dados desta visita. Verifique se os dados estão corretos.");
     });
+})
+.patch(async (req, res, next)=>{
+    const data_to_update = req.body;
+
+    let visita_servidor = "visita_servidor" in data_to_update ? data_to_update["visita_servidor"] : null;
+    let servidor = "servidor" in data_to_update ? data_to_update["servidor"] : null;
+    let veiculo_servidor = "veiculo_servidor" in data_to_update ? data_to_update["veiculo_servidor"] : null;
+
+    try {
+        if (visita_servidor) {
+            let { id_visita_servidor, ...changed_data} = visita_servidor;
+            const updated_rows = await update_data("visita_servidor", id_visita_servidor, changed_data);
+
+            if (updated_rows !== 1)
+                throw new Error("Zero or more than one rows was updated in visit_employee.");
+        }
+
+        if (servidor) {
+            let { id_servidor, ...changed_data} = servidor;
+            const updated_rows = await update_data("servidor", id_servidor, changed_data);
+
+            if (updated_rows !== 1)
+                throw new Error("Zero or more than one rows was updated in student.");
+        }
+
+        if (veiculo_servidor) {
+            let { id_veiculo_servidor, ...changed_data} = veiculo_servidor;
+            const updated_rows = await update_data("veiculo_servidor", id_veiculo_servidor, changed_data);
+
+            if (updated_rows !== 1)
+                throw new Error("Zero or more than one rows was updated in student.");
+        }
+
+        res.sendStatus(200);
+    } catch (err) {
+        send_error(res, "Não foi possível alterar os dados. Verifique se você preencheu os campos corretamente.");
+        log_error("/visita_servidor", "Trying to update visit", err, req);
+    }
+
 });
 
 // Route name: /visita_servidor/:id

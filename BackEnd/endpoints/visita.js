@@ -8,11 +8,34 @@ const bodyParse = require("body-parser");
 
 // User imports
 const db_instance = require("../database/connection");
-const { send_error, log_error } = require("./utility");
+const { send_error, log_error, query_employee, query_student, query_visitant } = require("./utility");
 
 // Constants definitions
 const MAX_TIMEOUT = 100;//ms
 const visita_route = express.Router();
+
+
+const is_manager = (id) => {
+    // tipo === 0 -> Agent
+    // tipo === 1 -> Manager
+
+    const knex = db_instance();
+
+    return new Promise( (resolve, reject) => {
+        knex("usuario")
+        .count("id_usuario")
+        .where(knex.raw("id_usuario = ?", [id]))
+        .where(knex.raw("tipo = 1"))
+        .timeout(MAX_TIMEOUT)
+        .then(result => {
+            result = +result[0].count;
+            resolve(result === 1);
+        })
+        .catch( err => {
+            reject("Don't was possible verify if this user is a manager");
+        })
+    });
+}
 
 const get_visits = (fk_id_usuario) => {
     const knex = db_instance();
@@ -53,7 +76,56 @@ const get_visits = (fk_id_usuario) => {
         ])
         .orderBy("data", "desc").as("subquery");
 
-    console.log(subquery.toSQL());
+    return subquery;
+}
+
+const get_visits_for_managers = () => {
+    const knex = db_instance();
+
+    const subquery = knex.raw(
+        `(SELECT
+            id_visita_aluno AS id,
+            aluno.nome AS nome,
+            "data",
+            status_de_aprovacao,
+            'aluno' AS tipo_requisicao,
+            usuario.nome AS requerente
+        FROM
+            visita_aluno, aluno, usuario
+        WHERE
+            visita_aluno.ativado = true AND
+            visita_aluno.fk_id_aluno = aluno.id_aluno AND
+            visita_aluno.fk_id_usuario = usuario.id_usuario
+        UNION
+        SELECT
+            id_visita_visitante AS id,
+            visitante.nome,
+            "data",
+            status_de_aprovacao,
+            'visitante' AS tipo_requisicao,
+            usuario.nome AS requerente
+        FROM
+            visita_visitante, visitante, usuario
+        WHERE
+            visita_visitante.ativado = true AND
+            visita_visitante.fk_id_visitante = visitante.id_visitante AND
+            visita_visitante.fk_id_usuario = usuario.id_usuario
+        UNION
+        SELECT
+            id_visita_servidor AS id,
+            servidor.nome,
+            "data",
+            status_de_aprovacao,
+            'servidor' AS tipo_requisicao,
+            usuario.nome AS requerente
+        FROM
+            visita_servidor, servidor, usuario
+        WHERE
+            visita_servidor.ativado = true AND
+            visita_servidor.fk_id_servidor = servidor.id_servidor AND
+            visita_servidor.fk_id_usuario = usuario.id_usuario
+        ORDER BY "data" DESC) AS subquery
+            `, [])
 
     return subquery;
 }
@@ -61,7 +133,9 @@ const get_visits = (fk_id_usuario) => {
 visita_route.route("/visita")
 .get((req, res, next) =>{
     const knex = db_instance();
-    const subquery = get_visits(5);
+
+    const fk_id_usuario = req.session.user_info.id_usuario;
+    const subquery = get_visits(fk_id_usuario);
 
     knex.select("*").from(subquery).where(knex.raw("status_de_aprovacao = ?", [0]))
     .then(result=>{
@@ -81,16 +155,25 @@ visita_route.route("/visita")
     const knex = db_instance();
 
     const fk_id_usuario = req.session.user_info.id_usuario;
-    const subquery = get_visits(fk_id_usuario);//get_visits(req.session.user_id);
 
-    knex.select("*").from(subquery).where(knex.raw("status_de_aprovacao = ?", [0]))
+    let subquery = null;
+    is_manager(fk_id_usuario)
+    .then( result => {
+        if (result === true)
+            subquery = get_visits_for_managers();
+        else
+            subquery = get_visits(fk_id_usuario);
+
+        return knex.select("*")
+            .from(subquery)
+            .where(knex.raw("status_de_aprovacao = ?", [0]))
+    })
     .then(result=>{
         res.json(result);
     })
     .catch(err=>{
         console.log(err);
     });
-
 })
 .post((req, res, next) =>{
     if (req.body.what !== "STATUS_PROCESSADO"){
@@ -101,9 +184,19 @@ visita_route.route("/visita")
     const knex = db_instance();
 
     const fk_id_usuario = req.session.user_info.id_usuario;
-    const subquery = get_visits(fk_id_usuario);//get_visits(req.session.user_id);
 
-    knex.select("*").from(subquery).where(knex.raw("status_de_aprovacao != ?", [0]))
+    let subquery = null;
+    is_manager(fk_id_usuario)
+    .then( result => {
+        if (result === true)
+            subquery = get_visits_for_managers();
+        else
+            subquery = get_visits(fk_id_usuario);
+
+        return knex.select("*")
+            .from(subquery)
+            .where(knex.raw("status_de_aprovacao != ?", [0]))
+    })
     .then(result=>{
         res.json(result);
     })
@@ -112,6 +205,8 @@ visita_route.route("/visita")
     });
 
 });
+
+
 
 get_table_name = (tipo_requisicao)=>{
     let table_name = null;
@@ -157,7 +252,7 @@ visita_route.route("/visita/delete/")
 });
 
 
-query = (id, table_name) =>{
+/* query = (id, table_name) =>{
     const knex = db_instance();
 
     return new Promise((resolve, reject) => {
@@ -268,12 +363,8 @@ query_employee = (id_visita_servidor) => {
         })
     });
 
-}
+} */
 
-/**
- * Procurar por veículos e pelo visitante
- * -- Fazer um algoritmo de pooling
- */
 visita_route.route("/visita/query")
 .post( async (req, res, next)=>{
     // const id = 15;
@@ -294,7 +385,6 @@ visita_route.route("/visita/query")
     else if (tipo_requisicao === "servidor")
         data = await query_employee(id);
 
-    console.log(data);
     if (data != null){
         res.json(data);
     } else {
@@ -303,6 +393,43 @@ visita_route.route("/visita/query")
 
 
 });
+
+const change_visit_status = (table_name, id, value) => {
+    const knex = db_instance();
+
+    return knex(table_name)
+    .update({
+        status_de_aprovacao: value
+    })
+    .where(knex.raw(`id_${table_name} = ?`, [id]));
+}
+
+visita_route.route("/visita_process")
+.post((req, res, next) => {
+    const data = req.body;
+
+    if (!("tipo_requisicao" in data) ||
+        !("id" in data)              ||
+        !("status" in data))          {
+
+        res.sendStatus(400);
+        return;
+    }
+
+    const tipo_requisicao = data["tipo_requisicao"];
+    const id = data["id"];
+    const status_de_aprovacao = data["status"] === "approve" ? 1 : 2;
+
+    let table_name = `visita_${tipo_requisicao}`;
+
+    change_visit_status(table_name, id, status_de_aprovacao)
+    .then(result => {
+        res.sendStatus(200);
+    })
+    .catch( err => {
+        res.sendStatus(400);
+    });
+})
 
 
 module.exports = { visita_route };

@@ -9,7 +9,15 @@ const bodyParse = require("body-parser");
 
 // User imports
 const db_instance = require("../database/connection");
-const { insert_data, get_id, data_exists, remove_mark_signs, send_error, log_error } = require("./utility");
+const {
+    insert_data,
+    update_data,
+    get_id,
+    data_exists,
+    remove_mark_signs,
+    send_error,
+    log_error
+} = require("./utility");
 
 // Constants definitions
 const MAX_TIMEOUT = 100;//ms
@@ -22,15 +30,18 @@ const visita_visitante_route = express.Router();
 //
 // Responabilities: list all visitants and add new visitantes
 //      when listing: a GET METHOD is expected
-//      when adding: a POST METHOD is expected. The body must have the a "visitante", "veiculo_visitante", "emrpesa",
+//      when adding: a POST METHOD is expected. The body must have the a
+//      "visitante", "veiculo_visitante", "emrpesa",
 //                  "visita_visitante" objects.
 //
-//  Behavior: On adding, if all data is correctly, is returned a response with status code 200 indicantion success.
-//            Otherwise, is returned a response with status code 400 indicating fail. The reason can be duplication
-//            of UNIQUE fields on Database, data with wrong type.
+//  Behavior: On adding, if all data is correctly, is returned a response with
+//            status code 200 indicantion success. Otherwise, is returned a
+//            response with status code 400 indicating fail. The reason can be
+//            duplication of UNIQUE fields on Database, data with wrong type.
 //
-//  Obs:     THIS ROUTE is SMART enough to prevent duplication of UNIQUE fields he just search if such fields exist
-//            and if the exist just import the PRIMARY KEY
+//  Obs:     THIS ROUTE is SMART enough to prevent duplication of UNIQUE fields
+//           he just search if such fields existand if the exist just import the
+//           PRIMARY KEY
 visita_visitante_route.route("/visita_visitante")
 .get((req, res, next)=>{
     const knex = db_instance();
@@ -58,9 +69,11 @@ visita_visitante_route.route("/visita_visitante")
     let fk_id_veiculo_visitante = null;
 
     empresa.cnpj = remove_mark_signs(empresa.cnpj);
-    veiculo_visitante.placa = remove_mark_signs(veiculo_visitante.placa);
     visitante.rg = remove_mark_signs(visitante.rg);
     visitante.cpf = remove_mark_signs(visitante.cpf);
+
+    if (veiculo_visitante) // vehicle is optional
+        veiculo_visitante.placa = remove_mark_signs(veiculo_visitante.placa);
 
     // add vehicle
     try {
@@ -120,6 +133,55 @@ visita_visitante_route.route("/visita_visitante")
         log_error("/visita_visitante", "Trying add visit", err, req, "Verify the body of request.");
         send_error(res, "Não foi possível cadastrar esta visita. Verifique os dados, por favor.");
     });
+})
+.patch(async (req, res, next) => {
+    const data_to_update = req.body;
+
+    let visita_visitante = "visita_visitante" in data_to_update ? data_to_update["visita_visitante"] : null;
+    let visitante = "visitante" in data_to_update ? data_to_update["visitante"] : null;
+    let veiculo_visitante = "veiculo_visitante" in data_to_update ? data_to_update["veiculo_visitante"] : null;
+    let empresa = "empresa" in data_to_update ? data_to_update["empresa"] : null;
+
+    try {
+        if (visita_visitante) {
+            let { id_visita_visitante, ...changed_data} = visita_visitante;
+            const updated_rows = await update_data("visita_visitante", id_visita_visitante, changed_data);
+
+            if (updated_rows !== 1)
+                throw new Error("Zero or more than one rows was updated in visit_employee.");
+        }
+
+        if (visitante) {
+            let { id_visitante, ...changed_data} = visitante;
+            const updated_rows = await update_data("visitante", id_visitante, changed_data);
+
+            if (updated_rows !== 1)
+                throw new Error("Zero or more than one rows was updated in student.");
+        }
+
+        if (veiculo_visitante) {
+            let { id_veiculo_visitante, ...changed_data} = veiculo_visitante;
+            const updated_rows = await update_data("veiculo_visitante", id_veiculo_visitante, changed_data);
+
+            if (updated_rows !== 1)
+                throw new Error("Zero or more than one rows was updated in student.");
+        }
+
+        if (empresa) {
+            let { id_empresa, ...changed_data} = empresa;
+            const updated_rows = await update_data("empresa", id_empresa, changed_data);
+
+            if (updated_rows !== 1)
+                throw new Error("Zero or more than one rows was updated in student.");
+        }
+
+        res.sendStatus(200);
+
+    } catch (err) {
+        send_error(res, "Não foi possível alterar os dados. Verifique se você preencheu os campos corretamente.");
+        log_error("/visita_visitante", "Trying to update visit", err, req);
+    }
+
 });
 
 // Route name: /visita_visitante/:id

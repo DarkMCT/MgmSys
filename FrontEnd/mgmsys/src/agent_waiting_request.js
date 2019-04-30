@@ -6,6 +6,8 @@ import { RequestDetail } from "./request_detail";
 
 import { make_request }  from "./request"       ;
 
+import { format_date }   from "./utility"       ;
+
 export class AgentWaitingRequest extends Component {
     constructor(props) {
         super(props);
@@ -61,7 +63,7 @@ export class AgentWaitingRequest extends Component {
                 <td>{i + 1}</td>
                 <td>{row.tipo_requisicao}</td>
                 <td>{row.nome}</td>
-                <td>{row.data}</td>
+                <td>{format_date(row.data)}</td>
                 <td><button className="btn btn-warning" onClick={()=>{this.__onEdit(row)}}>Editar</button><span className="pr-1"></span>
                     <button className="btn btn-danger"  onClick={()=>{this.__onRemove(row)}}>Remover</button><span className="pr-1"></span>
                     <button className="btn btn-primary" onClick={()=>{this.__onDetail(row)}}>Detalhes</button></td>

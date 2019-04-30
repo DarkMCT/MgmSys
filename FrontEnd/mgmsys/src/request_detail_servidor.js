@@ -1,5 +1,6 @@
 import React, { Component } from "react"
 
+import { format_date } from "./utility";
 
 export class RequestDetailServidor extends Component {
     constructor(props){
@@ -13,41 +14,7 @@ export class RequestDetailServidor extends Component {
         if (this.props.data != null)  {
             const visita_servidor = this.props.data;
             this.setState({...visita_servidor})
-            console.log({...visita_servidor});
         }
-    }
-
-    print_vehicle = () => {
-        if (!this.state.veiculo_servidor) return;
-
-        return (
-            <div>
-                <thead className="thead-dark">
-                    <tr>
-                        <th className="text-center" scope="col" colSpan="2">Veículo</th>
-                    </tr>
-                    <tr>
-                        <th scope="col">Campo</th>
-                        <th scope="col">Valor</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th scope="row">Placa</th>
-                        <td>{this.state.veiculo_servidor.placa}</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Modelo</th>
-                        <td>{this.state.veiculo_servidor.modelo}</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Cor</th>
-                        <td>{this.state.veiculo_servidor.cor}</td>
-                    </tr>
-
-                </tbody>
-            </div>
-        );
     }
 
     render = ()=>{
@@ -68,7 +35,7 @@ export class RequestDetailServidor extends Component {
                     <tbody>
                         <tr>
                             <th scope="row">Data</th>
-                            <td>{this.state.visita_servidor.data}</td>
+                            <td>{format_date(this.state.visita_servidor.data)}</td>
                         </tr>
                         <tr>
                             <th scope="row">Frequência</th>
@@ -127,7 +94,7 @@ export class RequestDetailServidor extends Component {
                         </tr>
                         <tr>
                             <th scope="row">Data nasc.</th>
-                            <td>{this.state.servidor.dt_nasc}</td>
+                            <td>{format_date(this.state.servidor.dt_nasc)}</td>
                         </tr>
                         <tr>
                             <th scope="row">Endereço</th>
@@ -147,15 +114,15 @@ export class RequestDetailServidor extends Component {
                     <tbody>
                         <tr>
                             <th scope="row">Placa</th>
-                            <td>{this.state.veiculo_servidor.placa}</td>
+                            <td>{this.state.veiculo_servidor && this.state.veiculo_servidor.placa}</td>
                         </tr>
                         <tr>
                             <th scope="row">Modelo</th>
-                            <td>{this.state.veiculo_servidor.modelo}</td>
+                            <td>{this.state.veiculo_servidor && this.state.veiculo_servidor.modelo}</td>
                         </tr>
                         <tr>
                             <th scope="row">Cor</th>
-                            <td>{this.state.veiculo_servidor.cor}</td>
+                            <td>{this.state.veiculo_servidor && this.state.veiculo_servidor.cor}</td>
                         </tr>
                     </tbody>
                 </table>

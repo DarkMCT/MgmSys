@@ -1,5 +1,6 @@
 import React, { Component } from "react"
 
+import {format_date} from "./utility";
 
 export class RequestDetailVisitante extends Component {
     constructor(props){
@@ -35,7 +36,7 @@ export class RequestDetailVisitante extends Component {
                     <tbody>
                         <tr>
                             <th scope="row">Data</th>
-                            <td>{this.state.visita_visitante.data}</td>
+                            <td>{format_date(this.state.visita_visitante.data)}</td>
                         </tr>
                         <tr>
                             <th scope="row">Frequência</th>
@@ -90,7 +91,7 @@ export class RequestDetailVisitante extends Component {
                         </tr>
                         <tr>
                             <th scope="row">Data nasc.</th>
-                            <td>{this.state.visitante.dt_nasc}</td>
+                            <td>{format_date(this.state.visitante.dt_nasc)}</td>
                         </tr>
                         <tr>
                             <th scope="row">Endereço</th>
@@ -137,15 +138,15 @@ export class RequestDetailVisitante extends Component {
                     <tbody>
                         <tr>
                             <th scope="row">Placa</th>
-                            <td>{this.state.veiculo_visitante.placa}</td>
+                            <td>{this.state.veiculo_visitante && this.state.veiculo_visitante.placa}</td>
                         </tr>
                         <tr>
                             <th scope="row">Modelo</th>
-                            <td>{this.state.veiculo_visitante.modelo}</td>
+                            <td>{this.state.veiculo_visitante && this.state.veiculo_visitante.modelo}</td>
                         </tr>
                         <tr>
                             <th scope="row">Cor</th>
-                            <td>{this.state.veiculo_visitante.cor}</td>
+                            <td>{this.state.veiculo_visitante && this.state.veiculo_visitante.cor}</td>
                         </tr>
                     </tbody>
                 </table>

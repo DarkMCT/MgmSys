@@ -1,5 +1,7 @@
 import React, { Component } from "react"
 
+import { format_date } from "./utility";
+
 
 export class RequestDetailAluno extends Component {
     constructor(props){
@@ -35,7 +37,7 @@ export class RequestDetailAluno extends Component {
                     <tbody>
                         <tr>
                             <th scope="row">Data</th>
-                            <td>{this.state.visita_aluno.data}</td>
+                            <td>{ format_date(this.state.visita_aluno.data) }</td>
                         </tr>
                         <tr>
                             <th scope="row">Frequência</th>
@@ -94,7 +96,7 @@ export class RequestDetailAluno extends Component {
                         </tr>
                         <tr>
                             <th scope="row">Data nasc.</th>
-                            <td>{this.state.aluno.dt_nasc}</td>
+                            <td>{ format_date(this.state.aluno.dt_nasc) }</td>
                         </tr>
                         <tr>
                             <th scope="row">Endereço</th>

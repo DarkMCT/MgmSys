@@ -1,6 +1,11 @@
 import React, { Component } from "react";
 
+import { RequestDetail } from "./request_detail";
+import { RequestApprove } from "./request_approve";
+import { RequestReject } from "./request_reject";
 import { make_request } from "./request";
+
+import { format_date } from "./utility";
 
 export class ManagerWaitingRequest extends Component {
     constructor(props) {
@@ -33,22 +38,16 @@ export class ManagerWaitingRequest extends Component {
         this.search();
     }
 
-    __onReject = (request_id) => {
-        this.setState({current_action: "remove"});
-        console.log("Remove:");
-        console.log(this.state.data[request_id]);
+    __onReject = (row) => {
+        this.setState({current_action: "reject", selected_row: row});
     }
 
-    __onApprove = (request_id) => {
-        this.setState({current_action: "detail"});
-        console.log("Detail:");
-        console.log(this.state.data[request_id]);
+    __onApprove = (row) => {
+        this.setState({current_action: "approve", selected_row: row});
     }
 
-    __onDatail = (request_id) => {
-        this.setState({current_action: "detail"});
-        console.log("Detail:");
-        console.log(this.state.data[request_id]);
+    __onDatail = (row) => {
+        this.setState({current_action: "detail", selected_row: row});
     }
 
     format_data = () => {
@@ -62,11 +61,12 @@ export class ManagerWaitingRequest extends Component {
                 <td>{i + 1}</td>
                 <td>{row.tipo_requisicao}</td>
                 <td>{row.nome}</td>
-                <td>{row.data}</td>
+                <td>{ format_date(row.data) }</td>
+                <td>{row.requerente}</td>
                 <td>
-                    <button className="btn btn-info"    onClick={()=>{this.__onDatail(row.id)}}>Detalhes</button><span className="pr-1"></span>
-                    <button className="btn btn-danger"  onClick={()=>{this.__onReject(row.id)}}>Rejeitar</button><span className="pr-1"></span>
-                    <button className="btn btn-success" onClick={()=>{this.__onApprove(row.id)}}>Aprovar</button></td>
+                    <button className="btn btn-info"    onClick={()=>{this.__onDatail(row)}}>Detalhes</button><span className="pr-1"></span>
+                    <button className="btn btn-danger"  onClick={()=>{this.__onReject(row)}}>Rejeitar</button><span className="pr-1"></span>
+                    <button className="btn btn-success" onClick={()=>{this.__onApprove(row)}}>Aprovar</button></td>
             </tr>
         )});
 
@@ -83,6 +83,7 @@ export class ManagerWaitingRequest extends Component {
                             <th scope="col">Tipo de Requisição</th>
                             <th scope="col">Nome</th>
                             <th scope="col">Data</th>
+                            <th scope="col">Requerente</th>
                             <th scope="col">Ações</th>
                         </tr>
                     </thead>
@@ -95,15 +96,27 @@ export class ManagerWaitingRequest extends Component {
     }
 
     action_handler = () => {
+        const backAction = ()=> { this.setState({current_action: "list"}); this.search() };
         switch (this.state.current_action){
             case "list":
                 return this.list();
-            case "edit":
-                return <div>Editing</div>;
-            case "remove":
-                return <div>Remove</div>;
             case "detail":
-                return <div>Detail</div>;
+                return  <RequestDetail
+                            backAction={backAction}
+                            data={this.state.selected_row}>
+                        </RequestDetail>;
+            case "approve":
+                return  <RequestApprove
+                            backAction={backAction}
+                            data={this.state.selected_row}>
+                        ></RequestApprove>;
+
+            case "reject":
+                return <RequestReject
+                            backAction={backAction}
+                            data={this.state.selected_row}>
+                        ></RequestReject>;
+
             default:
                 return <div>Error</div>
         }
@@ -112,7 +125,6 @@ export class ManagerWaitingRequest extends Component {
     render = () => {
         return (
             <div className="container">
-            <div className="pb-5"></div>
                 { this.action_handler() }
             <div className="footer"></div>
             </div>

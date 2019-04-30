@@ -50,7 +50,7 @@ export class DashboardNavbar extends Component{
                             </button>
 
                             <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a className="dropdown-item" href="#begin">Meu dados</a>
+                            <button className="dropdown-item" onClick={this.logout}>Meus dados</button>
 
                             <div className="dropdown-divider"></div>
                             <button className="dropdown-item" onClick={this.logout}>Sair</button>

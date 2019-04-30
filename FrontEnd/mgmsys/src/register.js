@@ -85,7 +85,9 @@ export class Register extends Component {
     render = () => {
         return (
             <div className="container w-50 pt-5">
-                <h1>Cadastro</h1>
+                <div className="row justify-content-center">
+                    <h1 style={{fontFamily: 'Lobster'}}>Cadastro de novos usuários</h1>
+                </div>
                 <br />
                 <div className="form-group">
                     <label htmlFor="siape">Siape:</label>
@@ -190,9 +192,13 @@ export class Register extends Component {
 
                 <label className="text-danger">{this.state.warning}</label>
                 <br />
-                <button className="btn btn-outline-secondary" onClick={() => this.props.onBack()}>Voltar</button>
-                <button className="btn btn-outline-primary" onClick={() => { console.log(this.state.credentials); this.sendCredentials() }}>Cadastrar</button>
-                <div className="container pt-5"></div>
+                <div className="container">
+                    <div className="row justify-content-between">
+                        <button className="btn btn-outline-secondary" onClick={() => this.props.onBack()}>Voltar</button>
+                        <button className="btn btn-outline-primary" onClick={() => { console.log(this.state.credentials); this.sendCredentials() }}>Cadastrar</button>
+                    </div>
+                </div>
+                <div className="footer"></div>
             </div>
         );
     };

@@ -9,7 +9,7 @@ const bodyParse = require("body-parser");
 
 // User imports
 const db_instance = require("../database/connection");
-const { insert_data, get_id, data_exists, remove_mark_signs, send_error, log_error } = require("./utility");
+const { insert_data, update_data, get_id, data_exists, remove_mark_signs, send_error, log_error } = require("./utility");
 
 // Constants definitions
 const MAX_TIMEOUT = 100;//ms
@@ -29,51 +29,81 @@ const visita_aluno_route = express.Router();
 //  Obs:     THIS ROUTE is SMART enough to prevent duplication of UNIQUE fields he just search if such fields exist
 //            and if the exist just import the PRIMARY KEY
 visita_aluno_route.route("/visita_aluno")
-    .get((req, res, next) => {
-        const knex = db_instance();
+.get((req, res, next) => {
+    const knex = db_instance();
 
-        knex.select().from("visita_aluno").timeout(MAX_TIMEOUT)
-            .then(result => {
-                res.status(200).json(result);
-            }).catch(err => {
-                log_error("/visita_aluno method=GET", "Searching for visita_aluno.", err, req,
-                    "Verify the connection with datebase")
-                send_error(res, "Não foi possível listar todas as visitas de alunos.");
-            });
-    })
-    .post(async (req, res, next) => {
-        // extract data from body
-        const data = req.body;
-
-        // split between student and visit student
-        let { aluno, visita_aluno } = data;
-
-        // Add student
-        let fk_id_aluno = null;
-        try {
-            if (await data_exists("aluno", "matricula", aluno)){
-                fk_id_aluno = await get_id("aluno", "matricula", aluno);
-            } else {
-                fk_id_aluno = await insert_data("aluno", aluno);
-            }
-        } catch(err) {
-            log_error("/visita_aluno", "Trying add student", err, req, "Verify the body of request.");
-            send_error(res, "Não foi possível cadastrar este aluno. Verifique os dados, por favor.");
-        };
-
-        const fk_id_usuario = req.session.user_info.id_usuario; // req.session.user_id
-
-        // Add visit
-        visita_aluno = {...visita_aluno, fk_id_usuario, fk_id_aluno};
-
-        insert_data("visita_aluno", visita_aluno)
-        .then( id => {
-            res.status(200).send("Success to register this visit");
-        })
-        .catch(err=>{
-            log_error("/visita_aluno", "Trying add visit", err, req, "Verify the body of request.");
-            send_error(res, "Não foi possível cadastrar esta visita. Verifique os dados, por favor.");
+    knex.select().from("visita_aluno").timeout(MAX_TIMEOUT)
+        .then(result => {
+            res.status(200).json(result);
+        }).catch(err => {
+            log_error("/visita_aluno method=GET", "Searching for visita_aluno.", err, req,
+                "Verify the connection with datebase")
+            send_error(res, "Não foi possível listar todas as visitas de alunos.");
         });
+})
+.post(async (req, res, next) => {
+    // extract data from body
+    const data = req.body;
+
+    // split between student and visit student
+    let { aluno, visita_aluno } = data;
+
+    // Add student
+    let fk_id_aluno = null;
+    try {
+        if (await data_exists("aluno", "matricula", aluno)){
+            fk_id_aluno = await get_id("aluno", "matricula", aluno);
+        } else {
+            fk_id_aluno = await insert_data("aluno", aluno);
+        }
+    } catch(err) {
+        log_error("/visita_aluno", "Trying add student", err, req, "Verify the body of request.");
+        send_error(res, "Não foi possível cadastrar este aluno. Verifique os dados, por favor.");
+    };
+
+    const fk_id_usuario = req.session.user_info.id_usuario; // req.session.user_id
+
+    // Add visit
+    visita_aluno = {...visita_aluno, fk_id_usuario, fk_id_aluno};
+
+    insert_data("visita_aluno", visita_aluno)
+    .then( id => {
+        res.status(200).send("Success to register this visit");
+    })
+    .catch(err=>{
+        log_error("/visita_aluno", "Trying add visit", err, req, "Verify the body of request.");
+        send_error(res, "Não foi possível cadastrar esta visita. Verifique os dados, por favor.");
+    });
+})
+.patch(async (req, res, next)=>{
+    const data_to_update = req.body;
+
+    let visita_aluno = "visita_aluno" in data_to_update ? data_to_update["visita_aluno"] : null;
+    let aluno = "aluno" in data_to_update ? data_to_update["aluno"] : null;
+
+    try {
+        if (visita_aluno) {
+            let { id_visita_aluno, ...changed_data} = visita_aluno;
+            const updated_rows = await update_data("visita_aluno", id_visita_aluno, changed_data);
+
+            if (updated_rows !== 1)
+                throw new Error("Zero or more than one rows was updated in visit_student.");
+        }
+
+        if (aluno) {
+            let { id_aluno, ...changed_data} = aluno;
+            const updated_rows = await update_data("aluno", id_aluno, changed_data);
+
+            if (updated_rows !== 1)
+                throw new Error("Zero or more than one rows was updated in student.");
+        }
+
+        res.sendStatus(200);
+    } catch (err) {
+        send_error(res, "Não foi possível alterar os dados. Verifique se você preencheu os campos corretamente.");
+        log_error("/visita_aluno", "Trying to update visit", err, req);
+    }
+
 });
 
 // Route name: /visita_visitante/:id

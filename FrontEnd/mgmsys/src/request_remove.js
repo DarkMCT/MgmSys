@@ -1,6 +1,8 @@
 import React, {Component} from "react";
 import { make_request } from "./request";
 
+import { format_date } from "./utility";
+
 export class RequestRemove extends Component{
     constructor(props){
         super(props);
@@ -42,7 +44,7 @@ export class RequestRemove extends Component{
                 </div>
                 <div className="form-group">
                     <label>Na data:</label>
-                    <label className="form-control">{requisicao.data}</label>
+                    <label className="form-control">{format_date(requisicao.data)}</label>
                 </div>
 
             </div>

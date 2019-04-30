@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 import { make_request } from "./request";
 
+import { RequestDetail } from "./request_detail";
+
+import { format_date } from "./utility";
+
 // TODO
 //      Criar as páginas de edição
 //                          remoção
@@ -38,15 +42,12 @@ export class ManagerProcessedRequest extends Component {
         this.search();
     }
 
-    __onPDF = (request_id) => {
+    __onPDF = (row) => {
         console.log("PDF");
-        console.log(this.data[request_id]);
     }
 
-    __onDetail = (request_id) => {
-        this.setState({current_action: "edit"})
-        console.log("Detail");
-        console.log(this.data[request_id]);
+    __onDetail = (row) => {
+        this.setState({current_action: "detail", selected_row: row})
     }
 
     format_data = () => {
@@ -59,9 +60,12 @@ export class ManagerProcessedRequest extends Component {
                     <td>{i + 1}</td>
                     <td>{row.tipo_requisicao}</td>
                     <td>{row.nome}</td>
-                    <td>{row.data}</td>
-                    <td><button className="btn btn-outline-primary" onClick={() => { this.__onPDF(row.id) }}>Gerar PDF</button><span className="pr-1"></span>
-                        <button className="btn btn-primary" onClick={() => { this.__onDetail(row.id) }}>Detalhes</button><span className="pr-1"></span></td>
+                    <td>{format_date(row.data)}</td>
+                    <td>{row.status_de_aprovacao === 1 ? "Aprovado" : "Não Aprovado"}</td>
+                    <td>
+                        {/* <button className="btn btn-outline-primary" onClick={() => { this.__onPDF(row) }}>Gerar PDF</button> */}
+                        <button className="btn btn-primary" onClick={() => { this.__onDetail(row) }}>Detalhes</button>
+                        </td>
                 </tr>
             )
         });
@@ -71,7 +75,7 @@ export class ManagerProcessedRequest extends Component {
 
     list = () => {
         return (
-            <div className="row justify-content-center pt-5">
+            <div className="row justify-content-center">
                 <table className="table table-hover">
                     <thead>
                         <tr>
@@ -79,6 +83,7 @@ export class ManagerProcessedRequest extends Component {
                             <th scope="col">Tipo de Requisição</th>
                             <th scope="col">Nome</th>
                             <th scope="col">Data</th>
+                            <th scope="col">Status de Aprovação</th>
                             <th scope="col">Ações</th>
                         </tr>
                     </thead>
@@ -91,11 +96,15 @@ export class ManagerProcessedRequest extends Component {
     }
 
     action_handler = () => {
+        const backAction = () => this.setState({current_action: "list"})
         switch (this.state.current_action){
             case "list":
                 return this.list();
-            case "edit":
-                return <div>Edit</div>;
+            case "detail":
+                return <RequestDetail
+                            backAction={backAction}
+                            data={this.state.selected_row}>
+                        </RequestDetail>;
             default:
                 return <div>Error</div>
         }
@@ -104,7 +113,6 @@ export class ManagerProcessedRequest extends Component {
     render = () => {
         return (
             <div className="container">
-            <div className="pb-5"></div>
                 { this.action_handler() }
                 <div className="footer"></div>
             </div>
