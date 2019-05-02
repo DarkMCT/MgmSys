@@ -64,9 +64,25 @@ export class AgentWaitingRequest extends Component {
                 <td>{row.tipo_requisicao}</td>
                 <td>{row.nome}</td>
                 <td>{format_date(row.data)}</td>
-                <td><button className="btn btn-warning" onClick={()=>{this.__onEdit(row)}}>Editar</button><span className="pr-1"></span>
-                    <button className="btn btn-danger"  onClick={()=>{this.__onRemove(row)}}>Remover</button><span className="pr-1"></span>
-                    <button className="btn btn-primary" onClick={()=>{this.__onDetail(row)}}>Detalhes</button></td>
+                <td>
+                    <button
+                        className="btn btn-warning"
+                        onClick={()=>{this.__onEdit(row)}}>
+                        Editar
+                    </button>
+                    <span className="pr-1"></span>
+                    <button
+                        className="btn btn-danger"
+                        onClick={()=>{this.__onRemove(row)}}>
+                        Remover
+                    </button>
+                    <span className="pr-1"></span>
+                    <button
+                        className="btn btn-primary"
+                        onClick={()=>{this.__onDetail(row)}}>
+                        Detalhes
+                    </button>
+                </td>
             </tr>
         )});
 
@@ -95,7 +111,10 @@ export class AgentWaitingRequest extends Component {
     }
 
     action_handler = () => {
-        const backAction = ()=> { this.setState({current_action: "list"}); this.search() };
+        const backAction = ()=> {
+            this.setState({current_action: "list"}); this.search()
+        };
+
         switch (this.state.current_action){
             case "list":
                 return this.list();
@@ -122,9 +141,9 @@ export class AgentWaitingRequest extends Component {
     render = () => {
         return (
             <div className="container">
-            <div className="pb-5"></div>
+                <div className="pb-5"></div>
                 { this.action_handler() }
-            <div className="footer"></div>
+                <div className="footer"></div>
             </div>
         );
     }

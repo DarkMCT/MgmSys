@@ -36,16 +36,16 @@ export class RequestDetailAluno extends Component {
                     </thead>
                     <tbody>
                         <tr>
-                            <th scope="row">Data</th>
-                            <td>{ format_date(this.state.visita_aluno.data) }</td>
+                            <th scope="row">Data (Início)</th>
+                            <td>{ format_date(this.state.visita_aluno.data_inicio) }</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Data (Fim)</th>
+                            <td>{ format_date(this.state.visita_aluno.data_fim) }</td>
                         </tr>
                         <tr>
                             <th scope="row">Frequência</th>
                             <td>{this.state.visita_aluno.frequencia}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Duração</th>
-                            <td>{this.state.visita_aluno.duracao}</td>
                         </tr>
                         <tr>
                             <th scope="row">Horário (Início)</th>
@@ -62,7 +62,12 @@ export class RequestDetailAluno extends Component {
                     </tbody>
                     <thead className="thead-dark">
                         <tr>
-                            <th className="text-center" scope="col" colSpan="2">Aluno</th>
+                            <th
+                                className="text-center"
+                                scope="col"
+                                colSpan="2">
+                                Aluno
+                            </th>
                         </tr>
                         <tr>
                             <th scope="col">Campo</th>

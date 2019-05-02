@@ -25,7 +25,12 @@ export class RequestDetailServidor extends Component {
                 <table className="table table-hover">
                     <thead className="thead-dark">
                         <tr>
-                            <th className="text-center" scope="col" colSpan="2">Visita</th>
+                            <th
+                                className="text-center"
+                                scope="col"
+                                colSpan="2">
+                                Visita
+                            </th>
                         </tr>
                         <tr>
                             <th scope="col">Campo</th>
@@ -42,10 +47,6 @@ export class RequestDetailServidor extends Component {
                             <td>{this.state.visita_servidor.frequencia}</td>
                         </tr>
                         <tr>
-                            <th scope="row">Duração</th>
-                            <td>{this.state.visita_servidor.duracao}</td>
-                        </tr>
-                        <tr>
                             <th scope="row">Horário (Início)</th>
                             <td>{this.state.visita_servidor.horario_inicio}</td>
                         </tr>
@@ -60,7 +61,12 @@ export class RequestDetailServidor extends Component {
                     </tbody>
                     <thead className="thead-dark">
                         <tr>
-                            <th className="text-center" scope="col" colSpan="2">Servidor</th>
+                            <th
+                                className="text-center"
+                                scope="col"
+                                colSpan="2">
+                                Servidor
+                            </th>
                         </tr>
                         <tr>
                             <th scope="col">Campo</th>

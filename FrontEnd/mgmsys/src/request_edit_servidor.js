@@ -94,16 +94,16 @@ export class RequestEditServidor extends Component {
                     </thead>
                     <tbody>
                         <tr>
-                            <th scope="row">Data</th>
-                            <td>{ this.make_input("visita_servidor", "data", "date", date_parse(this.state.visita_servidor.data)) }</td>
+                            <th scope="row">Data (Início)</th>
+                            <td>{ this.make_input("visita_servidor", "data", "date", date_parse(this.state.visita_servidor.data_inicio)) }</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Data (Término)</th>
+                            <td>{ this.make_input("visita_servidor", "data", "date", date_parse(this.state.visita_servidor.data_fim)) }</td>
                         </tr>
                         <tr>
                             <th scope="row">Frequência</th>
                             <td>{ this.make_input("visita_servidor", "frequencia", "text", this.state.visita_servidor.frequencia) }</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Duração</th>
-                            <td>{ this.make_input("visita_servidor", "duracao", "text", this.state.visita_servidor.duracao) }</td>
                         </tr>
                         <tr>
                             <th scope="row">Horário (Início)</th>

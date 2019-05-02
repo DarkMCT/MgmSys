@@ -4,6 +4,7 @@ import { Login } from "./login";
 import { Register } from "./register";
 import { AgentDashboard } from "./agent_dashboard";
 import { ManagerDashboard } from "./manager_dashboard";
+import { make_request } from "./request";
 
 class Main extends Component {
     constructor(props) {
@@ -19,12 +20,10 @@ class Main extends Component {
         // this.setState({ app_state: "agent_dashboard"});
         // return;
 
-        fetch(this.state.backend_addr + "/user_info", {
-            method: "GET",
-            credentials: "include",
-            mode: "cors",
-        })
-        .then( res => {
+        make_request(
+            "/user_info",
+            "GET"
+        ).then( res => {
             if (res.status === 200){
                 res.json()
                 .then( data => {

@@ -56,6 +56,7 @@ export class ManagerWaitingRequest extends Component {
             return;
 
         const table = Object.values(this.state.data).map((row, i) => {
+            console.log(row);
             return (
             <tr key={i}>
                 <td>{i + 1}</td>
@@ -64,9 +65,24 @@ export class ManagerWaitingRequest extends Component {
                 <td>{ format_date(row.data) }</td>
                 <td>{row.requerente}</td>
                 <td>
-                    <button className="btn btn-info"    onClick={()=>{this.__onDatail(row)}}>Detalhes</button><span className="pr-1"></span>
-                    <button className="btn btn-danger"  onClick={()=>{this.__onReject(row)}}>Rejeitar</button><span className="pr-1"></span>
-                    <button className="btn btn-success" onClick={()=>{this.__onApprove(row)}}>Aprovar</button></td>
+                    <button
+                        className="btn btn-info"
+                        onClick={()=>{this.__onDatail(row)}}>
+                        Detalhes
+                    </button>
+                    <span className="pr-1"></span>
+                    <button
+                        className="btn btn-danger"
+                        onClick={()=>{this.__onReject(row)}}>
+                        Rejeitar
+                    </button>
+                    <span className="pr-1"></span>
+                    <button
+                        className="btn btn-success"
+                        onClick={()=>{this.__onApprove(row)}}>
+                        Aprovar
+                    </button>
+                </td>
             </tr>
         )});
 

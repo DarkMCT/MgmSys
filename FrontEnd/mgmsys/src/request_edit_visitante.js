@@ -104,16 +104,16 @@ export class RequestEditVisitante extends Component {
                     </thead>
                     <tbody>
                         <tr>
-                            <th scope="row">Data</th>
-                            <td>{ this.make_input("visita_visitante", "data", "date", date_parse(this.state.visita_visitante.data)) }</td>
+                            <th scope="row">Data (Início)</th>
+                            <td>{ this.make_input("visita_visitante", "data_inicio", "date", date_parse(this.state.visita_visitante.data_inicio)) }</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Data (Término)</th>
+                            <td>{ this.make_input("visita_visitante", "data_fim", "date", date_parse(this.state.visita_visitante.data_fim)) }</td>
                         </tr>
                         <tr>
                             <th scope="row">Frequência</th>
                             <td>{ this.make_input("visita_visitante", "frequencia", "text", this.state.visita_visitante.frequencia) }</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Duração</th>
-                            <td>{ this.make_input("visita_visitante", "duracao", "text", this.state.visita_visitante.duracao) }</td>
                         </tr>
                         <tr>
                             <th scope="row">Horário (Início)</th>

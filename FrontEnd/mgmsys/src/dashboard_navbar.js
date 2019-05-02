@@ -1,5 +1,6 @@
 
 import React, {Component} from "react";
+import { make_request } from "./request";
 
 export class DashboardNavbar extends Component{
     constructor(props){
@@ -10,32 +11,34 @@ export class DashboardNavbar extends Component{
     }
 
     logout = () => {
-        const header = new Headers();
-        header.set("Content-Type", "application/json");
-        fetch("http://localhost:3001/auth", {
-            method: "POST",
-            credentials: "include",
-            mode: "cors",
-            headers: header,
-            body : JSON.stringify({
-                operation: "logout",
-            }),
-        })
-        .then( res => {
+        make_request(
+            "/auth",
+            "POST",
+            JSON.stringify({operation: "logout"})
+        ).then( res => {
             this.props.onLogout();
         })
         .catch(err=>{
             console.log(err);
         });
-        console.log("Logout");
-        // this.props.onLogout();
     }
 
     render = () => {
         return (
             <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
-                <a className="navbar-brand" href="#begin">Controle de Acesso</a>
-                <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <a
+                    className="navbar-brand"
+                    href="#begin">
+                    Controle de Acesso
+                </a>
+                <button
+                    className="navbar-toggler"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                 </button>
 
@@ -45,22 +48,38 @@ export class DashboardNavbar extends Component{
                             <a className="nav-link dropdown-toggle" href="#begin" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Meus dados
                             </a>
-                            <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <button
+                                className="navbar-toggler"
+                                type="button"
+                                data-toggle="collapse"
+                                data-target="#navbarToggleExternalContent"
+                                aria-controls="navbarToggleExternalContent"
+                                aria-expanded="false"
+                                aria-label="Toggle navigation">
                                 <span className="navbar-toggler-icon"></span>
                             </button>
 
-                            <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <button className="dropdown-item" onClick={this.logout}>Meus dados</button>
+                            <div
+                                className="dropdown-menu"
+                                aria-labelledby="navbarDropdown">
 
-                            <div className="dropdown-divider"></div>
-                            <button className="dropdown-item" onClick={this.logout}>Sair</button>
+                                <button
+                                    className="dropdown-item"
+                                    onClick={this.logout}>
+                                    Meus dados
+                                </button>
 
+                                <div className="dropdown-divider"></div>
+
+                                <button
+                                    className="dropdown-item"
+                                    onClick={this.logout}>
+                                    Sair
+                                </button>
                             </div>
                         </li>
                     </ul>
                 </div>
-
-
             </nav>
         );
     };

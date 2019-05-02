@@ -36,15 +36,24 @@ export class RequestApprove extends Component {
 
             <div className="form-group">
                 Solicitação para visita de:
-                <label className="form-control">{this.state.nome}</label>
+                <label
+                    className="form-control">
+                    {this.state.nome}
+                </label>
             </div>
             <div className="form-group">
                 Na data:
-                <label className="form-control">{format_date(this.state.data)}</label>
+                <label
+                    className="form-control">
+                    {format_date(this.state.data)}
+                </label>
             </div>
             <div className="form-group">
                 Solicitado por:
-                <label className="form-control">{this.state.requerente}</label>
+                <label
+                    className="form-control">
+                    {this.state.requerente}
+                </label>
             </div>
             <div className="row justify-content-center">
                 <h3 className="text-danger">{this.state.message}</h3>
@@ -52,10 +61,18 @@ export class RequestApprove extends Component {
 
             <div className="row pt-3">
                 <div className="col-6">
-                    <button className="btn btn-secondary float-left" onClick={ this.props.backAction }>Voltar</button>
+                    <button
+                        className="btn btn-secondary float-left"
+                        onClick={ this.props.backAction }>
+                        Voltar
+                    </button>
                 </div>
                 <div className="col-6">
-                    <button className="btn btn-success float-right w-25" onClick={ this.approve }>Aprovar</button>
+                    <button
+                        className="btn btn-success float-right w-25"
+                        onClick={ this.approve }>
+                        Aprovar
+                    </button>
                 </div>
             </div>
         </div>);

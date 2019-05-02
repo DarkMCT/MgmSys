@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import {date_parse} from "./utility";
+import { make_request } from "./request";
 
 export class AgentRegisterStudentAluno extends Component{
     constructor(props){
@@ -53,16 +54,12 @@ export class AgentRegisterStudentAluno extends Component{
         let matricula = this.state.matricula.replace(/(\.|-)/g, "");
 
         if (matricula.length === 13){
-            const header = new Headers();
-            header.set("content-type", "application/json");
 
-            fetch(this.props.backendAddr + "/visita_aluno/search", {
-                headers: header,
-                credentials: "include",
-                method: "POST",
-                mode: "cors",
-                body: JSON.stringify({matricula: matricula, what: "MATRICULA"}),
-            }).then( res =>{
+            make_request(
+                "/visita_aluno/search",
+                "POST",
+                JSON.stringify({matricula: matricula, what: "MATRICULA"}),
+            ).then( res =>{
                 return res.json();
             }).then( data => {
                 if (Object.keys(data).length > 0){
@@ -137,16 +134,30 @@ export class AgentRegisterStudentAluno extends Component{
                 <div className="row">
                     <div className="form-group col-6">
                         <label htmlFor="estudante_curso">Curso</label>
-                        <input type="text" id="estudante_curso" ref={this.estudante_curso} className="form-control" placeholder="Digite o curso do estudante..."
-                            value={this.state.estudante_curso} readOnly={this.state.readonly} onChange={e=>this.setState({curso: e.target.value})}>
+                        <input
+                            type="text"
+                            id="estudante_curso"
+                            ref={this.estudante_curso}
+                            className="form-control"
+                            placeholder="Digite o curso do estudante..."
+                            value={this.state.curso}
+                            readOnly={this.state.readonly}
+                            onChange={e=>this.setState({curso: e.target.value})}>
                         </input>
                         <small className="form-text text-muted">Ex: Engenharia da Computação</small>
                     </div>
 
                     <div className="form-group col-6">
                         <label htmlFor="estudante_semestre">Semestre</label>
-                        <input type="text" id="estudante_semestre" ref={this.estudante_semestre} className="form-control" placeholder="Digite o semestre do estudante..."
-                            value={this.state.semestre} readOnly={this.state.readonly} onChange={e=>this.setState({semestre: e.target.value})}>
+                        <input
+                            type="text"
+                            id="estudante_semestre"
+                            ref={this.estudante_semestre}
+                            className="form-control"
+                            placeholder="Digite o semestre do estudante..."
+                            value={this.state.semestre}
+                            readOnly={this.state.readonly}
+                            onChange={e=>this.setState({semestre: e.target.value})}>
                         </input>
                             <small className="form-text text-muted">Ex: 1, 2, 10</small>
                     </div>
@@ -155,16 +166,30 @@ export class AgentRegisterStudentAluno extends Component{
                 <div className="row">
                     <div className="form-group col-6">
                         <label htmlFor="estudante_telefone">Telefone</label>
-                        <input type="text" id="estudante_telefone" ref={this.estudante_telefone} className="form-control" placeholder="Digite o número de telefone do estudante..."
-                            value={this.state.telefone} readOnly={this.state.readonly} onChange={e=>this.setState({telefone: e.target.value})}>
+                        <input
+                            type="text"
+                            id="estudante_telefone"
+                            ref={this.estudante_telefone}
+                            className="form-control"
+                            placeholder="Digite o número de telefone do estudante..."
+                            value={this.state.telefone}
+                            readOnly={this.state.readonly}
+                            onChange={e=>this.setState({telefone: e.target.value})}>
                         </input>
                         <small className="form-text text-muted">Ex: 0000-0000, (00) 0000-0000</small>
                     </div>
 
                     <div className="form-group col-6">
                         <label htmlFor="estudante_dt_nasc">Data de nascimento</label>
-                        <input type="date" id="estudante_dt_nasc" ref={this.estudante_dt_nasc} className="form-control" placeholder="Digite a data de nascimento do estudante..."
-                            value={this.state.dt_nasc} readOnly={this.state.readonly} onChange={e=>this.setState({dt_nasc: e.target.value})}>
+                        <input
+                            type="date"
+                            id="estudante_dt_nasc"
+                            ref={this.estudante_dt_nasc}
+                            className="form-control"
+                            placeholder="Digite a data de nascimento do estudante..."
+                            value={this.state.dt_nasc}
+                            readOnly={this.state.readonly}
+                            onChange={e=>this.setState({dt_nasc: e.target.value})}>
                         </input>
                         <small className="form-text text-muted">Ex: 01/01/2001</small>
                     </div>
@@ -173,8 +198,15 @@ export class AgentRegisterStudentAluno extends Component{
                 <div className="row">
                     <div className="form-group col">
                         <label htmlFor="estudante_endereco">Endereço</label>
-                        <input type="text" id="estudante_endereco" ref={this.estudante_endereco} className="form-control" placeholder="Digite o endereço do estudante..."
-                            value={this.state.endereco} readOnly={this.state.readonly} onChange={e=>this.setState({endereco: e.target.value})}>
+                        <input
+                            type="text"
+                            id="estudante_endereco"
+                            ref={this.estudante_endereco}
+                            className="form-control"
+                            placeholder="Digite o endereço do estudante..."
+                            value={this.state.endereco}
+                            readOnly={this.state.readonly}
+                            onChange={e=>this.setState({endereco: e.target.value})}>
                         </input>
                         <small className="form-text text-muted">Ex: Rua Foo, Número 01</small>
                     </div>
@@ -185,12 +217,15 @@ export class AgentRegisterStudentAluno extends Component{
                         {/* <button className="btn btn-secondary float-left" onClick={()=>{ this.save_data(); this.props.onBack(); }}>Voltar</button> */}
                     </div>
                     <div className="col-6">
-                        <button className="btn btn-success float-right" onClick={()=>{ this.save_data(); this.props.onNext(); }}>Avançar</button>
+                        <button
+                            className="btn btn-success float-right"
+                            onClick={()=>{ this.save_data(); this.props.onNext(); }}>
+                            Avançar
+                        </button>
                     </div>
                 </div>
 
                 <div className="footer"></div>
-
             </div>
         );
     };

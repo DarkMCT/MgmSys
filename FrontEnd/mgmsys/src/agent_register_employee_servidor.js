@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { date_parse } from "./utility";
+import { make_request } from "./request";
 
 export class AgentRegisterEmployeeServidor extends Component{
     constructor(props){
@@ -47,13 +48,11 @@ export class AgentRegisterEmployeeServidor extends Component{
             const header = new Headers();
             header.set("content-type", "application/json");
 
-            fetch(this.props.backendAddr + "/visita_servidor/search", {
-                headers: header,
-                credentials: "include",
-                method: "POST",
-                mode: "cors",
-                body: JSON.stringify({siape: siape, what: "SIAPE"}),
-            }).then( res =>{
+            make_request(
+                "/visita_servidor/search",
+                "POST",
+                JSON.stringify({siape: siape, what: "SIAPE"})
+            ).then( res =>{
                 return res.json();
             }).then( data => {
                 if (Object.keys(data).length > 0) {

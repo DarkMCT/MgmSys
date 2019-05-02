@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { AgentRegisterStudentAluno } from "./agent_register_student_aluno";
 import { AgentRegisterStudentAlunoVisita } from "./agent_register_student_aluno_visita";
+import { make_request } from "./request";
 
 export class AgentRegisterStudent extends Component {
     constructor(props) {
@@ -25,16 +26,11 @@ export class AgentRegisterStudent extends Component {
     send_to_server = () => {
         const {menu_progress, communication_status, ...data} = this.state;
 
-        const header = new Headers();
-        header.set("content-type", "application/json");
-
-        fetch(this.props.backendAddr + "/visita_aluno", {
-            headers: header,
-            credentials: "include",
-            method: "POST",
-            mode: "cors",
-            body: JSON.stringify(data),
-        }).then( res =>{
+        make_request(
+            "/visita_aluno",
+            "POST",
+            JSON.stringify(data)
+        ).then( res =>{
             if (res.status === 200){
                 this.setState({ ...this.reset_state, communication_status: "Dados enviados com sucesso!"} );
             } else {

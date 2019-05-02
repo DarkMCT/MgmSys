@@ -35,16 +35,16 @@ export class RequestDetailVisitante extends Component {
                     </thead>
                     <tbody>
                         <tr>
-                            <th scope="row">Data</th>
-                            <td>{format_date(this.state.visita_visitante.data)}</td>
+                            <th scope="row">Data (Início)</th>
+                            <td>{format_date(this.state.visita_visitante.data_inicio)}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Data (Término)</th>
+                            <td>{format_date(this.state.visita_visitante.data_fim)}</td>
                         </tr>
                         <tr>
                             <th scope="row">Frequência</th>
                             <td>{this.state.visita_visitante.frequencia}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Duração</th>
-                            <td>{this.state.visita_visitante.duracao}</td>
                         </tr>
                         <tr>
                             <th scope="row">Horário (Início)</th>
@@ -61,7 +61,12 @@ export class RequestDetailVisitante extends Component {
                     </tbody>
                     <thead className="thead-dark">
                         <tr>
-                            <th className="text-center" scope="col" colSpan="2">Visitante</th>
+                            <th
+                                className="text-center"
+                                scope="col"
+                                colSpan="2">
+                                Visitante
+                            </th>
                         </tr>
                         <tr>
                             <th scope="col">Campo</th>
@@ -100,7 +105,12 @@ export class RequestDetailVisitante extends Component {
                     </tbody>
                     <thead className="thead-dark">
                         <tr>
-                            <th className="text-center" scope="col" colSpan="2">Empresa</th>
+                            <th
+                                className="text-center"
+                                scope="col"
+                                colSpan="2">
+                                Empresa
+                            </th>
                         </tr>
                         <tr>
                             <th scope="col">Campo</th>

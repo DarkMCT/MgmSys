@@ -1,23 +1,13 @@
 import React, { Component } from "react";
 
-/*
-  "objetivo" varchar(480),
-  "data" date,
-  "frequencia" varchar(120),
-  "duracao" int,
-  "pernoite" char(1),
-  "horario_inicio" time,
-  "horario_fim" time,
-*/
-
 export class AgentRegisterVisitorVisitanteVisita extends Component{
     constructor(props){
         super(props);
         this.state = {
             objetivo: "",
-            data: "",
+            data_inicio: "",
+            data_fim: "",
             frequencia: "",
-            duracao: "",
             pernoite: false,
             horario_inicio: "",
             horario_fim: "",
@@ -41,9 +31,9 @@ export class AgentRegisterVisitorVisitanteVisita extends Component{
     save_data = () => {
         const visitante_visita = {
             objetivo: this.state.objetivo,
-            data: this.state.data,
+            data_inicio: this.state.data_inicio,
+            data_fim: this.state.data_fim,
             frequencia: this.state.frequencia,
-            duracao: this.state.duracao,
             pernoite: this.state.pernoite,
             horario_inicio: this.state.horario_inicio,
             horario_fim: this.state.horario_fim,
@@ -61,21 +51,21 @@ export class AgentRegisterVisitorVisitanteVisita extends Component{
 
                 <div className="row">
                     <div className="form-group col-6">
-                        <label htmlFor="data">Data</label>
+                        <label htmlFor="data_inicio">Data (Início)</label>
                         <input
-                            type="date" id="data" ref={ this.data } className="form-control" placeholder="Digite a data de início do evento..."
-                            value={this.state.data} onChange={e=>this.setState({data: e.target.value})}>
+                            type="date" id="data_inicio" className="form-control" placeholder="Digite a data de início do evento..."
+                            value={this.state.data_inicio} onChange={e=>this.setState({data_inicio: e.target.value})}>
                         </input>
                         <small className="form-text text-muted">Ex: 01/01/2011</small>
                     </div>
 
                     <div className="form-group col-6">
-                        <label htmlFor="duracao">Duração</label>
+                        <label htmlFor="data_fim">Data (Término)</label>
                         <input
-                            type="text" id="duracao" ref={this.duracao} className="form-control" placeholder="Digite a duração do evento..."
-                            value={this.state.duracao} onChange={e=>this.setState({duracao: e.target.value})}>
+                            type="date" id="data_fim" className="form-control" placeholder="Digite a data de término do evento..."
+                            value={this.state.data_fim} onChange={e=>this.setState({data_fim: e.target.value})}>
                         </input>
-                        <small className="form-text text-muted">Ex: Dois dias, Três semanas...</small>
+                        <small className="form-text text-muted">Ex: 06/01/2011</small>
                     </div>
                 </div>
 

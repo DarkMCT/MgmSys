@@ -91,16 +91,16 @@ export class RequestEditAluno extends Component {
                     </thead>
                     <tbody>
                         <tr>
-                            <th scope="row">Data</th>
-                            <td>{ this.make_input("visita_aluno", "data", "date", date_parse(this.state.visita_aluno.data)) }</td>
+                            <th scope="row">Data (Início)</th>
+                            <td>{ this.make_input("visita_aluno", "data_inicio", "date", date_parse(this.state.visita_aluno.data_inicio)) }</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Data (Término)</th>
+                            <td>{ this.make_input("visita_aluno", "data_fim", "date", date_parse(this.state.visita_aluno.data_fim)) }</td>
                         </tr>
                         <tr>
                             <th scope="row">Frequência</th>
                             <td>{ this.make_input("visita_aluno", "frequencia", "text", this.state.visita_aluno.frequencia) }</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Duração</th>
-                            <td>{ this.make_input("visita_aluno", "duracao", "text", this.state.visita_aluno.duracao) }</td>
                         </tr>
                         <tr>
                             <th scope="row">Horário (Início)</th>

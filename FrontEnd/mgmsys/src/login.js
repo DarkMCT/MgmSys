@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { make_request } from "./request";
 
 // should you pass a callback to be executed when the login
 // success (onSuccess) or fail  (onFail)
@@ -15,21 +16,15 @@ export class Login extends Component {
     }
 
     authenticate = () => {
-        const header = new Headers();
-        header.append('Content-Type', 'application/json');
-        header.append('Accept', 'application/json');
-
-        fetch('http://localhost:3001/auth', {
-            method: 'POST',
-            mode: "cors",
-            headers: header,
-            credentials: 'include',
-            body: JSON.stringify({
+        make_request(
+            "/auth",
+            "POST",
+            JSON.stringify({
                 operation: 'login',
                 siape: this.state.siape,
                 senha: this.state.senha,
-            }),
-        }).then((res) => {
+            })
+        ).then((res) => {
             if (res.status !== 200) {
                 this.setState({
                     message: "Usuário não encontrado",
@@ -64,7 +59,11 @@ export class Login extends Component {
                 </div>
                 <div className="form-group">
                     <label htmlFor="siape">Siape:</label>
-                    <input type="text" name="siape" id="siape" className="form-control"
+                    <input
+                        type="text"
+                        name="siape"
+                        id="siape"
+                        className="form-control"
                         onChange={event => {
                             this.setState({
                                 siape: event.target.value
@@ -74,7 +73,11 @@ export class Login extends Component {
                 </div>
                 <div className="form-group">
                     <label htmlFor="password">Senha:</label>
-                    <input type="password" name="password" id="password" className="form-control"
+                    <input
+                        type="password"
+                        name="password"
+                        id="password"
+                        className="form-control"
                         onChange={event => {
                             this.setState({
                                 senha: event.target.value
@@ -84,14 +87,19 @@ export class Login extends Component {
                 </div>
                 <label className="text-danger text-small">{this.state.message}</label>
 
-                <button type="button" className="btn btn-outline-secondary w-50" onClick={() => this.props.onRegister()}>
+                <button
+                    type="button"
+                    className="btn btn-outline-secondary w-50"
+                    onClick={() => this.props.onRegister()}>
                     Registrar
                 </button>
 
-                <button type="button" className="btn btn-outline-primary w-50" onClick={this.authenticate}>
+                <button
+                    type="button"
+                    className="btn btn-outline-primary w-50"
+                    onClick={this.authenticate}>
                     Login
                 </button>
-
             </div>
         );
     }

@@ -1,5 +1,6 @@
 
 import React, { Component } from "react";
+import { make_request } from "./request";
 
 export class Register extends Component {
     constructor(props) {
@@ -25,19 +26,12 @@ export class Register extends Component {
     }
 
     fetchDepartaments = () => {
-        const header = new Headers();
-        header.append('Content-Type', 'application/json');
-        header.append('Accept', 'application/json');
-        fetch(this.props.backendAddr + "/departamento", {
-            headers: header,
-            mode: "cors",
-            credentials: "include",
-            method: "GET",
-        }).then(res => {
+        make_request(
+            "/departamento",
+            "GET"
+        ).then(res => {
             return res.json();
         }).then(data => {
-            console.log(data);
-
             this.setState({ departamentos: data });
         }).catch(err => {
             console.error(err);
@@ -62,17 +56,11 @@ export class Register extends Component {
     }
 
     sendCredentials = () => {
-        const header = new Headers();
-        header.append('Content-Type', 'application/json');
-        header.append('Accept', 'application/json');
-        fetch(this.props.backendAddr + "/auth", {
-            method: "POST",
-            credentials: "include",
-            mode: "cors",
-            headers: header,
-            body:  JSON.stringify(this.state.credentials),
-        })
-        .then( res => {
+        make_request(
+            "/auth",
+            "POST",
+            JSON.stringify(this.state.credentials)
+        ).then( res => {
             if (res.status === 200)
                 this.props.onBack();
             else
@@ -194,8 +182,16 @@ export class Register extends Component {
                 <br />
                 <div className="container">
                     <div className="row justify-content-between">
-                        <button className="btn btn-outline-secondary" onClick={() => this.props.onBack()}>Voltar</button>
-                        <button className="btn btn-outline-primary" onClick={() => { console.log(this.state.credentials); this.sendCredentials() }}>Cadastrar</button>
+                        <button
+                            className="btn btn-outline-secondary"
+                            onClick={() => this.props.onBack()}>
+                            Voltar
+                        </button>
+                        <button
+                            className="btn btn-outline-primary"
+                            onClick={() => { this.sendCredentials() }}>
+                            Cadastrar
+                        </button>
                     </div>
                 </div>
                 <div className="footer"></div>

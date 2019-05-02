@@ -3,6 +3,7 @@ import { AgentRegisterVisitorVisitante } from "./agent_register_visitor_visitant
 import { AgentRegisterVisitorVisitanteVeiculo } from "./agent_register_visitor_visitante_veiculo";
 import { AgentRegisterVisitorVisitanteVisita } from "./agent_register_visitor_visitante_visita";
 import { AgentRegisterVisitorEmpresa } from "./agent_register_visitor_empresa";
+import { make_request } from "./request";
 
 export class AgentRegisterVisitor extends Component {
     constructor(props) {
@@ -35,16 +36,11 @@ export class AgentRegisterVisitor extends Component {
     send_to_server = () => {
         const {menu_progress, communication_status, ...data} = this.state;
 
-        const header = new Headers();
-        header.set("content-type", "application/json");
-
-        fetch(this.props.backendAddr + "/visita_visitante", {
-            headers: header,
-            credentials: "include",
-            method: "POST",
-            mode: "cors",
-            body: JSON.stringify(data),
-        }).then( res =>{
+        make_request(
+            "/visita_visitante",
+            "POST",
+            JSON.stringify(data)
+        ).then( res =>{
             if (res.status === 200){
                 this.setState({ ...this.reset_state, communication_status: "Dados enviados com sucesso!"} );
             } else {
