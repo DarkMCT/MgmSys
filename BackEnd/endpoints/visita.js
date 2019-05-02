@@ -41,7 +41,7 @@ const get_visits = (fk_id_usuario) => {
     const knex = db_instance();
 
     const subquery = knex
-        .column({id: "id_visita_aluno"}, "nome", "data", "status_de_aprovacao", knex.raw("'aluno' as tipo_requisicao"))
+        .column({id: "id_visita_aluno"}, "nome", {data: "data_inicio"}, "status_de_aprovacao", knex.raw("'aluno' as tipo_requisicao"))
         .select()
         .from("visita_aluno")
         .where(knex.raw("fk_id_usuario=?", [fk_id_usuario]))
@@ -51,7 +51,7 @@ const get_visits = (fk_id_usuario) => {
             knex.raw(`SELECT
                         id_visita_visitante AS id,
                         nome,
-                        "data",
+                        data_inicio as data,
                         status_de_aprovacao,
                         'visitante' AS tipo_requisicao
                     FROM
@@ -64,7 +64,7 @@ const get_visits = (fk_id_usuario) => {
             knex.raw(`SELECT
                         id_visita_servidor AS id,
                         nome,
-                        "data",
+                        data_fim as data,
                         status_de_aprovacao,
                         'servidor' AS tipo_requisicao
                     FROM
@@ -86,7 +86,7 @@ const get_visits_for_managers = () => {
         `(SELECT
             id_visita_aluno AS id,
             aluno.nome AS nome,
-            "data",
+            data_inicio AS data,
             status_de_aprovacao,
             'aluno' AS tipo_requisicao,
             usuario.nome AS requerente
@@ -100,7 +100,7 @@ const get_visits_for_managers = () => {
         SELECT
             id_visita_visitante AS id,
             visitante.nome,
-            "data",
+            data_inicio AS data,
             status_de_aprovacao,
             'visitante' AS tipo_requisicao,
             usuario.nome AS requerente
@@ -114,7 +114,7 @@ const get_visits_for_managers = () => {
         SELECT
             id_visita_servidor AS id,
             servidor.nome,
-            "data",
+            data_inicio AS data,
             status_de_aprovacao,
             'servidor' AS tipo_requisicao,
             usuario.nome AS requerente
@@ -139,7 +139,6 @@ visita_route.route("/visita")
 
     knex.select("*").from(subquery).where(knex.raw("status_de_aprovacao = ?", [0]))
     .then(result=>{
-        console.log(result);
         res.json(result);
     })
     .catch(err=>{
@@ -206,9 +205,7 @@ visita_route.route("/visita")
 
 });
 
-
-
-get_table_name = (tipo_requisicao)=>{
+const get_table_name = (tipo_requisicao)=>{
     let table_name = null;
     if (tipo_requisicao === "aluno")
         table_name = "visita_aluno";
@@ -251,125 +248,9 @@ visita_route.route("/visita/delete/")
     });
 });
 
-
-/* query = (id, table_name) =>{
-    const knex = db_instance();
-
-    return new Promise((resolve, reject) => {
-        knex
-        .select()
-        .from(table_name)
-        .where(knex.raw(`${table_name}.id_${table_name} = ?`, [id]))
-        .timeout(MAX_TIMEOUT)
-        .then(result => {
-            if (result.length === 1)
-                resolve(result[0]);
-            else
-                reject("No row matched.");
-        })
-        .catch(err=>{
-            reject(`Error when trying to query on ${table_names}.`);
-        })
-    });
-}
-
-query_student = (id_visita_aluno) => {
-    const knex = db_instance();
-
-    return new Promise((resolve, reject)=>{
-        let visita_aluno = {};
-
-        query(id_visita_aluno, "visita_aluno")
-        .then(result=>{
-            visita_aluno.visita_aluno = result;
-            const id_aluno = result.fk_id_aluno;
-
-            return query(id_aluno, "aluno");
-        })
-        .then(aluno => {
-            visita_aluno.aluno = aluno;
-
-            resolve(visita_aluno);
-        })
-        .catch(err=>{
-            reject(err);
-        });
-    });
-}
-
-query_visitant = (id_visita_visitante) => {
-    let visita_visitante = {};
-
-    return new Promise((resolve, reject) => {
-        query(id_visita_visitante, "visita_visitante")
-        .then(async result=>{
-            visita_visitante.visita_visitante = result;
-
-            const id_visitante = result.fk_id_visitante;
-            const id_veiculo_visitante = result.fk_id_veiculo_visitante;
-
-            let veiculo_visitante = null;
-            if (id_veiculo_visitante !== null)
-                veiculo_visitante = await query(id_veiculo_visitante, "veiculo_visitante");
-
-            visita_visitante.veiculo_visitante = veiculo_visitante;
-
-            return query(id_visitante, "visitante");
-        })
-        .then(result => {
-            visita_visitante.visitante = result;
-
-            const id_empresa = result.fk_id_empresa;
-
-            return query(id_empresa, "empresa");
-        })
-        .then(result => {
-            visita_visitante.empresa = result;
-
-            resolve(visita_visitante);
-        })
-        .catch(err=>{
-            reject(err);
-        });
-    });
-}
-
-query_employee = (id_visita_servidor) => {
-    let visita_servidor = {};
-
-    return new Promise((resolve, reject)=>{
-        query(id_visita_servidor, "visita_servidor")
-        .then(async result => {
-            visita_servidor.visita_servidor = result;
-
-            const id_servidor = result.fk_id_servidor;
-            const id_veiculo_servidor = result.fk_id_veiculo_servidor;
-
-            let veiculo_servidor = null;
-            if (id_veiculo_servidor !== null)
-                veiculo_servidor = await query(id_veiculo_servidor, "veiculo_servidor");
-
-            visita_servidor.veiculo_servidor = veiculo_servidor;
-
-            return query(id_servidor, "servidor");
-        })
-        .then(servidor => {
-            visita_servidor.servidor = servidor;
-
-            resolve(visita_servidor);
-        })
-        .catch(err => {
-            reject(err);
-        })
-    });
-
-} */
-
 visita_route.route("/visita/query")
 .post( async (req, res, next)=>{
-    // const id = 15;
     const id = req.body.id_visita;
-    // const tipo_requisicao = "visitante";
     const tipo_requisicao = req.body.tipo_requisicao;
 
     if (tipo_requisicao == null){
@@ -387,10 +268,7 @@ visita_route.route("/visita/query")
 
     if (data != null){
         res.json(data);
-    } else {
-        console.log("err");
     }
-
 
 });
 

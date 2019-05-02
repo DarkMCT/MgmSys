@@ -16,6 +16,8 @@ const { visita_route } = require("./endpoints/visita");
 const { report_route } = require("./endpoints/reports");
 
 
+app.use(express.static("./build"));
+
 app.use(cors({
     methods: ["GET", "POST", "PATCH"],
     credentials: true,
@@ -50,11 +52,6 @@ app.use((req, res, next) => {
         res.sendStatus(403);
 });
 
-app.use((req, res, next)=>{
-    console.log(req.session);
-    next("route");
-});
-
 app.use(user_info_route);
 
 app.use(visita_visitante_route);
@@ -68,6 +65,6 @@ app.use(visita_route);
 app.use(report_route);
 
 
-app.listen(3001, ()=>{
+app.listen(3001, "0.0.0.0", ()=>{
     console.log("Server listening at port 3001");
 });

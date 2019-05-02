@@ -1,0 +1,13 @@
+
+
+.footer{
+    padding-top: 200px;
+}
+
+.bg-light-red {
+    background-color: rgba(249, 99, 99, .9);
+}
+
+.bg-light-green {
+    background-color: rgba(99, 249, 99, .9);
+}

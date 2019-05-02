@@ -41,51 +41,60 @@ visita_aluno_route.route("/visita_aluno")
             send_error(res, "Não foi possível listar todas as visitas de alunos.");
         });
 })
-.post(async (req, res, next) => {
+.post((req, res, next) => {
     // extract data from body
     const data = req.body;
+    const fk_id_usuario = req.session.user_info.id_usuario;
+    const knex = db_instance();
 
-    // split between student and visit student
     let { aluno, visita_aluno } = data;
 
-    // Add student
-    let fk_id_aluno = null;
-    try {
-        if (await data_exists("aluno", "matricula", aluno)){
-            fk_id_aluno = await get_id("aluno", "matricula", aluno);
-        } else {
-            fk_id_aluno = await insert_data("aluno", aluno);
-        }
-    } catch(err) {
-        log_error("/visita_aluno", "Trying add student", err, req, "Verify the body of request.");
-        send_error(res, "Não foi possível cadastrar este aluno. Verifique os dados, por favor.");
-    };
+    knex.transaction(trx => {
+        data_exists("aluno", "matricula", aluno)
+        .then(data_exist => {
+            transaction_already_used = !data_exist;
 
-    const fk_id_usuario = req.session.user_info.id_usuario; // req.session.user_id
-
-    // Add visit
-    visita_aluno = {...visita_aluno, fk_id_usuario, fk_id_aluno};
-
-    insert_data("visita_aluno", visita_aluno)
-    .then( id => {
+            if (data_exist)
+                return get_id("aluno", "matricula", aluno);
+            else
+                return insert_data("aluno", aluno, trx);
+        })
+        .then(fk_id_aluno => {
+            visita_aluno = {...visita_aluno, fk_id_usuario, fk_id_aluno};
+            return insert_data(
+                "visita_aluno",
+                visita_aluno,
+                trx
+            );
+        })
+        .then(trx.commit)
+        .catch(trx.rollback);
+    })
+    .then(result=> {
         res.status(200).send("Success to register this visit");
     })
     .catch(err=>{
         log_error("/visita_aluno", "Trying add visit", err, req, "Verify the body of request.");
         send_error(res, "Não foi possível cadastrar esta visita. Verifique os dados, por favor.");
-    });
+    })
+
 })
 .patch(async (req, res, next)=>{
+    // extract data from bosy
     const data_to_update = req.body;
 
+    // verify if the key is present and if is, extract her
     let visita_aluno = "visita_aluno" in data_to_update ? data_to_update["visita_aluno"] : null;
     let aluno = "aluno" in data_to_update ? data_to_update["aluno"] : null;
 
+    // Add student
     try {
         if (visita_aluno) {
             let { id_visita_aluno, ...changed_data} = visita_aluno;
             const updated_rows = await update_data("visita_aluno", id_visita_aluno, changed_data);
 
+            // Just one row should be updated
+            // if more than one was, something is wrong!
             if (updated_rows !== 1)
                 throw new Error("Zero or more than one rows was updated in visit_student.");
         }
@@ -170,7 +179,7 @@ visita_aluno_route.route("/visita_aluno/search")
             })
             .catch(err => {
                 log_error("/visita_aluno/search method=POST", "Searching for already added matricula", err, req,
-                    "Verify if the data is inside some data struct, some unexpected caracter or the data type of "+
+                    "Verify if the data is inside some data struct, some unexpected caracter or the data type of " +
                     "the database is diferent of the expected.");
             })
 

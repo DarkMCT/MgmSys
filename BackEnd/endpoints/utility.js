@@ -49,11 +49,17 @@ const data_exists = (table_name, column_name, data)=>{
     });
 }
 
-const insert_data = (table_name, data)=>{
+const insert_data = (table_name, data, trx)=>{
     const knex = db_instance();
 
     return new Promise((resolve, reject) => {
-        knex(table_name).insert(data).returning(`id_${table_name}`)
+        let stmt = knex(table_name);
+
+        if (trx != null)
+            stmt = stmt.transacting(trx);
+
+        stmt.insert(data)
+        .returning(`id_${table_name}`)
         .timeout(MAX_TIMEOUT)
         .then(id => {
             if (id.length === 1)
@@ -70,7 +76,8 @@ const insert_data = (table_name, data)=>{
 const get_id =  (table_name, column_name, data)=>{
     const knex = db_instance();
     return new Promise((resolve, reject)=> {
-        knex(table_name).select(`id_${table_name}`)
+        knex(table_name)
+        .select(`id_${table_name}`)
         .where(knex.raw(`${column_name} = ?`,[data[column_name]]))
         .timeout(MAX_TIMEOUT)
         .then(id => {

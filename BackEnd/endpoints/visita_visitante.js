@@ -58,12 +58,13 @@ visita_visitante_route.route("/visita_visitante")
 .post( async (req, res, next)=>{
     // extract data from body
     const data = req.body;
-    console.log(data);
+    const knex = db_instance();
 
     // split between visitante, veiculo_visitante, empresa, visita_visitante
     let {visitante, veiculo_visitante, empresa, visita_visitante} = data;
 
     // foreign keys
+    let fk_id_usuario = req.session.user_info.id_usuario;
     let fk_id_visitante = null;
     let fk_id_empresa = null;
     let fk_id_veiculo_visitante = null;
@@ -75,58 +76,63 @@ visita_visitante_route.route("/visita_visitante")
     if (veiculo_visitante) // vehicle is optional
         veiculo_visitante.placa = remove_mark_signs(veiculo_visitante.placa);
 
-    // add vehicle
-    try {
-        if (veiculo_visitante != null) {
-            if (await data_exists("veiculo_visitante", "placa", veiculo_visitante)) {
-                fk_id_veiculo_visitante = await get_id("veiculo_visitante", "placa", veiculo_visitante);
-            } else {
-                fk_id_veiculo_visitante = await insert_data("veiculo_visitante", veiculo_visitante);
-            }
-        }
-    } catch(err) {
-        log_error("/visita_visitante", "Trying add vehicle", err, req, "Verify the body of request.");
-        send_error(res, "Não foi possível cadastrar este veículo. Verifique os dados, por favor.");
-        return;
-    }
 
-    // add company
-    try {
-        if (await data_exists("empresa", "cnpj", empresa)){
-            fk_id_empresa = await get_id("empresa", "cnpj", empresa);
-        } else {
-            fk_id_empresa = await insert_data("empresa", empresa);
-        }
-    } catch(err) {
-        log_error("/visita_visitante", "Trying add company", err, req, "Verify the body of request.");
-        send_error(res, "Não foi possível cadastrar esta empresa. Verifique os dados, por favor.");
-        return;
-    }
+    knex.transaction( trx =>  {
+        let thread = null;
+        if (veiculo_visitante != null)
+            thread = data_exists("veiculo_visitante", "placa", veiculo_visitante);
+        else
+            thread = Promise.resolve(null);
 
-    // add visitant
-    try{
-        if (fk_id_empresa == null) throw new Error("Company is null");
+        thread.then( vehicle_exists => {
+            if (vehicle_exists === true)
+                return get_id("veiculo_visitante", "placa", veiculo_visitante);
+            else if (vehicle_exists === false)
+                return insert_data("veiculo_visitante", veiculo_visitante, trx);
+            else
+                return Promise.resolve(null);
 
-        visitante = {...visitante, fk_id_empresa};
+        })
+        .then(_fk_id_veiculo_visitante => {
+            fk_id_veiculo_visitante = _fk_id_veiculo_visitante;
 
-        if (await data_exists("visitante", "rg", visitante)){
-            fk_id_visitante = await get_id("visitante", "rg", visitante);
-        } else {
-            fk_id_visitante = await insert_data("visitante", visitante);
-        }
-    } catch(err) {
-        log_error("/visita_visitante", "Trying add visitant", err, req, "Verify the body of request.");
-        send_error(res, "Não foi possível cadastrar este visitante. Verifique os dados, por favor.");
-        return;
-    }
+            return data_exists("empresa", "cnpj", empresa);
+        })
+        .then(company_exists => {
+            if (company_exists)
+                return get_id("empresa", "cnpj", empresa);
+            else
+                return insert_data("empresa", empresa, trx);
+        })
+        .then(_fk_id_empresa=>{
+            fk_id_empresa = _fk_id_empresa;
 
-    let fk_id_usuario = req.session.user_info.id_usuario;
+            visitante = {...visitante, fk_id_empresa};
 
-    visita_visitante = {...visita_visitante, fk_id_usuario, fk_id_visitante, fk_id_veiculo_visitante};
+            return data_exists("visitante", "rg", visitante);
+        })
+        .then(visitant_exists => {
+            if (visitant_exists)
+                return get_id("visitante", "rg", visitante);
+            else
+                return insert_data("visitante", visitante, trx);
+        })
+        .then(_fk_id_visitante => {
+            fk_id_visitante = _fk_id_visitante;
 
-    // add visit
-    insert_data("visita_visitante", visita_visitante)
-    .then( id => {
+            visita_visitante = {
+                ...visita_visitante,
+                fk_id_usuario,
+                fk_id_visitante,
+                fk_id_veiculo_visitante
+            };
+            // add visit
+            return insert_data("visita_visitante", visita_visitante, trx);
+        })
+        .then(trx.commit)
+        .catch(trx.rollback);
+    })
+    .then( () => {
         res.status(200).send("Success to register this visit");
     })
     .catch( err => {

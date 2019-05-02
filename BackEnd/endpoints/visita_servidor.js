@@ -49,8 +49,12 @@ visita_servidor_route.route("/visita_servidor")
 .post(async (req, res, next)=>{
     // extract data from body
     const data = req.body;
+    const fk_id_usuario = req.session.user_info.id_usuario; //req.session.user_id;
+    const knex = db_instance();
     // split between servidor, veiculo_servidor, visita_servidor
     let { servidor, veiculo_servidor, visita_servidor } = data;
+    let fk_id_veiculo_servidor = null;
+    let fk_id_servidor = null;
 
     servidor.cpf = remove_mark_signs(servidor.cpf);
     servidor.rg = remove_mark_signs(servidor.rg);
@@ -58,61 +62,77 @@ visita_servidor_route.route("/visita_servidor")
     if (veiculo_servidor)
         veiculo_servidor.placa = remove_mark_signs(veiculo_servidor.placa);
 
-    let fk_id_veiculo_servidor = null;
-    let fk_id_servidor = null;
+    knex.transaction( trx => {
+        let thread = null;
 
-    try {
-        if (veiculo_servidor != null){
-            if (await data_exists("veiculo_servidor", "placa", veiculo_servidor) === true){
-                fk_id_veiculo_servidor = await get_id("veiculo_servidor", "placa", veiculo_servidor);
-            } else {
-                fk_id_veiculo_servidor = await insert_data("veiculo_servidor", veiculo_servidor);
-            }
-        }
-    } catch(err){
-        log_error("/visita_servidor", "Trying add vehicle", err, req, "Verify the body of request.");
-        send_error(res, "Não foi possível cadastrar este veículo. Verifica os dados, por favor.");
-        return;
-    }
+        // We use the variable "thread" because the vehicle is not always pre-
+        // sent
+        if (veiculo_servidor != null)
+            thread =  data_exists("veiculo_servidor", "placa", veiculo_servidor);
+        else
+            thread = Promise.resolve(null);
 
-    try {
-        if (servidor == null) {
-            send_error(res, "Não foi possível cadastrar os dados desta visita. Verifique se os dados estão corretos.");
-            return;
-        } else {
-            if (await data_exists("servidor", "siape", servidor) === true){
-                fk_id_servidor = await get_id("servidor", "siape", servidor);
-            } else {
-                fk_id_servidor = await insert_data("servidor", servidor);
-            }
-        }
-    } catch(err) {
-        log_error("/visita_servidor", "Trying add employee", err, req, "Verify the body of request.");
-        send_error(res, "Não foi possível cadastrar este servidor. Verifica os dados, por favor.");
-        return;
-    }
+        thread.then(vehicle_exist => {
+            if (vehicle_exist === true)
+                return get_id("veiculo_servidor", "placa", veiculo_servidor);
+            else if (vehicle_exist === false)
+                return insert_data("veiculo_servidor", veiculo_servidor, trx);
+            else Promise.resolve(null);
+        })
+        .then( _fk_id_veiculo_servidor => {
+            fk_id_veiculo_servidor = _fk_id_veiculo_servidor;
 
-    const fk_id_usuario = req.session.user_info.id_usuario; //req.session.user_id;
+            return data_exists("servidor", "siape", servidor);
+        })
+        .then(employee_exists => {
+            if (employee_exists)
+                return get_id("servidor", "siape", servidor);
+            else
+                return insert_data("servidor", servidor, trx);
+        })
+        .then(_fk_id_servidor => {
+            fk_id_servidor = _fk_id_servidor;
 
-    visita_servidor = {...visita_servidor, fk_id_usuario, fk_id_veiculo_servidor, fk_id_servidor};
+            visita_servidor = {
+                ...visita_servidor,
+                fk_id_usuario,
+                fk_id_veiculo_servidor,
+                fk_id_servidor,
+            };
 
-    insert_data("visita_servidor", visita_servidor)
-    .then(id => {
+            return insert_data("visita_servidor", visita_servidor, trx)
+        })
+        .then(trx.commit)
+        .catch(trx.rollback);
+    })
+    .then(() => {
         res.status(200).send("Success to register this visit");
     })
     .catch(err=>{
         log_error("/visita_servidor method=POST", "Adding visit.", err, req);
-        send_error(res, "Não foi possível cadastrar os dados desta visita. Verifique se os dados estão corretos.");
+        send_error(res, "Não foi possível cadastrar os dados desta visita. " +
+            "Verifique se os dados estão corretos.");
     });
 })
 .patch(async (req, res, next)=>{
+    // extract data from the body
     const data_to_update = req.body;
 
-    let visita_servidor = "visita_servidor" in data_to_update ? data_to_update["visita_servidor"] : null;
-    let servidor = "servidor" in data_to_update ? data_to_update["servidor"] : null;
-    let veiculo_servidor = "veiculo_servidor" in data_to_update ? data_to_update["veiculo_servidor"] : null;
+    // extract if the key exist else let as null
+    let visita_servidor = "visita_servidor" in data_to_update
+        ? data_to_update["visita_servidor"]
+        : null ;
+
+    let servidor = "servidor" in data_to_update
+        ? data_to_update["servidor"]
+        : null ;
+
+    let veiculo_servidor = "veiculo_servidor" in data_to_update
+        ? data_to_update["veiculo_servidor"]
+        : null ;
 
     try {
+        // Update employee visit
         if (visita_servidor) {
             let { id_visita_servidor, ...changed_data} = visita_servidor;
             const updated_rows = await update_data("visita_servidor", id_visita_servidor, changed_data);
@@ -121,6 +141,7 @@ visita_servidor_route.route("/visita_servidor")
                 throw new Error("Zero or more than one rows was updated in visit_employee.");
         }
 
+        // Update employee
         if (servidor) {
             let { id_servidor, ...changed_data} = servidor;
             const updated_rows = await update_data("servidor", id_servidor, changed_data);
@@ -129,6 +150,7 @@ visita_servidor_route.route("/visita_servidor")
                 throw new Error("Zero or more than one rows was updated in student.");
         }
 
+        // Update vehicle if any
         if (veiculo_servidor) {
             let { id_veiculo_servidor, ...changed_data} = veiculo_servidor;
             const updated_rows = await update_data("veiculo_servidor", id_veiculo_servidor, changed_data);
@@ -138,6 +160,7 @@ visita_servidor_route.route("/visita_servidor")
         }
 
         res.sendStatus(200);
+
     } catch (err) {
         send_error(res, "Não foi possível alterar os dados. Verifique se você preencheu os campos corretamente.");
         log_error("/visita_servidor", "Trying to update visit", err, req);
@@ -156,17 +179,22 @@ visita_servidor_route.route("/visita_servidor")
 //          On failure, the response has the status code 400
 visita_servidor_route.route("/visita_servidor/:id")
 .get((req, res, next)=>{
+    // extract id
     const id = req.params.id;
+
+    // get a connection of database
     const knex = db_instance();
 
-    knex.select().from("visita_servidor").timeout(MAX_TIMEOUT)
+    knex.select()
+    .from("visita_servidor")
+    .timeout(MAX_TIMEOUT)
     .where(knex.raw("visita_servidor.id_visita_servidor = ?", [id]))
-        .then( result => {
-            res.status(200).json(result);
-        }).catch(err=>{
-            log_error("/visita_servidor/:id method=GET", )
-            send_error(res, "Não foi possível verificar por esta visita.");
-        });
+    .then( result => {
+        res.status(200).json(result);
+    }).catch(err=>{
+        log_error("/visita_servidor/:id method=GET", )
+        send_error(res, "Não foi possível verificar por esta visita.");
+    });
 });
 
 // Route name: /visita_servidor/search
@@ -184,6 +212,7 @@ visita_servidor_route.route("/visita_servidor/:id")
 //          On failure, the response has the status code 400
 visita_servidor_route.route("/visita_servidor/search")
 .post((req, res, next)=>{
+    // Discard if is not of this route
     if (req.body.what !== "SIAPE"){
         next();
         return;
@@ -198,8 +227,9 @@ visita_servidor_route.route("/visita_servidor/search")
 
     const knex = db_instance();
 
-    let stmt = knex("servidor").select().where(knex.raw("siape = ?", [siape]));
-
+    let stmt = knex("servidor")
+        .select()
+        .where(knex.raw("siape = ?", [siape]));
 
     stmt.timeout(MAX_TIMEOUT)
     .then( result => {
@@ -219,6 +249,7 @@ visita_servidor_route.route("/visita_servidor/search")
 
 })
 .post((req, res, next)=>{
+    // Discard if is not of this route
     if (req.body.what !== "PLACA") {
         next();
         return;
@@ -231,6 +262,7 @@ visita_servidor_route.route("/visita_servidor/search")
         return;
     }
 
+    // The marks are removed because this can affect the search
     placa = remove_mark_signs(placa);
 
     const knex = db_instance();

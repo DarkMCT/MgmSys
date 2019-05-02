@@ -101,7 +101,7 @@ route.route('/auth')
     const { siape, senha } = req.body;
 
     DB.authUser(siape, senha, (err, user_info) => {
-        console.log(err);
+        // console.log(err);
         if ( err == null ){
             req.session.user_info = user_info;
             const { id_usuario, ...user_info_without_user_id } = user_info;
@@ -156,7 +156,7 @@ route.route('/auth')
 
     // try to destroy
     // if not possible, just set to null
-    console.log(req.session);
+    // console.log(req.session);
     if ( req.session.user_info ){
         req.session.user_info = null;
     }
