@@ -15,7 +15,6 @@ export class RequestDetailAluno extends Component {
         if (this.props.data != null)  {
             const visita_aluno = this.props.data;
             this.setState({...visita_aluno})
-            console.log({...visita_aluno});
         }
     }
 
@@ -95,7 +94,7 @@ export class RequestDetailAluno extends Component {
                             <th scope="row">Email</th>
                             <td>{this.state.aluno.email}</td>
                         </tr>
-                        <tr>
+                       {/*  <tr>
                             <th scope="row">Telefone</th>
                             <td>{this.state.aluno.telefone}</td>
                         </tr>
@@ -106,7 +105,7 @@ export class RequestDetailAluno extends Component {
                         <tr>
                             <th scope="row">Endereço</th>
                             <td>{this.state.aluno.endereco}</td>
-                        </tr>
+                        </tr> */}
                         <tr>
                             <th scope="row">Curso</th>
                             <td>{this.state.aluno.curso}</td>

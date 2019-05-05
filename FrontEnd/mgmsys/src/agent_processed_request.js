@@ -42,15 +42,9 @@ export class AgentProcessedRequest extends Component {
         this.search();
     }
 
-    __onPDF = (row) => {
-        console.log("PDF");
-        // console.log(this.data[row]);
-    }
 
     __onDetail = (row) => {
         this.setState({current_action: "detail", selected_row: row})
-        console.log("Detail");
-        // console.log(this.data[row]);
     }
 
     format_data = () => {
@@ -66,7 +60,6 @@ export class AgentProcessedRequest extends Component {
                     <td>{format_date(row.data)}</td>
                     <td>{row.status_de_aprovacao === 1 ? "Aprovado" : "Não aprovado"}</td>
                     <td>
-                    {/* <button className="btn btn-outline-primary" onClick={() => { this.__onPDF(row) }}>Gerar PDF</button><span className="pr-1"></span> */}
                         <button className="btn btn-primary" onClick={() => { this.__onDetail(row) }}>Detalhes</button>
                     </td>
                 </tr>

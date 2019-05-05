@@ -67,7 +67,7 @@ const insert_data = (table_name, data, trx)=>{
             else
                 reject("Zero or more than one result.");
         })
-        .catch((err) => {
+        .catch(err => {
             reject("Don't was possible to add this data.");
         })
     });
@@ -101,7 +101,7 @@ const update_data = (table_name, id, data) => {
         .timeout(MAX_TIMEOUT);
 }
 
-query = (id, table_name) =>{
+const query = (id, table_name) =>{
     const knex = db_instance();
 
     return new Promise((resolve, reject) => {
@@ -122,7 +122,7 @@ query = (id, table_name) =>{
     });
 }
 
-query_student = (id_visita_aluno) => {
+const query_student = (id_visita_aluno) => {
     const knex = db_instance();
 
     return new Promise((resolve, reject)=>{
@@ -146,7 +146,7 @@ query_student = (id_visita_aluno) => {
     });
 }
 
-query_visitant = (id_visita_visitante) => {
+const query_visitant = (id_visita_visitante) => {
     let visita_visitante = {};
 
     return new Promise((resolve, reject) => {
@@ -158,7 +158,7 @@ query_visitant = (id_visita_visitante) => {
             const id_veiculo_visitante = result.fk_id_veiculo_visitante;
 
             let veiculo_visitante = null;
-            if (id_veiculo_visitante !== null)
+            if (id_veiculo_visitante)
                 veiculo_visitante = await query(id_veiculo_visitante, "veiculo_visitante");
 
             visita_visitante.veiculo_visitante = veiculo_visitante;
@@ -169,8 +169,10 @@ query_visitant = (id_visita_visitante) => {
             visita_visitante.visitante = result;
 
             const id_empresa = result.fk_id_empresa;
-
-            return query(id_empresa, "empresa");
+            if (id_empresa)
+                return query(id_empresa, "empresa");
+            else
+                return Promise.resolve(null);
         })
         .then(result => {
             visita_visitante.empresa = result;
@@ -183,7 +185,7 @@ query_visitant = (id_visita_visitante) => {
     });
 }
 
-query_employee = (id_visita_servidor) => {
+const query_employee = (id_visita_servidor) => {
     let visita_servidor = {};
 
     return new Promise((resolve, reject)=>{

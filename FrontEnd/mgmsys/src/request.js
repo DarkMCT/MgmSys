@@ -1,6 +1,6 @@
 
 // back-end url
-const base_url = "http://192.168.0.55:3001";
+const base_url = "http://localhost:3001";
 
 const header = new Headers();
 header.set("content-type", "application/json");

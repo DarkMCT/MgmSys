@@ -7,7 +7,7 @@ export class AgentRegisterVisitorVisitanteVisita extends Component{
             objetivo: "",
             data_inicio: "",
             data_fim: "",
-            frequencia: "",
+            frequencia: "Diário",
             pernoite: false,
             horario_inicio: "",
             horario_fim: "",
@@ -92,11 +92,15 @@ export class AgentRegisterVisitorVisitanteVisita extends Component{
                 <div className="row">
                     <div className="form-group col-6">
                         <label htmlFor="frequencia">Frequência das visitas</label>
-                        <input
-                            type="text" id="frequencia" ref={this.frequencia} className="form-control" placeholder="Digite a frequência das visitas..."
-                            value={this.state.frequencia} onChange={e=>this.setState({frequencia: e.target.value})}>
-                        </input>
-                        <small className="form-text text-muted">Ex: Todos os dias, A cada dois dias</small>
+                        <select
+                            id="frequencia" className="form-control"
+                            value={this.state.frequencia}
+                            onChange={e=>this.setState({frequencia: e.target.value})}>
+                            <option value={"Diário"}  key="1">Diário</option>
+                            <option value={"Semanal"} key="2">Semanal</option>
+                            <option value={"Mensal"}  key="3">Mensal</option>
+                        </select>
+                        <small className="form-text text-muted">Ex: Diário, Semanal</small>
                     </div>
 
                     <div className="form-group col-6">
@@ -107,7 +111,7 @@ export class AgentRegisterVisitorVisitanteVisita extends Component{
                             <option value={false} key="1">Não</option>
                             <option value={true}  key="2">Sim</option>
                         </select>
-                        <small className="form-text text-muted">Ex: (65) 99999-9999, 99999-9999, 3000-0000</small>
+                        <small className="form-text text-muted">Ex: Sim, Não</small>
                     </div>
                 </div>
 
@@ -123,7 +127,7 @@ export class AgentRegisterVisitorVisitanteVisita extends Component{
                 </div>
 
                 <div className="row pt-3">
-                <div className="col-6">
+                    <div className="col-6">
                         <button className="btn btn-secondary float-left" onClick={()=>{ this.save_data(); this.props.onBack(); }}>Voltar</button>
                     </div>
                     <div className="col-6">

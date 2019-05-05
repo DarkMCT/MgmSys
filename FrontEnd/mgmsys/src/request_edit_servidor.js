@@ -148,7 +148,7 @@ export class RequestEditServidor extends Component {
                             <th scope="row">Email</th>
                             <td>{ this.make_input("servidor", "email", "text", this.state.servidor.email) }</td>
                         </tr>
-                        <tr>
+                        {/* <tr>
                             <th scope="row">Telefone</th>
                             <td>{ this.make_input("servidor", "telefone", "text", this.state.servidor.telefone) }</td>
                         </tr>
@@ -159,7 +159,7 @@ export class RequestEditServidor extends Component {
                         <tr>
                             <th scope="row">Endereço</th>
                             <td>{ this.make_input("servidor", "endereco", "text", this.state.servidor.endereco) }</td>
-                        </tr>
+                        </tr> */}
                     </tbody>
 
                     <thead className="thead-dark">

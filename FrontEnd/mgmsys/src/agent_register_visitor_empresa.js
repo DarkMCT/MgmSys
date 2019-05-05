@@ -6,17 +6,15 @@ export class AgentRegisterVisitorEmpresa extends Component{
         super(props);
         this.state= {
             nome: "",
-            cep: "",
+            // cep: "",
             cnpj: "",
-            telefone: "",
+            // telefone: "",
+
+            autonomo: true,
 
             readonly: true,
         };
 
-        this.empresa_nome = React.createRef();
-        this.empresa_cep = React.createRef();
-        this.empresa_cnpj = React.createRef();
-        this.empresa_telefone = React.createRef();
     }
 
     search = ()=>{
@@ -47,8 +45,11 @@ export class AgentRegisterVisitorEmpresa extends Component{
 
     componentDidMount = () => {
         const initial_data = this.props.onInitialValues();
-        if (initial_data != null)
-            this.setState({...initial_data});
+        if (initial_data != null) {
+            const autonomo = !(initial_data.cnpj &&
+                initial_data.cnpj.length > 0);
+            this.setState({...initial_data, autonomo: autonomo});
+        }
     }
 
     remove_mark_sings = (str) => {
@@ -56,21 +57,56 @@ export class AgentRegisterVisitorEmpresa extends Component{
     }
 
     save_data = () => {
-        const empresa = {
-            nome: this.state.nome,
-            cep: this.state.cep,
-            cnpj: this.remove_mark_sings(this.state.cnpj),
-            telefone: this.state.telefone,
-        }
+        const empresa = this.state.autonomo
+            ? null
+            : {
+                nome: this.state.nome,
+                cep: this.state.cep,
+                cnpj: this.remove_mark_sings(this.state.cnpj),
+                telefone: this.state.telefone,
+            };
 
         this.props.onSave(empresa);
     };
+
+    change_state_company_state = (value) => {
+        const ro = !value ? true: this.state.readonly;
+        this.setState({ autonomo: value, readonly: ro });
+    }
 
     render = () => {
         return (
             <div className="container">
                 <div className="row">
                     <h1>Dados da empresa...</h1>
+                </div>
+
+                <div className="row justify-content-center">
+                    <div className="form-check form-check-inline">
+                        <input
+                            type="radio"
+                            className="form-check-input"
+                            name="visitante-autonomo"
+                            checked={this.state.autonomo}
+                            onChange={ ()=>this.change_state_company_state(true)}/>
+                        <label
+                            className="form-check-label">
+                            Autônomo
+                        </label>
+                    </div>
+                    <div className="form-check form-check-inline">
+                        <input
+                            type="radio"
+                            className="form-check-input"
+                            name="visitante-autonomo"
+                            checked={!this.state.autonomo}
+                            onChange={ ()=>this.change_state_company_state(false)}>
+                        </input>
+                        <label
+                            className="form-check-label">
+                            Contratado
+                        </label>
+                    </div>
                 </div>
 
                 <div className="row justify-content-center">
@@ -83,6 +119,7 @@ export class AgentRegisterVisitorEmpresa extends Component{
                             placeholder="Digite o CNPJ da empresa"
                             value={this.state.cnpj}
                             onBlur={this.search}
+                            readOnly={this.state.autonomo}
                             onChange={e=>this.setState({cnpj: e.target.value})}>
                         </input>
                         <small
@@ -93,7 +130,7 @@ export class AgentRegisterVisitorEmpresa extends Component{
                 </div>
 
                 <div className="row">
-                    <div className="form-group col-6">
+                    <div className="form-group col">
                         <label htmlFor="empresa_nome">Nome da Empresa</label>
                         <input
                             type="text"
@@ -110,7 +147,7 @@ export class AgentRegisterVisitorEmpresa extends Component{
                         </small>
                     </div>
 
-                    <div className="form-group col-3">
+                   {/*  <div className="form-group col-3">
                         <label htmlFor="cep">CEP</label>
                         <input
                             type="text"
@@ -139,7 +176,7 @@ export class AgentRegisterVisitorEmpresa extends Component{
                             onChange={e=>this.setState({telefone: e.target.value})}>
                         </input>
                         <small className="form-text text-muted">Ex: (00) 0000-0000</small>
-                    </div>
+                    </div> */}
                 </div>
 
                 <div className="row pt-3">

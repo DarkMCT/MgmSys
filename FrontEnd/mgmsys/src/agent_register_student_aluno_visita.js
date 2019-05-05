@@ -7,7 +7,7 @@ export class AgentRegisterStudentAlunoVisita extends Component{
             objetivo: "",
             data_inicio: "",
             data_fim: "",
-            frequencia: "",
+            frequencia: "Diário",
             horario_inicio: "",
             horario_fim: "",
         };
@@ -109,19 +109,16 @@ export class AgentRegisterStudentAlunoVisita extends Component{
 
             <div className="row">
                 <div className="form-group col">
-                    <label htmlFor="estudante_frequencia">Frequência das visitas</label>
-                    <input
-                        type="text"
-                        id="estudante_frequencia"
-                        className="form-control"
-                        placeholder="Digite a frequência das visitas..."
+                    <label htmlFor="frequencia">Frequência das visitas</label>
+                    <select
+                        id="frequencia" className="form-control"
                         value={this.state.frequencia}
                         onChange={e=>this.setState({frequencia: e.target.value})}>
-                    </input>
-                    <small
-                        className="form-text text-muted">
-                        Ex: Todos os dias, A cada dois dias
-                    </small>
+                        <option value={"Diário"}  key="1">Diário</option>
+                        <option value={"Semanal"} key="2">Semanal</option>
+                        <option value={"Mensal"}  key="3">Mensal</option>
+                    </select>
+                    <small className="form-text text-muted">Ex: Diário, Semanal</small>
                 </div>
             </div>
 

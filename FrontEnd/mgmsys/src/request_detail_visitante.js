@@ -13,8 +13,7 @@ export class RequestDetailVisitante extends Component {
     componentDidMount = ()=> {
         if (this.props.data != null)  {
             const visita_visitante = this.props.data;
-            this.setState({...visita_visitante})
-            console.log({...visita_visitante});
+            this.setState({...visita_visitante});
         }
     }
 
@@ -90,7 +89,7 @@ export class RequestDetailVisitante extends Component {
                             <th scope="row">Email</th>
                             <td>{this.state.visitante.email}</td>
                         </tr>
-                        <tr>
+                       {/*  <tr>
                             <th scope="row">Telefone</th>
                             <td>{this.state.visitante.telefone}</td>
                         </tr>
@@ -101,7 +100,7 @@ export class RequestDetailVisitante extends Component {
                         <tr>
                             <th scope="row">Endereço</th>
                             <td>{this.state.visitante.endereco}</td>
-                        </tr>
+                        </tr> */}
                     </tbody>
                     <thead className="thead-dark">
                         <tr>
@@ -120,20 +119,20 @@ export class RequestDetailVisitante extends Component {
                     <tbody>
                         <tr>
                             <th scope="row">Nome</th>
-                            <td>{this.state.empresa.nome}</td>
+                            <td>{this.state.empresa && this.state.empresa.nome}</td>
                         </tr>
-                        <tr>
+                        {/* <tr>
                             <th scope="row">CEP</th>
-                            <td>{this.state.empresa.cep}</td>
-                        </tr>
+                            <td>{this.state.empresa && this.state.empresa.cep}</td>
+                        </tr> */}
                         <tr>
                             <th scope="row">CNPJ</th>
-                            <td>{this.state.empresa.cnpj}</td>
+                            <td>{this.state.empresa && this.state.empresa.cnpj}</td>
                         </tr>
-                        <tr>
+                        {/* <tr>
                             <th scope="row">Telefone</th>
-                            <td>{this.state.empresa.telefone}</td>
-                        </tr>
+                            <td>{this.state.empresa && this.state.empresa.telefone}</td>
+                        </tr> */}
                     </tbody>
 
                     <thead className="thead-dark">

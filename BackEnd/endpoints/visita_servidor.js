@@ -258,7 +258,7 @@ visita_servidor_route.route("/visita_servidor/search")
     let { placa } = req.body;
 
     if (placa == null) {
-        failure_message();
+        send_error(res, "Placa não específicada.");
         return;
     }
 
@@ -277,7 +277,8 @@ visita_servidor_route.route("/visita_servidor/search")
             res.status(200).json(_result);
         }
         else {
-            failure_message();
+            send_error(res, "Placa não específicada.");
+            return;
         }
     })
     .catch( err => {

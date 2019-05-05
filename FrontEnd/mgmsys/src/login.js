@@ -12,7 +12,7 @@ export class Login extends Component {
             message: "",
             logged: false,
         };
-        console.log(props);
+
     }
 
     authenticate = () => {

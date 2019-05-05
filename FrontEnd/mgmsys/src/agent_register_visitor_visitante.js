@@ -10,12 +10,12 @@ export class AgentRegisterVisitorVisitante extends Component{
         super(props);
         this.state = {
             nome: "",
-            telefone: "",
+            // telefone: "",
             email: "",
-            dt_nasc: "",
+            // dt_nasc: "",
             rg: "",
             cpf: "",
-            endereco: "",
+            // endereco: "",
 
             readonly: true,
         };
@@ -36,12 +36,12 @@ export class AgentRegisterVisitorVisitante extends Component{
     save_data = () => {
         const visitante = {
             nome: this.state.nome,
-            telefone: this.state.telefone,
+            // telefone: this.state.telefone,
             email: this.state.email,
-            dt_nasc: this.state.dt_nasc,
+            // dt_nasc: this.state.dt_nasc,
             rg: this.state.rg,
             cpf: this.state.cpf,
-            endereco: this.state.endereco,
+            // endereco: this.state.endereco,
         }
 
         this.props.onSave(visitante);
@@ -156,7 +156,7 @@ export class AgentRegisterVisitorVisitante extends Component{
                     </div>
                 </div>
 
-                <div className="row">
+               {/*  <div className="row">
                     <div className="form-group col-6">
                         <label htmlFor="visitante_dt_nasc">Data de Nascimento</label>
                         <input
@@ -189,9 +189,9 @@ export class AgentRegisterVisitorVisitante extends Component{
                             Ex: (65) 99999-9999, 99999-9999, 3000-0000
                         </small>
                     </div>
-                </div>
+                </div> */}
 
-                <div className="row">
+                {/* <div className="row">
                     <div className="form-group col">
                         <label htmlFor="visitante_endereco">Endereço</label>
                         <input
@@ -208,7 +208,7 @@ export class AgentRegisterVisitorVisitante extends Component{
                             Ex: Rua Foo Bar, Número 00
                         </small>
                     </div>
-                </div>
+                </div> */}
 
                 <div className="row pt-3">
                     <div className="col-6"></div>

@@ -69,13 +69,14 @@ visita_visitante_route.route("/visita_visitante")
     let fk_id_empresa = null;
     let fk_id_veiculo_visitante = null;
 
-    empresa.cnpj = remove_mark_signs(empresa.cnpj);
     visitante.rg = remove_mark_signs(visitante.rg);
     visitante.cpf = remove_mark_signs(visitante.cpf);
 
     if (veiculo_visitante) // vehicle is optional
         veiculo_visitante.placa = remove_mark_signs(veiculo_visitante.placa);
 
+    if (empresa)
+        empresa.cnpj = remove_mark_signs(empresa.cnpj);
 
     knex.transaction( trx =>  {
         let thread = null;
@@ -96,13 +97,18 @@ visita_visitante_route.route("/visita_visitante")
         .then(_fk_id_veiculo_visitante => {
             fk_id_veiculo_visitante = _fk_id_veiculo_visitante;
 
-            return data_exists("empresa", "cnpj", empresa);
+            if (empresa != null)
+                return data_exists("empresa", "cnpj", empresa);
+            else
+                return Promise.resolve(null);
         })
         .then(company_exists => {
-            if (company_exists)
+            if (company_exists === true)
                 return get_id("empresa", "cnpj", empresa);
-            else
+            else if (company_exists === false)
                 return insert_data("empresa", empresa, trx);
+            else
+                return Promise.resolve(null); // When there isn't a company
         })
         .then(_fk_id_empresa=>{
             fk_id_empresa = _fk_id_empresa;

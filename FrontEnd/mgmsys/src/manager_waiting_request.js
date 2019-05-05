@@ -56,7 +56,7 @@ export class ManagerWaitingRequest extends Component {
             return;
 
         const table = Object.values(this.state.data).map((row, i) => {
-            console.log(row);
+
             return (
             <tr key={i}>
                 <td>{i + 1}</td>

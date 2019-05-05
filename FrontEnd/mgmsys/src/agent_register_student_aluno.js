@@ -8,12 +8,12 @@ export class AgentRegisterStudentAluno extends Component{
         super(props);
         this.state= {
             nome: "",
-            telefone: "",
+            // telefone: "",
             email: "",
-            dt_nasc: "",
+            // dt_nasc: "",
             rg: "",
             cpf: "",
-            endereco: "",
+            // endereco: "",
             matricula: "",
             curso: "",
             semestre: "",
@@ -36,12 +36,12 @@ export class AgentRegisterStudentAluno extends Component{
     save_data = () => {
         const student_aluno = {
             nome: this.state.nome,
-            telefone: this.state.telefone,
+            // telefone: this.state.telefone,
             email: this.state.email,
-            dt_nasc: this.state.dt_nasc,
+            // dt_nasc: this.state.dt_nasc,
             rg: this.state.rg,
             cpf: this.state.cpf,
-            endereco: this.state.endereco,
+            // endereco: this.state.endereco,
             matricula: this.state.matricula,
             curso: this.state.curso,
             semestre: this.state.semestre,
@@ -163,7 +163,7 @@ export class AgentRegisterStudentAluno extends Component{
                     </div>
                 </div>
 
-                <div className="row">
+               {/*  <div className="row">
                     <div className="form-group col-6">
                         <label htmlFor="estudante_telefone">Telefone</label>
                         <input
@@ -211,7 +211,7 @@ export class AgentRegisterStudentAluno extends Component{
                         <small className="form-text text-muted">Ex: Rua Foo, Número 01</small>
                     </div>
                 </div>
-
+ */}
                 <div className="row pt-3">
                     <div className="col-6">
                         {/* <button className="btn btn-secondary float-left" onClick={()=>{ this.save_data(); this.props.onBack(); }}>Voltar</button> */}

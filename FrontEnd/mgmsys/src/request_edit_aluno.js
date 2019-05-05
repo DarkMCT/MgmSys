@@ -145,7 +145,7 @@ export class RequestEditAluno extends Component {
                             <th scope="row">Email</th>
                             <td>{ this.make_input("aluno", "email", "email", this.state.aluno.email) }</td>
                         </tr>
-                        <tr>
+                        {/* <tr>
                             <th scope="row">Telefone</th>
                             <td>{ this.make_input("aluno", "telefone", "text", this.state.aluno.telefone) }</td>
                         </tr>
@@ -156,7 +156,7 @@ export class RequestEditAluno extends Component {
                         <tr>
                             <th scope="row">Endereço</th>
                             <td>{ this.make_input("aluno", "endereco", "text", this.state.aluno.endereco) }</td>
-                        </tr>
+                        </tr> */}
                         <tr>
                             <th scope="row">Curso</th>
                             <td>{ this.make_input("aluno", "curso", "text", this.state.aluno.curso) }</td>

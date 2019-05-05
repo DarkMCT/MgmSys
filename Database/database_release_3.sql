@@ -1,7 +1,7 @@
 
 
 --// USUÁRIO //--
-
+DROP TABLE IF EXISTS "departamento" CASCADE;
 CREATE TABLE "departamento" (
   "id_departamento" SERIAL,
   "nome"            VARCHAR(120) NOT NULL UNIQUE,
@@ -13,13 +13,14 @@ CREATE TABLE "departamento" (
 --  TIPO:
 --  -> 0 agente
 --  -> 1 gerente
+DROP TABLE IF EXISTS "usuario" CASCADE;
 CREATE TABLE "usuario" (
   "id_usuario"          SERIAL,
   "fk_id_departamento"  INT REFERENCES departamento(id_departamento) NOT NULL,
   "siape"               VARCHAR(120) NOT NULL UNIQUE,
   "nome"                VARCHAR(120) NOT NULL,
   "email"               VARCHAR(120) NOT NULL,
-  "senha"               CHAR(100)    NOT NULL,
+  "senha"               CHAR(60)     NOT NULL,
   "tipo"                INT          NOT NULL,
   "status_autenticacao" BOOLEAN DEFAULT FALSE,
   "ativado"             BOOLEAN DEFAULT TRUE,
@@ -28,7 +29,7 @@ CREATE TABLE "usuario" (
 
 
 --// ALUNO //--
-
+DROP TABLE IF EXISTS "aluno" CASCADE;
 CREATE TABLE "aluno" (
   "id_aluno"  SERIAL,
   "matricula" VARCHAR(13) NOT NULL UNIQUE,
@@ -37,10 +38,10 @@ CREATE TABLE "aluno" (
   "nome"      VARCHAR(120),
   "email"     VARCHAR(120),
   "curso"     VARCHAR(120),
-  "telefone"  VARCHAR(60),
-  "dt_nasc"   DATE, -- <- remove
+  -- "telefone"  VARCHAR(60),
+  -- "dt_nasc"   DATE, -- <- remove
   "semestre"  INT,
-  "endereco"  VARCHAR(240),
+  -- "endereco"  VARCHAR(240),
   "ativado"   BOOLEAN DEFAULT TRUE,
   PRIMARY KEY ("id_aluno")
 );
@@ -49,17 +50,18 @@ CREATE TABLE "aluno" (
 --  -> 0 indica aguardando
 --  -> 1 indica aprovado
 --  -> 2 indica negado
+DROP TABLE IF EXISTS "visita_aluno" CASCADE;
 CREATE TABLE "visita_aluno" (
   "id_visita_aluno"     SERIAL,
   "fk_id_usuario"       INT REFERENCES usuario(id_usuario) NOT NULL,
   "fk_id_aluno"         INT REFERENCES aluno(id_aluno) NOT NULL,
-  "objetivo"            VARCHAR(480),
+  "objetivo"            VARCHAR(1920),
   "frequencia"          VARCHAR(120),
   "data_inicio"         DATE,
   "data_fim"            DATE,
   "horario_inicio"      TIME,
   "horario_fim"         TIME,
-  "duracao"             INT, -- remove
+  -- "duracao"             INT, -- remove
   "status_de_aprovacao" INT DEFAULT 0,
   "ativado"             BOOLEAN DEFAULT TRUE,
   PRIMARY KEY ("id_visita_aluno")
@@ -67,7 +69,7 @@ CREATE TABLE "visita_aluno" (
 
 
 --// SERVIDOR //--
-
+DROP TABLE IF EXISTS "servidor" CASCADE;
 CREATE TABLE "servidor" (
   "id_servidor" SERIAL,
   "siape"       VARCHAR(30)  NOT NULL UNIQUE,
@@ -75,13 +77,14 @@ CREATE TABLE "servidor" (
   "rg"          VARCHAR(30) UNIQUE,
   "cpf"         VARCHAR(30) UNIQUE,
   "nome"        VARCHAR(120),
-  "telefone"    VARCHAR(60),
-  "dt_nasc"     DATE,         --descartar
-  "endereco"    VARCHAR(240), --descartar
+  -- "telefone"    VARCHAR(60),
+  -- "dt_nasc"     DATE,         --descartar
+  -- "endereco"    VARCHAR(240), --descartar
   "ativado"     INT DEFAULT 1,
   PRIMARY KEY ("id_servidor")
 );
 
+DROP TABLE IF EXISTS "veiculo_servidor" CASCADE;
 CREATE TABLE "veiculo_servidor" (
   "id_veiculo_servidor" SERIAL,
   "modelo"              VARCHAR(120),
@@ -95,6 +98,7 @@ CREATE TABLE "veiculo_servidor" (
 -- -> 0 indica aguardando
 -- -> 1 indica aprovado
 -- -> 2 indica negado
+DROP TABLE IF EXISTS "visita_servidor" CASCADE;
 CREATE TABLE "visita_servidor" (
   "id_visita_servidor"      SERIAL,
   "fk_id_usuario"           INT REFERENCES usuario(id_usuario)    NOT NULL,
@@ -108,44 +112,45 @@ CREATE TABLE "visita_servidor" (
   "frequencia"              VARCHAR(120),
   "pernoite"                BOOLEAN,
   "status_de_aprovacao"     INT DEFAULT 0,
-  "duracao"                 INT, --delete
+  -- "duracao"                 INT, --delete
   "ativado"                 BOOLEAN DEFAULT TRUE,
   PRIMARY KEY ("id_visita_servidor")
 );
 
-
 --// VISITANTE //--
-
+DROP TABLE IF EXISTS "empresa" CASCADE;
 CREATE TABLE "empresa" (
   "id_empresa"  SERIAL,
   "cnpj"        VARCHAR(120) NOT NULL UNIQUE,
   "nome"        VARCHAR(120),
-  "cep"         VARCHAR(120),
-  "telefone"    VARCHAR(120),
+  -- "cep"         VARCHAR(120),
+  -- "telefone"    VARCHAR(120),
   "ativado"     BOOLEAN DEFAULT TRUE,
   PRIMARY KEY ("id_empresa")
 );
 
+DROP TABLE IF EXISTS "visitante" CASCADE;
 CREATE TABLE "visitante" (
   "id_visitante"  SERIAL,
-  "fk_id_empresa" INT REFERENCES empresa(id_empresa) NOT NULL,
+  "fk_id_empresa" INT REFERENCES empresa(id_empresa),
   "rg"            VARCHAR(120) NOT NULL UNIQUE,
   "cpf"           VARCHAR(120) UNIQUE,
   "email"         VARCHAR(120),
   "nome"          VARCHAR(120),
-  "endereco"      VARCHAR(240),
-  "telefone"      VARCHAR(60),
-  "dt_nasc"       DATE, -- delete
+  -- "endereco"      VARCHAR(240),
+  -- "telefone"      VARCHAR(60),
+  -- "dt_nasc"       DATE, -- delete
   "ativado"       BOOLEAN DEFAULT TRUE,
   PRIMARY KEY ("id_visitante")
 );
 
+DROP TABLE IF EXISTS "veiculo_visitante" CASCADE;
 CREATE TABLE "veiculo_visitante" (
   "id_veiculo_visitante"  SERIAL,
   "modelo"                VARCHAR(120),
   "cor"                   VARCHAR(120),
   "placa"                 VARCHAR(10) NOT NULL UNIQUE,
-  "ativado" BOOLEAN DEFAULT TRUE,
+  "ativado"               BOOLEAN DEFAULT TRUE,
   PRIMARY KEY ("id_veiculo_visitante")
 );
 
@@ -153,6 +158,7 @@ CREATE TABLE "veiculo_visitante" (
 -- -> 0 indica aguardando
 -- -> 1 indica aprovado
 -- -> 2 indica negado
+DROP TABLE IF EXISTS "visita_visitante" CASCADE;
 CREATE TABLE "visita_visitante" (
   "id_visita_visitante"     SERIAL,
   "fk_id_usuario"           INT REFERENCES usuario(id_usuario)      NOT NULL,
@@ -162,11 +168,11 @@ CREATE TABLE "visita_visitante" (
   "data_fim"                DATE,
   "horario_inicio"          TIME,
   "horario_fim"             TIME,
-  "objetivo"                VARCHAR(480),
+  "objetivo"                VARCHAR(1920),
   "frequencia"              VARCHAR(120),
-  "duracao"                 INT, -- delete
+  -- "duracao"                 INT, -- delete
   "status_de_aprovacao"     INT DEFAULT 0,
   "pernoite"                BOOLEAN,
   "ativado"                 BOOLEAN DEFAULT TRUE,
-  PRIMARY KEY ("id_visita_servidor")
+  PRIMARY KEY ("id_visita_visitante")
 );

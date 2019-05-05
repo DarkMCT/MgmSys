@@ -39,8 +39,12 @@ export class RequestDetailServidor extends Component {
                     </thead>
                     <tbody>
                         <tr>
-                            <th scope="row">Data</th>
-                            <td>{format_date(this.state.visita_servidor.data)}</td>
+                            <th scope="row">Data (Início)</th>
+                            <td>{format_date(this.state.visita_servidor.data_inicio)}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Data (Fim)</th>
+                            <td>{format_date(this.state.visita_servidor.data_fim)}</td>
                         </tr>
                         <tr>
                             <th scope="row">Frequência</th>
@@ -98,14 +102,14 @@ export class RequestDetailServidor extends Component {
                             <th scope="row">Telefone</th>
                             <td>{this.state.servidor.telefone}</td>
                         </tr>
-                        <tr>
+                        {/* <tr>
                             <th scope="row">Data nasc.</th>
                             <td>{format_date(this.state.servidor.dt_nasc)}</td>
                         </tr>
                         <tr>
                             <th scope="row">Endereço</th>
                             <td>{this.state.servidor.endereco}</td>
-                        </tr>
+                        </tr> */}
                     </tbody>
 
                     <thead className="thead-dark">

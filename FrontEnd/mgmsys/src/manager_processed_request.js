@@ -42,11 +42,7 @@ export class ManagerProcessedRequest extends Component {
         this.search();
     }
 
-    __onPDF = (row) => {
-        console.log("PDF");
-    }
-
-    __onDetail = (row) => {
+       __onDetail = (row) => {
         this.setState({current_action: "detail", selected_row: row})
     }
 

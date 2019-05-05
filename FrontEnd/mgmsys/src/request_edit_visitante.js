@@ -154,7 +154,7 @@ export class RequestEditVisitante extends Component {
                             <th scope="row">Email</th>
                             <td>{ this.make_input("visitante", "email", "text", this.state.visitante.email) }</td>
                         </tr>
-                        <tr>
+                        {/* <tr>
                             <th scope="row">Telefone</th>
                         <td>{ this.make_input("visitante", "telefone", "text", this.state.visitante.telefone) }</td>
                         </tr>
@@ -165,7 +165,7 @@ export class RequestEditVisitante extends Component {
                         <tr>
                             <th scope="row">Endereço</th>
                             <td>{ this.make_input("visitante", "endereco", "text", this.state.visitante.endereco) }</td>
-                        </tr>
+                        </tr> */}
                     </tbody>
                     <thead className="thead-dark">
                         <tr>
@@ -179,20 +179,20 @@ export class RequestEditVisitante extends Component {
                     <tbody>
                         <tr>
                             <th scope="row">Nome</th>
-                            <td>{ this.make_input("empresa", "nome", "text", this.state.empresa.nome) }</td>
+                            <td>{ this.state.empresa && this.make_input("empresa", "nome", "text", this.state.empresa.nome) }</td>
                         </tr>
-                        <tr>
+                        {/* <tr>
                             <th scope="row">CEP</th>
-                            <td>{ this.make_input("empresa", "cep", "text", this.state.empresa.cep) }</td>
-                        </tr>
+                            <td>{ this.state.empresa && this.make_input("empresa", "cep", "text", this.state.empresa.cep) }</td>
+                        </tr> */}
                         <tr>
                             <th scope="row">CNPJ</th>
-                            <td>{ this.make_input("empresa", "cnpj", "text", this.state.empresa.cnpj) }</td>
+                            <td>{ this.state.empresa && this.make_input("empresa", "cnpj", "text", this.state.empresa.cnpj) }</td>
                         </tr>
-                        <tr>
+                        {/* <tr>
                             <th scope="row">Telefone</th>
-                            <td>{ this.make_input("empresa", "telefone", "text", this.state.empresa.telefone) }</td>
-                        </tr>
+                            <td>{ this.state.empresa && this.make_input("empresa", "telefone", "text", this.state.empresa.telefone) }</td>
+                        </tr> */}
                     </tbody>
 
                     <thead className="thead-dark">

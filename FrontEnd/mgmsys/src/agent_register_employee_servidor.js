@@ -8,12 +8,12 @@ export class AgentRegisterEmployeeServidor extends Component{
         this.state= {
             siape: "",
             nome: "",
-            telefone: "",
+            // telefone: "",
             email: "",
-            dt_nasc: "",
+            // dt_nasc: "",
             rg: "",
             cpf: "",
-            endereco: "",
+            // endereco: "",
 
             readonly: true,
         };
@@ -29,12 +29,12 @@ export class AgentRegisterEmployeeServidor extends Component{
         const servidor = {
             siape: this.state.siape,
             nome: this.state.nome,
-            telefone: this.state.telefone,
+            // telefone: this.state.telefone,
             email: this.state.email,
-            dt_nasc: this.state.dt_nasc,
+            // dt_nasc: this.state.dt_nasc,
             rg: this.state.rg,
             cpf: this.state.cpf,
-            endereco: this.state.endereco,
+            // endereco: this.state.endereco,
         }
         // this.setState({...veiculo_visitante});
 
@@ -86,7 +86,7 @@ export class AgentRegisterEmployeeServidor extends Component{
                         <input type="text" id="servidor_siape" ref={ this.servidor_siape } className="form-control" placeholder="Digite o código SIAPE do servidor"
                             value={this.state.siape} onBlur={this.search} onChange={e=>this.setState({siape: e.target.value})}>
                         </input>
-                        <small className="form-text text-muted">Ex: *******</small>
+                        <small className="form-text text-muted">Ex: 2000000</small>
                     </div>
                 </div>
 
@@ -126,7 +126,7 @@ export class AgentRegisterEmployeeServidor extends Component{
                     </div>
                 </div>
 
-                <div className="row">
+                {/* <div className="row">
                     <div className="form-group col-6">
                         <label htmlFor="servidor_telefone">Telefone</label>
                         <input type="text" id="servidor_telefone" ref={this.servidor_telefone} className="form-control" placeholder="Digite o número de telefone do servidor..."
@@ -142,9 +142,9 @@ export class AgentRegisterEmployeeServidor extends Component{
                         </input>
                         <small className="form-text text-muted">Ex: 01/01/2001</small>
                     </div>
-                </div>
+                </div> */}
 
-                <div className="row">
+                {/* <div className="row">
                     <div className="form-group col">
                         <label htmlFor="endereco">Endereço</label>
                         <input type="text" id="endereco" ref={this.servidor_endereco} className="form-control" placeholder="Digite o endereço do servidor..."
@@ -152,7 +152,7 @@ export class AgentRegisterEmployeeServidor extends Component{
                         </input>
                         <small className="form-text text-muted">Ex: Rua Foo, Número 01</small>
                     </div>
-                </div>
+                </div> */}
 
                 <div className="row pt-3">
                     <div className="col-6">
