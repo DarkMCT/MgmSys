@@ -52,7 +52,7 @@ export class ManagerProcessedRequest extends Component {
 
         const table = Object.values(this.state.data).map((row, i) => {
             return (
-                <tr key={i}>
+                <tr key={i} className={row.status_de_aprovacao === 1 ? "bg-light-green" : "bg-light-red"}>
                     <td>{i + 1}</td>
                     <td>{row.tipo_requisicao}</td>
                     <td>{row.nome}</td>

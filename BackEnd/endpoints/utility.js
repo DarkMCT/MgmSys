@@ -1,7 +1,7 @@
 // Constants definitions
-const MAX_TIMEOUT = 100;//ms
+// const MAX_TIMEOUT = 100;//ms
 
-const db_instance = require("../database/connection");
+const { db_instance, MAX_TIMEOUT } = require("../database/connection");
 
 const log_error = (route, when, err, req, suggestion) => {
     console.error("-".repeat(10) + " ERROR OCURRED " + "-".repeat(10));

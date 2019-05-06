@@ -19,13 +19,13 @@ const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 
 // ---- user imports
-const db_instance = require("../database/connection");
+const { db_instance, MAX_TIMEOUT } = require("../database/connection");
 const validation = require("../../Database/data_validation");
 
 
 // ------- constants definitions ------- //
 const saltRounds = 8; // This protect against brutalforce
-const MAX_TIMEOUT = 100; //ms
+// const MAX_TIMEOUT = 100; //ms
 
 
 

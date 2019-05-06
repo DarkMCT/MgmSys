@@ -3,6 +3,8 @@ const __knex = require("knex");
 
 let __connection_instance = null;
 
+const MAX_TIMEOUT = 1000; //1000 ms
+
 const get_instance = ()=>{
     if ( __connection_instance == null ){
         __connection_instance = __knex({
@@ -20,7 +22,7 @@ const get_instance = ()=>{
     return __connection_instance;
 };
 
-module.exports = get_instance;
+module.exports = { db_instance: get_instance, MAX_TIMEOUT };
 
 /* const knex = get_instance();
 

@@ -8,11 +8,11 @@ const express = require("express");
 const bodyParse = require("body-parser");
 
 // User imports
-const db_instance = require("../database/connection");
+const { db_instance, MAX_TIMEOUT } = require("../database/connection");
 const { insert_data, update_data, get_id, data_exists, remove_mark_signs, send_error, log_error } = require("./utility");
 
 // Constants definitions
-const MAX_TIMEOUT = 100;//ms
+// const MAX_TIMEOUT = 100;//ms
 
 const visita_servidor_route = express.Router();
 

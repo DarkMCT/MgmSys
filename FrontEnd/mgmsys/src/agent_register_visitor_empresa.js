@@ -20,7 +20,7 @@ export class AgentRegisterVisitorEmpresa extends Component{
     search = ()=>{
         let cnpj = this.state.cnpj.replace(/(\.|-\/)/g, "");
 
-        if (cnpj.length === 14){
+        if (cnpj.length >= 14){
             make_request(
                 "/visita_visitante/search",
                 "POST",

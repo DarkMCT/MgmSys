@@ -7,11 +7,11 @@ const express = require("express");
 const bodyParse = require("body-parser");
 
 // User imports
-const db_instance = require("../database/connection");
+const { db_instance, MAX_TIMEOUT } = require("../database/connection");
 const { send_error, log_error, query_employee, query_student, query_visitant } = require("./utility");
 
 // Constants definitions
-const MAX_TIMEOUT = 100;//ms
+// const MAX_TIMEOUT = 100;//ms
 const visita_route = express.Router();
 
 

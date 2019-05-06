@@ -17,7 +17,7 @@ export class AgentRegisterVisitorVisitanteVeiculo extends Component{
     search = ()=>{
         let placa = this.state.placa.replace(/(\.|-)/g, "");
 
-        if (placa.length === 7){
+        if (placa.length >= 7){
             make_request(
                 "/visita_visitante/search",
                 "POST",
