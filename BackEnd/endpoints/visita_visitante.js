@@ -16,8 +16,11 @@ const {
     data_exists,
     remove_mark_signs,
     send_error,
-    log_error
+    log_error,
+    notify_managers
 } = require("./utility");
+
+const { send_email } = require("../notification/notify");
 
 // Constants definitions
 // const MAX_TIMEOUT = 100;//ms
@@ -59,15 +62,17 @@ visita_visitante_route.route("/visita_visitante")
     // extract data from body
     const data = req.body;
     const knex = db_instance();
+    const fk_id_usuario = req.session.user_info.id_usuario;
+    const nome_usuario = req.session.user_info.nome;
 
     // split between visitante, veiculo_visitante, empresa, visita_visitante
     let {visitante, veiculo_visitante, empresa, visita_visitante} = data;
 
     // foreign keys
-    let fk_id_usuario = req.session.user_info.id_usuario;
     let fk_id_visitante = null;
     let fk_id_empresa = null;
     let fk_id_veiculo_visitante = null;
+    let fk_id_visita_visitante = null;
 
     visitante.rg = remove_mark_signs(visitante.rg);
     visitante.cpf = remove_mark_signs(visitante.cpf);
@@ -135,11 +140,24 @@ visita_visitante_route.route("/visita_visitante")
             // add visit
             return insert_data("visita_visitante", visita_visitante, trx);
         })
-        .then(trx.commit)
+        .then(_fk_id_visita_visitante => {
+            fk_id_visita_visitante = _fk_id_visita_visitante;
+            trx.commit();
+        })
         .catch(trx.rollback);
     })
     .then( () => {
         res.status(200).send("Success to register this visit");
+
+        const tipo_visita = "visitante";
+
+        notify_managers(
+            fk_id_usuario,
+            nome_usuario,
+            fk_id_visita_visitante,
+            visitante.nome,
+            tipo_visita
+        );
     })
     .catch( err => {
         log_error("/visita_visitante", "Trying add visit", err, req, "Verify the body of request.");

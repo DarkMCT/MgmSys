@@ -9,7 +9,16 @@ const bodyParse = require("body-parser");
 
 // User imports
 const { db_instance, MAX_TIMEOUT } = require("../database/connection");
-const { insert_data, update_data, get_id, data_exists, remove_mark_signs, send_error, log_error } = require("./utility");
+const {
+    insert_data,
+    update_data,
+    get_id,
+    data_exists,
+    remove_mark_signs,
+    send_error,
+    log_error,
+    notify_managers
+} = require("./utility");
 
 // Constants definitions
 // const MAX_TIMEOUT = 100;//ms
@@ -46,15 +55,18 @@ visita_servidor_route.route("/visita_servidor")
             send_error(res, "Não foi possível buscar as visitas de servidores cadastrados.");
         });
 })
-.post(async (req, res, next)=>{
+.post((req, res, next)=>{
     // extract data from body
     const data = req.body;
-    const fk_id_usuario = req.session.user_info.id_usuario; //req.session.user_id;
+    const fk_id_usuario = req.session.user_info.id_usuario;
+    const nome_usuario = req.session.user_info.nome;
     const knex = db_instance();
+
     // split between servidor, veiculo_servidor, visita_servidor
     let { servidor, veiculo_servidor, visita_servidor } = data;
     let fk_id_veiculo_servidor = null;
     let fk_id_servidor = null;
+    let fk_id_visita_servidor = null;
 
     servidor.cpf = remove_mark_signs(servidor.cpf);
     servidor.rg = remove_mark_signs(servidor.rg);
@@ -102,11 +114,15 @@ visita_servidor_route.route("/visita_servidor")
 
             return insert_data("visita_servidor", visita_servidor, trx)
         })
-        .then(trx.commit)
+        .then(_fk_id_visita_servidor => {
+            fk_id_visita_servidor = _fk_id_visita_servidor;
+            trx.commit();
+        })
         .catch(trx.rollback);
     })
     .then(() => {
         res.status(200).send("Success to register this visit");
+        notify_managers(fk_id_usuario, nome_usuario, fk_id_visita_servidor,  servidor.nome, "servidor");
     })
     .catch(err=>{
         log_error("/visita_servidor method=POST", "Adding visit.", err, req);

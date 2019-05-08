@@ -13,10 +13,11 @@ const { visita_visitante_route } = require("./endpoints/visita_visitante");
 const { visita_aluno_route } = require("./endpoints/visita_aluno");
 const { visita_servidor_route } = require("./endpoints/visita_servidor");
 const { visita_route } = require("./endpoints/visita");
-const { report_route } = require("./endpoints/reports");
+const { process_requisition_route } = require("./authentication/process_requisition");
 
 
-app.use(express.static("./build"));
+// app.use(express.static("./build"));
+
 
 app.use(cors({
     methods: ["GET", "POST", "PATCH"],
@@ -24,6 +25,7 @@ app.use(cors({
     origin: true,
 }));
 
+app.use(process_requisition_route);
 
 // setup sessions (responsable for user authentication after login)
 app.use(session({
@@ -62,7 +64,7 @@ app.use(visita_servidor_route);
 
 app.use(visita_route);
 
-app.use(report_route);
+
 
 
 app.listen(3001, "0.0.0.0", ()=>{

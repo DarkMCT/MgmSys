@@ -3,6 +3,10 @@
 
 const { db_instance, MAX_TIMEOUT } = require("../database/connection");
 
+const { send_email } = require("../notification/notify");
+const { make_request } = require("../authentication/process_requisition");
+const { get_template_request } = require("../authentication/template_html");
+
 const log_error = (route, when, err, req, suggestion) => {
     console.error("-".repeat(10) + " ERROR OCURRED " + "-".repeat(10));
     console.error("Route: ", route);
@@ -213,8 +217,54 @@ const query_employee = (id_visita_servidor) => {
             reject(err);
         })
     });
+}
 
+const get_users_email_to_notification = (tipo_usuario) => {
+    const knex = db_instance();
+
+    const tp_user = tipo_usuario.toLowerCase() ===  "gerente" ? 1 : 0;
+
+    return (
+        knex
+        .select("email")
+        .from("usuario")
+        .where(knex.raw("receber_notificacao = TRUE"))
+        .where(knex.raw("tipo = ?", [tp_user]))
+        .timeout(MAX_TIMEOUT)
+    );
+}
+
+const notify_managers = (fk_id_usuario, nome_usuario, fk_id_visita, nome_visitante, tipo) => {
+    get_users_email_to_notification("gerente")
+    .then(emails => {
+        for (email of emails) {
+            const user_email = email.email;
+            const approve = 1;
+            const reject = 2;
+            const server_domain = "http://localhost:3001/authentication/request/";
+
+            let token_approve = server_domain;
+            let token_reject = server_domain;
+
+            make_request(fk_id_usuario, fk_id_visita, tipo, approve)
+            .then(_token_approve => {
+                token_approve = token_approve.concat(_token_approve);
+                return make_request(fk_id_usuario, fk_id_visita, tipo, reject)
+            })
+            .then(_token_reject => {
+                token_reject = token_reject.concat(_token_reject);
+
+                return send_email({
+                    to: user_email,
+                    body: get_template_request(token_approve, token_reject,  nome_visitante, nome_usuario, tipo)
+                })
+            })
+            .then(transporte => transporte.close())
+            .catch("Don't was possible notify the managers");
+        }
+    });
 }
 
 module.exports = { insert_data, update_data, get_id, data_exists, remove_mark_signs, send_error, log_error,
-    query_employee, query_student, query_visitant };
+    query_employee, query_student, query_visitant, get_users_email_to_notification,
+    notify_managers };

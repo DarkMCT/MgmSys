@@ -4,11 +4,11 @@
 
 // Third part imports
 const express = require("express");
-const bodyParse = require("body-parser");
 
 // User imports
 const { db_instance, MAX_TIMEOUT } = require("../database/connection");
 const { send_error, log_error, query_employee, query_student, query_visitant } = require("./utility");
+const { reject_request_token } = require("../authentication/process_requisition");
 
 // Constants definitions
 // const MAX_TIMEOUT = 100;//ms
@@ -282,6 +282,8 @@ const change_visit_status = (table_name, id, value) => {
     .where(knex.raw(`id_${table_name} = ?`, [id]));
 }
 
+
+// Approve or reject request
 visita_route.route("/visita_process")
 .post((req, res, next) => {
     const data = req.body;
@@ -303,6 +305,7 @@ visita_route.route("/visita_process")
     change_visit_status(table_name, id, status_de_aprovacao)
     .then(result => {
         res.sendStatus(200);
+
     })
     .catch( err => {
         res.sendStatus(400);

@@ -9,7 +9,16 @@ const bodyParse = require("body-parser");
 
 // User imports
 const { db_instance, MAX_TIMEOUT } = require("../database/connection");
-const { insert_data, update_data, get_id, data_exists, remove_mark_signs, send_error, log_error } = require("./utility");
+const {
+    insert_data,
+    update_data,
+    get_id,
+    data_exists,
+    send_error,
+    log_error,
+    notify_managers
+} = require("./utility");
+
 
 // Constants definitions
 // const MAX_TIMEOUT = 100;//ms
@@ -45,9 +54,11 @@ visita_aluno_route.route("/visita_aluno")
     // extract data from body
     const data = req.body;
     const fk_id_usuario = req.session.user_info.id_usuario;
+    const nome_usuario = req.session.user_info.nome;
     const knex = db_instance();
 
     let { aluno, visita_aluno } = data;
+    let fk_id_visita_aluno = null;
 
     knex.transaction(trx => {
         data_exists("aluno", "matricula", aluno)
@@ -67,11 +78,15 @@ visita_aluno_route.route("/visita_aluno")
                 trx
             );
         })
-        .then(trx.commit)
+        .then(id_visita_aluno => {
+            fk_id_visita_aluno = id_visita_aluno;
+            trx.commit();
+        })
         .catch(trx.rollback);
     })
     .then(result=> {
         res.status(200).send("Success to register this visit");
+        notify_managers(fk_id_usuario, nome_usuario, fk_id_visita_aluno,  aluno.nome, "aluno");
     })
     .catch(err=>{
         log_error("/visita_aluno", "Trying add visit", err, req, "Verify the body of request.");
