@@ -12,19 +12,6 @@
 //  Written by Matheus Cândido Teixeira
 //  Date: 22.03.2019
 
-
-
-// ToDo List:
-//   # Data validation >> ../database/data_validation because should be shared between
-//     back-end and front-end
-//
-//
-//
-//
-
-
-
-
 //---------------- imports ----------------//
 
 // ---- core imports
@@ -33,33 +20,16 @@ const crypto = require('crypto');
 // ---- third party imports
 const express = require('express');
 
-const bodyParser = require('body-parser');
-
 // ---- user imports
-const DB = require('./credentials');
-const validation = require("../../Database/data_validation");
-
-
-
+const {addUser, authUser, change_password, receive_notification } = require('./credentials');
 
 // ------- constants definitions ------- //
 
 
 const BadAuthenticationCode = 401;
-const BadOperationOnServerCode = 500;
 const SuccessAuthenticationCode = 200;
-const SuccessOperationCode = 200;
-
-
 
 const route = express.Router();
-
-// body-parser
-route.use(bodyParser.json({
-    type: 'application/json'
-}));
-
-
 
 const is_authenticated = (req)=>{
     // console.log(req.session);
@@ -67,13 +37,10 @@ const is_authenticated = (req)=>{
     return (user_info && user_info.id_usuario && user_info.id_usuario !== null);
 }
 
-
 const user_credentials_authentication = (user) => {
     return user.senha.length > 6;
     // return validation.valid_usuario(user);
 }
-
-
 
 // Processes login
 //           registration
@@ -101,7 +68,7 @@ route.route('/auth')
 
     const { siape, senha } = req.body;
 
-    DB.authUser(siape, senha, (err, user_info) => {
+    authUser(siape, senha, (err, user_info) => {
         // console.log(err);
         if ( err == null ){
             req.session.user_info = user_info;
@@ -128,7 +95,7 @@ route.route('/auth')
     const user_credentials_authenticated = user_credentials_authentication( user_credentials );
 
     if ( user_credentials_authenticated ) {
-        DB.addUser( user_credentials, (err, user_id) => {
+        addUser( user_credentials, (err, user_id) => {
             if ( err )
                 res.sendStatus( BadAuthenticationCode );
             else
@@ -165,6 +132,25 @@ route.route('/auth')
     res.sendStatus( SuccessAuthenticationCode );
 
     next();
+});
+
+route.route("/auth/change_password")
+.post((req, res, next)=>{
+    const {new_password, old_password} = req.body;
+    const id_usuario = req.session.user_info.id_usuario;
+
+
+    change_password(id_usuario, old_password, new_password)
+    .then(success => {
+        if (success)
+            res.sendStatus(200);
+        else
+            res.sendStatus(400);
+    })
+    .catch(err=>{
+        console.log(err);
+        res.sendStatus(400);
+    });
 });
 
 

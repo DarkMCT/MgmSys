@@ -52,54 +52,72 @@ export class Login extends Component {
     render = () => {
         return (
             <div className="container w-25 pt-5">
-                <div className="container">
-                    <div className="row justify-content-center">
-                        <h1 style={{fontFamily: 'Lobster'}}>MgmSys</h1>
+
+                <div className="row justify-content-center">
+                    <h1 style={{fontFamily: 'Lobster'}}>MgmSys</h1>
+                </div>
+
+                <div className="row justify-content-center">
+                    <div className="form-group">
+                        <label htmlFor="siape">Siape:</label>
+                        <input
+                            type="text"
+                            name="siape"
+                            id="siape"
+                            className="form-control"
+                            onChange={event => {
+                                this.setState({
+                                    siape: event.target.value
+                                })
+                            }}>
+                        </input>
                     </div>
                 </div>
-                <div className="form-group">
-                    <label htmlFor="siape">Siape:</label>
-                    <input
-                        type="text"
-                        name="siape"
-                        id="siape"
-                        className="form-control"
-                        onChange={event => {
-                            this.setState({
-                                siape: event.target.value
-                            })
-                        }}>
-                    </input>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="password">Senha:</label>
-                    <input
-                        type="password"
-                        name="password"
-                        id="password"
-                        className="form-control"
-                        onChange={event => {
-                            this.setState({
-                                senha: event.target.value
-                            })
-                        }}>
-                    </input>
-                </div>
-                <label className="text-danger text-small">{this.state.message}</label>
 
-                <button
-                    type="button"
-                    className="btn btn-outline-secondary w-50"
-                    onClick={() => this.props.onRegister()}>
-                    Registrar
-                </button>
+                <div className="row justify-content-center">
+                    <div className="form-group">
+                        <label htmlFor="password">Senha:</label>
+                        <input
+                            type="password"
+                            name="password"
+                            id="password"
+                            className="form-control"
+                            onChange={event => {
+                                this.setState({
+                                    senha: event.target.value
+                                })
+                            }}>
+                        </input>
+                    </div>
+                </div>
+                <div className="row justify-content-center">
+                    <label className="text-danger text-small">
+                        {this.state.message}
+                    </label>
+                </div>
+                <div className="row justify-content-center">
+                    <button
+                        type="button"
+                        className="btn btn-outline-secondary w-25 mr-2"
+                        onClick={this.props.onRegister}>
+                        Registrar
+                    </button>
 
-                <button
-                    type="button"
-                    className="btn btn-outline-primary w-50"
-                    onClick={this.authenticate}>
-                    Login
-                </button>
+                    <button
+                        type="button"
+                        className="btn btn-outline-primary w-25 ml-2"
+                        onClick={this.authenticate}>
+                        Login
+                    </button>
+                </div>
+                <div className="row justify-content-center pt-2">
+                    <button
+                        type="button"
+                        className="btn btn-warning btn-sm"
+                        onClick={this.props.onForgetPassword}>
+                        Esqueceu a senha?
+                    </button>
+                </div>
             </div>
         );
     }

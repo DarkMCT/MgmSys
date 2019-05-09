@@ -8,6 +8,7 @@ export class DashboardNavbar extends Component{
         this.state = {
 
         };
+        console.log(props);
     }
 
     logout = () => {
@@ -65,7 +66,7 @@ export class DashboardNavbar extends Component{
 
                                 <button
                                     className="dropdown-item"
-                                    onClick={this.logout}>
+                                    onClick={this.props.on_settings}>
                                     Meus dados
                                 </button>
 

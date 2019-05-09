@@ -12,6 +12,7 @@ import { DashboardNavbar } from "./dashboard_navbar";
 import { ManagerActions } from "./manager_actions";
 import { ManagerWaitingRequest } from "./manager_waiting_request";
 import { ManagerProcessedRequest } from "./manager_processed_request";
+import { Settings } from "./settings";
 
 
 export class ManagerDashboard extends Component{
@@ -33,6 +34,10 @@ export class ManagerDashboard extends Component{
                 return(<ManagerProcessedRequest
                     backendAddr={this.props.backendAddr}
                 ></ManagerProcessedRequest>);
+            case "settings":
+                return(
+                    <Settings></Settings>
+                );
             default:
                 return(<ManagerWaitingRequest
                     backendAddr={this.props.backendAddr}
@@ -40,11 +45,16 @@ export class ManagerDashboard extends Component{
         }
     }
 
+    on_settings = ()=>{
+        this.setState({current_action: "settings"});
+    }
+
     render = () => {
         return (
             <div>
                 <DashboardNavbar
-                    onLogout={this.props.onLogout}>
+                    onLogout={this.props.onLogout}
+                    on_settings={this.on_settings}>
                 </DashboardNavbar>
 
                 <div className="container pt-3 pb-3">

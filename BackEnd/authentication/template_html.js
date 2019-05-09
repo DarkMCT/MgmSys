@@ -57,4 +57,53 @@ const get_template_request = (token_approve, token_reject, visitante, requerente
     `;
 }
 
-module.exports = { get_template_request };
+const get_template_reset_password = (new_password, token_reset_password, server_domain) => {
+    return `
+    <html>
+    <head>
+        <style type="text/css">
+        body {
+            font-family: "Arial";
+        }
+
+        .button {
+            margin-top: 50px;
+            padding: 10px;
+            background-color: rgba(0, 0, 200, 0.85);
+            color: white;
+            text-decoration: none;
+            border-radius: 10%;
+        }
+
+
+        .title {
+            color: rgba(30, 30, 200, 0.9);
+            padding-bottom: 20px;
+        }
+
+        .list {
+            padding-bottom: 10px;
+            font-size: 15px;
+        }
+
+        div {
+            text-align: center;
+        }
+        </style>
+    </head>
+    <body>
+        <div>
+            <h1 class="title"> Recuperação de senha </h1>
+
+            <div class="list"> Clique no botão "Resetar Senha"</div>
+            <div class="list"> A sua nova senha será: ${new_password}</div>
+            <div class="list"> Para alterá-la, entre no sistema com a nova senha e altere-a.</div>
+
+            <a class="button" href="${server_domain+token_reset_password}">Resetar Senha</a>
+        </div>
+    </body>
+</html>
+    `;
+}
+
+module.exports = { get_template_request, get_template_reset_password };

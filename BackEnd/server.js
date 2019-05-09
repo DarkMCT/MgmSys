@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const session = require("express-session");
+const bodyParser = require('body-parser');
 
 const app = express();
 const memoryStore = session.MemoryStore;
@@ -14,6 +15,7 @@ const { visita_aluno_route } = require("./endpoints/visita_aluno");
 const { visita_servidor_route } = require("./endpoints/visita_servidor");
 const { visita_route } = require("./endpoints/visita");
 const { process_requisition_route } = require("./authentication/process_requisition");
+const { reset_password_route } = require("./authentication/reset_password");
 
 
 // app.use(express.static("./build"));
@@ -25,7 +27,13 @@ app.use(cors({
     origin: true,
 }));
 
+// body-parser
+app.use(bodyParser.json({
+    type: 'application/json'
+}));
+
 app.use(process_requisition_route);
+app.use(reset_password_route);
 
 // setup sessions (responsable for user authentication after login)
 app.use(session({

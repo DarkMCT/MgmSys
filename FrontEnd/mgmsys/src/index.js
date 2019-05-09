@@ -5,6 +5,7 @@ import { Register } from "./register";
 import { AgentDashboard } from "./agent_dashboard";
 import { ManagerDashboard } from "./manager_dashboard";
 import { make_request } from "./request";
+import { ResetPassword } from "./reset_password";
 
 class Main extends Component {
     constructor(props) {
@@ -50,6 +51,7 @@ class Main extends Component {
                 onSuccess={ () => window.location.reload() }
                 onFail={() => { }}
                 onRegister={() => { this.setState({ app_state: "register_screen" }) }}
+                onForgetPassword={()=>this.setState({app_state: "reset_password"})}
                 backendAddr={this.state.backend_addr}
             />);
         }
@@ -80,6 +82,14 @@ class Main extends Component {
                 onLogout={()=>this.setState({app_state: "login_screen"})}
                 backendAddr={this.state.backend_addr}>
             </ManagerDashboard>
+            );
+        }
+
+        if (state === "reset_password") {
+            return (
+                <ResetPassword
+                    onBack={() => this.setState({ app_state: "login_screen" })}>
+                </ResetPassword>
             );
         }
 

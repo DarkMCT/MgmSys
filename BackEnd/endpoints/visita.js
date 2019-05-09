@@ -211,7 +211,7 @@ const get_table_name = (tipo_requisicao)=>{
         table_name = "visita_aluno";
     else if (tipo_requisicao === "servidor")
         table_name = "visita_servidor";
-    else if (tipo_requisicao === "visita_visitante")
+    else if (tipo_requisicao === "visitante")
         table_name = "visita_visitante";
 
     return table_name;
@@ -236,7 +236,6 @@ visita_route.route("/visita/delete/")
     .where(knex.raw(`id_${table_name} = ?`, [id]))
     .timeout(MAX_TIMEOUT)
     .then(updated_rows => {
-
         if (updated_rows === 1)
             res.send("Requisição removida com sucesso!");
         else

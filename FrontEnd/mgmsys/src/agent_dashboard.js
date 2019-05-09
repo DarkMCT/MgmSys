@@ -10,6 +10,7 @@ import { AgentActions } from "./agent_actions"
 import { AgentWaitingRequest } from "./agent_waiting_request"
 import { AgentProcessedRequest } from "./agent_processed_request";
 import { AgentRegisterRequest } from "./agent_register_request";
+import { Settings } from "./settings";
 
 // ---- user imports
 
@@ -37,6 +38,10 @@ export class AgentDashboard extends Component{
                 return(<AgentRegisterRequest
                     backendAddr={this.props.backendAddr}
                 ></AgentRegisterRequest>);
+            case "settings":
+                return(
+                    <Settings></Settings>
+                );
             default:
                 return(<AgentWaitingRequest
                     backendAddr={this.props.backendAddr}
@@ -44,11 +49,16 @@ export class AgentDashboard extends Component{
         }
     }
 
+    on_settings = ()=>{
+        this.setState({current_action: "settings"});
+    }
+
     render = () => {
         return (
             <div>
                 <DashboardNavbar
-                    onLogout={this.props.onLogout}>
+                    onLogout={this.props.onLogout}
+                    on_settings={this.on_settings}>
                 </DashboardNavbar>
                 <div className="container pt-3 pb-3">
                     <div className="row justify-content-md-center">
