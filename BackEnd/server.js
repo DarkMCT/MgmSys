@@ -18,7 +18,7 @@ const { process_requisition_route } = require("./authentication/process_requisit
 const { reset_password_route } = require("./authentication/reset_password");
 
 
-// app.use(express.static("./build"));
+app.use(express.static("./build"));
 
 
 app.use(cors({
